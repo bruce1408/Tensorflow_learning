@@ -1,0 +1,7 @@
+*.exe
+*.swn
+*.pyc
+*.swp
+*.swo
+!.gitignore
+*.idea/
