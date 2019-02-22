@@ -20,13 +20,13 @@
 第13周 TensorFlow 各种例子汇总
 第14周 TensorFlow 代码参考汇总
 ```
-上述代码data相关数据下载地址如下：
+- 上述代码data相关数据下载地址如下：
 链接:https://pan.baidu.com/s/1e-XfOV250uS40T1Q7v4oUA  密码:ruwm
-inception-2015-12-05.tgz
+- inception-2015-12-05.tgz
 链接:https://pan.baidu.com/s/1o_BCsopsbgKMPqlNzMwTYw  密码:zt3t
-classify_image_graph_def.pd
+- classify_image_graph_def.pd
 链接:https://pan.baidu.com/s/1yMoF8ol4HemE4SnqCIDa0A  密码:7a6k
-captcha/images
+- captcha/images
 链接:https://pan.baidu.com/s/1p_ZYQyv7quiYdLydFw8SmA  密码:m1y4
 
 —— 说明：实际第 5 周讲的是 Tensorborad 结构可视化，第 6 周讲的是 CNN。
