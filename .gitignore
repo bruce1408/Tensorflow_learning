@@ -5,3 +5,5 @@
 *.swo
 !.gitignore
 *.idea/
+*.logs/
+

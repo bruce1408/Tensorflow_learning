@@ -81,7 +81,7 @@ from tensorflow.examples.tutorials.mnist import input_data
 # n_inputs = 28
 # n_neurons = 150
 # n_outputs = 10
-mnist = input_data.read_data_sets("/Users/bruce/programme/Python/datasets/MNIST_data")
+mnist = input_data.read_data_sets("/home/bruce/bigVolumn/Datasets/fashion_mnist")
 # X_test = mnist.test.images.reshape((-1, n_steps, n_inputs))
 # y_test = mnist.test.labels
 #

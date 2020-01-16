@@ -1,18 +1,104 @@
-import tensorflow as tf
-from tensorflow.examples.tutorials.mnist import input_data
+# coding=utf-8
 import os
+import gzip
+import struct
+import numpy as np
 import warnings
+import tensorflow as tf
+from mlxtend.data import loadlocal_mnist
+from tensorflow.examples.tutorials.mnist import input_data
 warnings.filterwarnings('ignore')
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 old_v = tf.logging.get_verbosity()
+np.set_printoptions(threshold=100000)
 tf.logging.set_verbosity(tf.logging.ERROR)
-# mnist = input_data.read_data_sets('../../../fashion_mnist', one_hot=True)
-mnist = input_data.read_data_sets('/Users/bruce/programme/Python/datasets/MNIST_data', one_hot=True)
+mnist = input_data.read_data_sets('/home/bruce/bigVolumn/Datasets/fashion_mnist', one_hot=True)
+
+
+def _read32(bytestream):
+    dt = np.dtype(np.uint32).newbyteorder('>')
+    return np.frombuffer(bytestream.read(4), dtype=dt)[0]
+
+
+def extract_images(f):
+    """Extract the images into a 4D uint8 numpy array [index, y, x, depth].
+
+  Args:
+    f: A file object that can be passed into a gzip reader.
+
+  Returns:
+    data: A 4D uint8 numpy array [index, y, x, depth].
+
+  Raises:
+    ValueError: If the bytestream does not start with 2051.
+
+  """
+    print('Extracting', f.name)
+    with gzip.GzipFile(fileobj=f) as bytestream:
+        magic = _read32(bytestream)
+        if magic != 2051:
+            raise ValueError('Invalid magic number %d in MNIST image file: %s' %
+                             (magic, f.name))
+        num_images = _read32(bytestream)
+        rows = _read32(bytestream)
+        cols = _read32(bytestream)
+        buf = bytestream.read(rows * cols * num_images)
+        data = np.frombuffer(buf, dtype=np.uint8)
+        data = data.reshape(num_images, rows, cols, 1)
+        return data
+
+
+def load_mnist(path, kind='train'):
+    import os
+    """Load MNIST data from `path`"""
+    labels_path = os.path.join(path,
+                               '%s-labels-idx1-ubyte.gz'
+                               % kind)
+    images_path = os.path.join(path,
+                               '%s-images-idx3-ubyte.gz'
+                               % kind)
+
+    with gzip.open(labels_path, 'rb') as lbpath:
+        labels = np.frombuffer(lbpath.read(), dtype=np.uint8, offset=8)
+
+    with gzip.open(images_path, 'rb') as imgpath:
+        images = np.frombuffer(imgpath.read(), dtype=np.uint8, offset=16).reshape(len(labels), 784)
+    # images = read_image(images_path)
+    # labels = read_label(labels_path)
+
+    return images, labels
+
+
+# x_train, y_train = load_mnist('/home/bruce/bigVolumn/Datasets/fashion_mnist', kind='train')
+# x_test, y_test = load_mnist('/home/bruce/bigVolumn/Datasets/fashion_mnist', kind='t10k')
+
+x_train, y_train = loadlocal_mnist(images_path='/home/bruce/bigVolumn/Datasets/fashion_mnist/train-images-idx3-ubyte',
+                   labels_path = '/home/bruce/bigVolumn/Datasets/fashion_mnist/train-labels-idx1-ubyte')
+x_test, y_test = loadlocal_mnist(images_path='/home/bruce/bigVolumn/Datasets/fashion_mnist/t10k-images-idx3-ubyte',
+                                  labels_path='/home/bruce/bigVolumn/Datasets/fashion_mnist/t10k-labels-idx1-ubyte')
+# y_train = y_train.tolist()
+# y_test = [int(i) for i in y_test]
+# print(np.array(x_train))
+print(y_test.shape)
+
+print(x_train.shape, )
+print(x_test.shape, )
+
 
 # 每个批次的大小
-batch_size = 100
+batch_size = 128
 # 计算一共有多少个批次
-n_batch = mnist.train.num_examples // batch_size
+n_batch = x_train.shape[0] // batch_size
+print(n_batch, batch_size)
+
+
+# y_test = tf.one_hot(indices=y_test, depth=10)
+# y_train = tf.one_hot(indices=y_train, depth=10)
+
+
+def next_batch(batch_size, images, labels, count):
+    while True:
+        yield images[count * batch_size: (count + 1) * batch_size], labels[count * batch_size: (count + 1) * batch_size]
 
 
 # 初始化权值
@@ -46,7 +132,7 @@ def max_pool_2x2(x):
 x = tf.placeholder(tf.float32, [None, 784])  # 28*28
 y = tf.placeholder(tf.float32, [None, 10])
 
-# 改变x的格式转为4D的向量[batch, in_height, in_width, in_channels]`
+# 改变x的格式转为4D的向量[batch, in_height, in_width, in_channels]
 x_image = tf.reshape(x, [-1, 28, 28, 1])
 
 # 初始化第一个卷积层的权值和偏置
@@ -106,6 +192,28 @@ with tf.Session() as sess:
     for epoch in range(21):
         for batch in range(n_batch):
             batch_xs, batch_ys = mnist.train.next_batch(batch_size)
+            # print(batch_xs.shape, batch_ys.shape)
+            # print(batch_xs)
             loss_result, _ = sess.run([cross_entropy, train_step], feed_dict={x: batch_xs, y: batch_ys, keep_prob: 0.7})
+            print("loss is : ", loss_result)
         acc = sess.run(accuracy, feed_dict={x: mnist.test.images, y: mnist.test.labels, keep_prob: 1.0})
-        print("Iter " + str(epoch) + ", Testing Accuracy= " + str(acc))
+        print("Iter " + str(epoch) + ", Testing Accuracy= " + str(acc) + " loss = " + str(loss_result))
+
+# with tf.Session() as sess:
+#     sess.run(tf.global_variables_initializer())
+#     for epoch in range(21):
+#         for batch in range(n_batch):
+#             data = next_batch(batch_size, x_train, y_train, batch)
+#             batch_xs, batch_ys = next(data)
+#             y_onehot = tf.one_hot(indices=batch_ys, depth=10)
+#             # batch_ys = batch_ys.tolist()
+#             # print(batch_ys.shape)
+#             # y_onehot = tf.one_hot(batch_ys, 10, dtype=tf.float32)
+#             ys = sess.run(y_onehot)
+#             loss_result, _ = sess.run([cross_entropy, train_step], feed_dict={x: batch_xs, y: ys, keep_prob: 0.7})
+#             print("loss is : ", loss_result)
+#         y_ = tf.one_hot(indices=y_test, depth=10)
+#         label = sess.run(y_)
+#         acc = sess.run(accuracy, feed_dict={x: x_test, y: label, keep_prob: 1.0})
+#         print("Iter " + str(epoch) + ", Testing Accuracy= " + str(acc)+" loss = "+str(loss_result))
+

@@ -3,7 +3,7 @@ import numpy as np
 old_v = tf.logging.get_verbosity()
 tf.logging.set_verbosity(tf.logging.ERROR)
 from tensorflow.examples.tutorials.mnist import input_data
-mnist = input_data.read_data_sets('/Users/bruce/programme/Python/datasets/MNIST_data', one_hot=True)
+mnist = input_data.read_data_sets('/home/bruce/bigVolumn/Datasets/fashion_mnist', one_hot=True)
 
 # set params
 n_inputs = 28
