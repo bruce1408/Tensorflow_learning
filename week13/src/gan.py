@@ -157,4 +157,4 @@ with tf.Session() as sess:
 
     f.show()
     plt.draw()
-    plt.waitforbuttonpress()
+    # plt.waitforbuttonpress()
