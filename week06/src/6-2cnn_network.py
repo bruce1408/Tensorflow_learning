@@ -7,7 +7,7 @@ mnist = input_data.read_data_sets('/home/bruce/bigVolumn/Datasets/MNIST_data', o
 def compute_accuracy(v_xs, v_ys):
     global prediction
     y_pre = sess.run(prediction, feed_dict={xs: v_xs, keep_prob: 1})
-    correct_prediction = tf.equal(tf.argmax(y_pre,1), tf.argmax(v_ys, 1))
+    correct_prediction = tf.equal(tf.argmax(y_pre, 1), tf.argmax(v_ys, 1))
     accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
     result = sess.run(accuracy, feed_dict={xs: v_xs, ys: v_ys, keep_prob: 1})
     return result
@@ -69,8 +69,7 @@ prediction = tf.nn.softmax(tf.matmul(h_fc1_drop, W_fc2) + b_fc2)
 
 
 # the error between prediction and real data
-cross_entropy = tf.reduce_mean(-tf.reduce_sum(ys * tf.log(prediction),
-                                              reduction_indices=[1]))
+cross_entropy = tf.reduce_mean(-tf.reduce_sum(ys * tf.log(prediction), reduction_indices=[1]))
 train_step = tf.train.AdamOptimizer(1e-4).minimize(cross_entropy)
 
 sess = tf.Session()

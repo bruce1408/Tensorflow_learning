@@ -41,7 +41,7 @@ with tf.Session() as sess:
     for epoch in range(51):
         for batch in range(n_batch):
             batch_xs, batch_ys = mnist.train.next_batch(batch_size)
-            _ , y_ = sess.run([train_step, y], feed_dict={x: batch_xs, y: batch_ys})
+            _, y_ = sess.run([train_step, y], feed_dict={x: batch_xs, y: batch_ys})
 
         acc = sess.run(accuracy, feed_dict={x: mnist.test.images, y: mnist.test.labels})
         print("Iter " + str(epoch) + ", Testing Accuracy " + str(acc))

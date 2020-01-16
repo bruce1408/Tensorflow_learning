@@ -6,4 +6,5 @@
 !.gitignore
 *.idea/
 *.logs/
-
+week03/src/logs/
+.gitignore
