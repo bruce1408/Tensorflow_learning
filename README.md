@@ -17,7 +17,7 @@
 第10周 使用Tensorflow进行验证码识别
 第11周 Tensorflow在NLP中的使用(一)
 第12周 Tensorflow在NLP中的使用(二)
-第13周 TensorFlow 各种例子汇总
+第13周 TensorFlow 各种模型代码汇总
 第14周 TensorFlow 代码参考汇总
 ```
 - 上述代码data相关数据下载地址如下：
