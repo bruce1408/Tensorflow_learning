@@ -18,7 +18,7 @@
 第11周 Tensorflow在NLP中的使用(一)
 第12周 Tensorflow在NLP中的使用(二)
 第13周 TensorFlow 各种模型代码汇总
-第14周 TensorFlow 代码参考汇总
+第14周 TensorFlow 工具代码参考ipynb
 ```
 - 上述代码data相关数据下载地址如下：
 链接:https://pan.baidu.com/s/1e-XfOV250uS40T1Q7v4oUA  密码:ruwm
