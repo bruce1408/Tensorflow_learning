@@ -5,7 +5,7 @@ old_v = tf.logging.get_verbosity()
 tf.logging.set_verbosity(tf.logging.ERROR)
 
 # input data
-mnist_data = input_data.read_data_sets('MNIST_data', one_hot=True)
+mnist_data = input_data.read_data_sets('/Users/bruce/program/Python_file/datasets/fashion_mnist', one_hot=True)
 batch_size = 100
 n_batch = mnist_data.train.num_examples // batch_size
 epoch = 21

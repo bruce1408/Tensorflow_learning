@@ -48,38 +48,41 @@ logits是mxn的矩阵，labels是标签，是一个[1xm]构成的行向量。m�
 tf.argmax 函数来创建一个label矩阵才行
 
 """
-# import tensorflow as tf
-# import numpy as np
-# label2 = tf.convert_to_tensor([[0, 0, 1, 0]], dtype=tf.int64)
-# logit2 = tf.convert_to_tensor([[-2.6, -1.7, 3.2, 0.1]], dtype=tf.float32)
-# # y3 = tf.argmax(y2, 1)
-# c2 = tf.nn.sparse_softmax_cross_entropy_with_logits(logits=logit2, labels=tf.argmax(label2, 1))
-#
-# label3 = tf.convert_to_tensor([[0, 0, 1, 0], [0, 0, 1, 0]], dtype=tf.int64)
-# logit3 = tf.convert_to_tensor([[-2.6, -1.7, -3.2, 0.1], [-2.6, -1.7, 3.2, 0.1]], dtype=tf.float32)
-# # y3_result = tf.argmax(y_3, 1)
-# y3_soft = tf.nn.softmax(logit3)
-# y3_label = tf.argmax(label3, 1)
-# c3 = tf.nn.sparse_softmax_cross_entropy_with_logits(logits=logit3, labels=tf.argmax(label3, 1))  # label 创建
-# y4 = tf.convert_to_tensor([[0, 1, 0, 0]], dtype=tf.int64)
-# y_4 = tf.convert_to_tensor([[-2.6, -1.7, -3.2, 0.1]], dtype=tf.float32)
-# c4 = tf.nn.sparse_softmax_cross_entropy_with_logits(logits=y_4, labels=tf.argmax(y4, 1))
-# soft_result = tf.nn.softmax(logit2)
-#
-# testa = np.arange(12).reshape([4, 3])
-# testinput = tf.convert_to_tensor(testa, dtype=tf.float32)
-# testb = np.array([0, 1, 0, 1])
-# testinputb = tf.convert_to_tensor(testb, dtype=tf.float32)
-# output = tf.nn.sparse_softmax_cross_entropy_with_logits(logits=testinput, labels=testb)  # label 不用创建
-#
-# with tf.Session() as sess:
-#     # print(sess.run(y3_result))
-#     print('c3: ', sess.run(c3))
-#     print('y3_soft: \n', sess.run(y3_soft))
-#     print('c4: ', sess.run(c4))
-#     print(sess.run(soft_result))
-#     print(sess.run(y3_label))
-#     print('the output is:', sess.run(output))
+import tensorflow as tf
+import numpy as np
+label2 = tf.convert_to_tensor([[0, 0, 1, 0]], dtype=tf.int64)
+logit2 = tf.convert_to_tensor([[-2.6, -1.7, 3.2, 0.1]], dtype=tf.float32)
+# y3 = tf.argmax(y2, 1)
+c2 = tf.nn.sparse_softmax_cross_entropy_with_logits(logits=logit2, labels=tf.argmax(label2, 1)) # 是以e为底数的对数
+c2_ = tf.nn.softmax_cross_entropy_with_logits(logits=logit2, labels=label2)
+
+label3 = tf.convert_to_tensor([[0, 0, 1, 0], [0, 0, 1, 0]], dtype=tf.int64)
+logit3 = tf.convert_to_tensor([[-2.6, -1.7, -3.2, 0.1], [-2.6, -1.7, 3.2, 0.1]], dtype=tf.float32)
+# y3_result = tf.argmax(y_3, 1)
+y3_soft = tf.nn.softmax(logit3)
+y3_label = tf.argmax(label3, 1)
+c3 = tf.nn.sparse_softmax_cross_entropy_with_logits(logits=logit3, labels=tf.argmax(label3, 1))  # label 创建
+y4 = tf.convert_to_tensor([[0, 1, 0, 0]], dtype=tf.int64)
+y_4 = tf.convert_to_tensor([[-2.6, -1.7, -3.2, 0.1]], dtype=tf.float32)
+c4 = tf.nn.sparse_softmax_cross_entropy_with_logits(logits=y_4, labels=tf.argmax(y4, 1))
+soft_result = tf.nn.softmax(logit2)
+
+testa = np.arange(12).reshape([4, 3])
+testinput = tf.convert_to_tensor(testa, dtype=tf.float32)
+testb = np.array([0, 1, 0, 1])
+testinputb = tf.convert_to_tensor(testb, dtype=tf.float32)
+output = tf.nn.sparse_softmax_cross_entropy_with_logits(logits=testinput, labels=testb)  # label 不用创建
+
+with tf.Session() as sess:
+    # print(sess.run(y3_result))
+    print("c2:", sess.run([c2, c2_]))
+    print('c3: ', sess.run(c3))
+    print('y3_soft: \n', sess.run(y3_soft))
+    print('c4: ', sess.run(c4))
+    print(sess.run(soft_result))
+    print(sess.run(y3_label))
+    print('the output is:', sess.run(output))
+
 """
 1.0.2
 第一个参数是预测值，[样本数x特征数] ,第二个参数是[1x样本数]，就是表示第i个样本是否在第几列。k是前k个数
@@ -149,11 +152,11 @@ tf.argmax 函数来创建一个label矩阵才行
 """
 1.0.6 tf.reduce_all 如果存在维度的话，每个都要进行维度上的逻辑与&
 """
-import tensorflow as tf
-a = tf.constant([[True, True, False, False], [True, False, False, True]])
-z=tf.reduce_all(a)
-z2=tf.reduce_all(a, 0)
-z3=tf.reduce_all(a, 1)
-with tf.Session() as sess:
-    print(sess.run(z))
+# import tensorflow as tf
+# a = tf.constant([[True, True, False, False], [True, False, False, True]])
+# z=tf.reduce_all(a)
+# z2=tf.reduce_all(a, 0)
+# z3=tf.reduce_all(a, 1)
+# with tf.Session() as sess:
+#     print(sess.run(z))
 
