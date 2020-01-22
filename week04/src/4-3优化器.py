@@ -4,7 +4,7 @@ from tensorflow.examples.tutorials.mnist import input_data
 
 
 #载入数据集
-mnist = input_data.read_data_sets("MNIST_data", one_hot=True)
+mnist = input_data.read_data_sets("/home/bruce/bigVolumn/Datasets/MNIST_data", one_hot=True)
 
 #每个批次的大小
 batch_size = 100
@@ -45,8 +45,6 @@ with tf.Session() as sess:
         acc = sess.run(accuracy, feed_dict={x:mnist.test.images, y:mnist.test.labels})
         print("Iter " + str(epoch) + ", Testing Accuracy " + str(acc))
 
-
-# In[ ]:
 
 
 

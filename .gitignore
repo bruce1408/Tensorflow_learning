@@ -3,5 +3,9 @@
 *.pyc
 *.swp
 *.swo
-!.gitignore
 *.idea/
+*.logs/
+.gitignore
+week03/src/logs/
+/home/bruce/PycharmProjects/tensorflow-learning/week01/src/imageProcess/ImageProcessing/datasets
+/home/bruce/PycharmProjects/tensorflow-learning/week01/src/imageProcess/ImageProcessing/MNIST_data

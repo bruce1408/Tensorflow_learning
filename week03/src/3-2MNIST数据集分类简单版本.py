@@ -11,31 +11,45 @@ from tensorflow.examples.tutorials.mnist import input_data
 old_v = tf.logging.get_verbosity()
 tf.logging.set_verbosity(tf.logging.ERROR)
 
+<<<<<<< HEAD
 # 载入数据集
 mnist = input_data.read_data_sets("Users/bruce/program/Python/datasets/fashion_mnist", one_hot=True)
 
 # 每个批次的大小
+=======
+#载入数据集
+mnist = input_data.read_data_sets("/home/bruce/bigVolumn/Datasets/fashion_mnist", one_hot=True)
+
+#每个批次的大小
+>>>>>>> 054737601996624b90ae40bb35d43875d014de0b
 batch_size = 100
 # 计算一共有多少个批次
 
 n_batch = mnist.train.num_examples // batch_size  # 一次完全训练需要多少batch数
+print(n_batch)  # n_batch 550, train=55000, test_example = 10000个
+
 
 # 定义两个placeholder
 x = tf.placeholder(tf.float32, [None, 784])
 y = tf.placeholder(tf.float32, [None, 10])
 
 # 创建一个简单的神经网络
+<<<<<<< HEAD
 # W = tf.Variable(tf.random_normal([784, 10])) // 如果是随机正太分布的初始参数，效果没有0好
 # b = tf.Variable(tf.random_normal([10]))
+=======
+>>>>>>> 054737601996624b90ae40bb35d43875d014de0b
 W = tf.Variable(tf.zeros([784, 10]))
 b = tf.Variable(tf.zeros([1, 10]))
 prediction = tf.nn.softmax(tf.matmul(x, W)+b)
+print(prediction)
 
 # 二次代价函数
 loss = tf.reduce_mean(tf.square(y-prediction))
 # 使用梯度下降法
 train_step = tf.train.GradientDescentOptimizer(0.2).minimize(loss)
 
+<<<<<<< HEAD
 # 初始化变量，只要有variable必须加初始化
 init = tf.global_variables_initializer()
 
@@ -53,6 +67,25 @@ with tf.Session() as sess:
 
         acc = sess.run(accuracy, feed_dict={x: mnist.test.images, y: mnist.test.labels})
         print("Iter " + str(epoch) + ", Testing Accuracy " + str(acc))
+=======
+# 初始化变量
+init = tf.global_variables_initializer()
+
+# 结果存放在一个布尔型列表中
+correct_prediction = tf.equal(tf.argmax(y, 1), tf.argmax(prediction, 1))#argmax返回一维张量中最大的值所在的位置
+# 求准确率
+accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
+
+with tf.Session() as sess:
+    sess.run(init)
+    for epoch in range(3):
+        for batch in range(5500):
+            batch_xs, batch_ys = mnist.train.next_batch(batch_size)
+            sess.run(train_step, feed_dict={x: batch_xs, y: batch_ys})
+
+        acc, loss_ = sess.run([accuracy, loss], feed_dict={x: mnist.test.images, y: mnist.test.labels})
+        print("Iter " + str(epoch) + ",Testing Accuracy " + str(acc)+" ,loss= " + str(loss_))
+>>>>>>> 054737601996624b90ae40bb35d43875d014de0b
 
 # import tensorflow as tf
 # import numpy as np
