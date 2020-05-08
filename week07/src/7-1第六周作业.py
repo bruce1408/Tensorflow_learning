@@ -4,7 +4,7 @@ import tensorflow as tf
 from tensorflow.examples.tutorials.mnist import input_data
 
 
-mnist = input_data.read_data_sets("/Users/bruce/programme/Python/datasets/MNIST_data", one_hot=True)
+mnist = input_data.read_data_sets("../week06/fashion_mnist", one_hot=True)
 
 # 每个批次的大小
 batch_size = 100

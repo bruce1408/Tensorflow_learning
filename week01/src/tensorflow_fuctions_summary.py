@@ -49,16 +49,13 @@ logits是mxn的矩阵，labels是标签，是一个[1xm]构成的行向量。m�
 !! 如果你的样本是 样本num x 特征num。 你的logits是4x3的话，那么你的label肯定是1x4，4是样本数。如果label不是这样的形式，那么要加入
 tf.argmax 函数来创建一个label矩阵才行,也就是说这里的tf.nn.sparse_softmax_函数的label是不能用one-hot编码的.
 和稀疏编码不同的是# tf.softmax_cross_entropy_with_logits函数的label是one-hot编码的.
-
-
 """
 import tensorflow as tf
 import numpy as np
-<<<<<<< HEAD:tensorflow_save_hole.py
 label2 = tf.convert_to_tensor([[0, 0, 1, 0]], dtype=tf.int64)
 logit2 = tf.convert_to_tensor([[-2.6, -1.7, 3.2, 0.1]], dtype=tf.float32)
 # y3 = tf.argmax(y2, 1)
-c2 = tf.nn.sparse_softmax_cross_entropy_with_logits(logits=logit2, labels=tf.argmax(label2, 1)) # 是以e为底数的对数
+c2 = tf.nn.sparse_softmax_cross_entropy_with_logits(logits=logit2, labels=tf.argmax(label2, 1))  # 是以e为底数的对数
 c2_ = tf.nn.softmax_cross_entropy_with_logits(logits=logit2, labels=label2)
 
 label3 = tf.convert_to_tensor([[0, 0, 1, 0], [0, 0, 1, 0]], dtype=tf.int64)
@@ -67,17 +64,19 @@ logit3 = tf.convert_to_tensor([[-2.6, -1.7, -3.2, 0.1], [-2.6, -1.7, 3.2, 0.1]],
 y3_soft = tf.nn.softmax(logit3)
 y3_label = tf.argmax(label3, 1)
 c3 = tf.nn.sparse_softmax_cross_entropy_with_logits(logits=logit3, labels=tf.argmax(label3, 1))  # label 创建
+
 y4 = tf.convert_to_tensor([[0, 1, 0, 0]], dtype=tf.int64)
 y_4 = tf.convert_to_tensor([[-2.6, -1.7, -3.2, 0.1]], dtype=tf.float32)
 c4 = tf.nn.sparse_softmax_cross_entropy_with_logits(logits=y_4, labels=tf.argmax(y4, 1))
 soft_result = tf.nn.softmax(logit2)
-=======
 
 sess = tf.InteractiveSession()
 label2 = tf.convert_to_tensor([[0, 0, 1, 0]], dtype=tf.int64)
 logit2 = tf.convert_to_tensor([[-2.6, -1.7, 3.2, 0.1]], dtype=tf.float32)
 print("label 2 is:", sess.run(label2).shape)
 print("logit2 2 is:", sess.run(logit2).shape)
+# ==> (1,4)
+# ==> (1,4)
 
 y3 = tf.argmax(label2, 1)  # 最大的值的位置索引,返回的是[2]
 print("y3 is:", sess.run(y3))
@@ -88,35 +87,33 @@ logit3 = tf.convert_to_tensor([[-2.6, -1.7, -3.2, 0.1], [-2.6, -1.7, 3.2, 0.1]],
 y3_soft = tf.nn.softmax(logit3)
 print("y3_soft", sess.run(y3_soft))
 y3_label = tf.argmax(label3, 1)
-print("y3_label is:", sess.run(y3_label))
 c3 = tf.nn.sparse_softmax_cross_entropy_with_logits(logits=logit3, labels=tf.argmax(label3, 1))  # label 创建
+print("y3_label is:", sess.run(y3_label))
 
 y4 = tf.convert_to_tensor([[0, 1, 0, 0]], dtype=tf.int64)
 y_4 = tf.convert_to_tensor([[-2.6, -1.7, -3.2, 0.1]], dtype=tf.float32)
 c4 = tf.nn.sparse_softmax_cross_entropy_with_logits(logits=y_4, labels=tf.argmax(y4, 1))
->>>>>>> 054737601996624b90ae40bb35d43875d014de0b:week01/src/tensorflow_fuctions.py
-
+print("c4 is: ", c4.eval())
 testa = np.arange(12).reshape([4, 3])
 testinput = tf.convert_to_tensor(testa, dtype=tf.float32)
 testb = np.array([0, 1, 0, 1])
 testinputb = tf.convert_to_tensor(testb, dtype=tf.float32)
 output = tf.nn.sparse_softmax_cross_entropy_with_logits(logits=testinput, labels=testb)  # label 不用创建
-<<<<<<< HEAD:tensorflow_save_hole.py
+print('output is: ', output.eval())
 
-with tf.Session() as sess:
-    # print(sess.run(y3_result))
-    print("c2:", sess.run([c2, c2_]))
-    print('c3: ', sess.run(c3))
-    print('y3_soft: \n', sess.run(y3_soft))
-    print('c4: ', sess.run(c4))
-    print(sess.run(soft_result))
-    print(sess.run(y3_label))
-    print('the output is:', sess.run(output))
-=======
-print('output is:', output.eval())
+# with tf.Session() as sess:
+#     # print(sess.run(y3_result))
+#     print("c2:", sess.run([c2, c2_]))
+#     print('c3: ', sess.run(c3))
+#     print('y3_soft: \n', sess.run(y3_soft))
+#     print('c4: ', sess.run(c4))
+#     print(sess.run(soft_result))
+#     print(sess.run(y3_label))
+#     print('the output is:', sess.run(output))
+# print('output is:', output.eval())
 
 # ------------------------------------------#
-# tf.softmax_cross_entropy_with_logits函数
+# tf.softmax_cross_entropy_with_logits函数，这个函数和sparse不一样的是，他的真实labels需要one-hot编码才可以
 # ------------------------------------------#
 # our NN's output
 logits = tf.constant([[1.0, 2.0, 3.0], [1.0, 2.0, 3.0], [1.0, 2.0, 3.0]])
@@ -128,27 +125,31 @@ y_ = tf.constant([[0.0, 0.0, 1.0], [0.0, 0.0, 1.0], [0.0, 0.0, 1.0]])  # one-hot
 # step2:do cross_entropy
 cross_entropy = tf.reduce_sum(-tf.reduce_sum(y_ * tf.log(y)))
 # do cross_entropy just one step
-cross_entropy2 = tf.reduce_sum(tf.nn.softmax_cross_entropy_with_logits_v2(logits=logits, labels=y_))  # dont forget tf.reduce_sum()!!
+cross_entropy2 = tf.reduce_sum(tf.nn.softmax_cross_entropy_with_logits_v2(logits=logits, labels=y_))
 # 不管是交叉熵还是函数的结果都是一样的.
 print("cross_entropy2 is", cross_entropy2.eval())  # 如果是损失函数那么就应该是reduce_mean
 print("cross_entropy is:", cross_entropy.eval())
->>>>>>> 054737601996624b90ae40bb35d43875d014de0b:week01/src/tensorflow_fuctions.py
 
 """
 1.0.2
 第一个参数是预测值，[样本数x特征数] ,第二个参数是[1x样本数]，就是表示第i个样本是否在第几列。k是前k个数
+tf.nn.in_top_k(prediction, target, K)
+prediction就是表示你预测的结果，大小就是预测样本的数量乘以输出的维度，类型是tf.float32等。
+K表示每个样本的预测结果的前K个最大的数里面是否含有target中的值。一般都是取1。
 
+因为A张量里面的第一个元素的最大值的标签是0，第二个元素的最大值的标签是1.。但是实际的确是1和1,
+所以输出就是False 和True。如果把K改成2，那么第一个元素的前面2个最大的元素的位置是0，1，第二个的就是1，2。
+实际结果是1和1。包含在里面，所以输出结果就是True 和True.如果K的值大于张量A的列，那就表示输出结果都是true
 """
-# input = tf.constant(np.random.rand(3, 4), tf.float32)
-# k = 1
-# output = tf.nn.in_top_k(input, [3, 3, 3], k)  # 每一行的最大值都在第3列（0为第一列）
-# with tf.Session() as sess:
-#     print(sess.run(input))
-#     print(sess.run(output))
+input = tf.convert_to_tensor([[0.8, 0.6, 0.3], [0.1, 0.6, 0.4]], tf.float32)
+k = 1
+output = tf.nn.in_top_k(input, [1, 1], k)  # 每一行的最大值都在第3列（0为第一列）
+with tf.Session() as sess:
+    print('the input is: ', sess.run(input))
+    print('the output is: ', sess.run(output))
 """
 1.0.3  tf.contrib.layers.embed_sequence 函数的使用方法
 利用embed_sequence函数生成数据。
-
 """
 # import tensorflow as tf
 # import numpy as np
@@ -210,7 +211,4 @@ print("cross_entropy is:", cross_entropy.eval())
 # z3=tf.reduce_all(a, 1)
 # with tf.Session() as sess:
 #     print(sess.run(z))
-<<<<<<< HEAD:tensorflow_save_hole.py
 
-=======
->>>>>>> 054737601996624b90ae40bb35d43875d014de0b:week01/src/tensorflow_fuctions.py

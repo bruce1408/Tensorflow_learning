@@ -23,12 +23,12 @@ DATASET_DIR = "D:/Tensorflow/slim/images/"
 #标签文件名字
 LABELS_FILENAME = "D:/Tensorflow/slim/images/labels.txt"
 
-#定义tfrecord文件的路径+名字
+# 定义tfrecord文件的路径+名字
 def _get_dataset_filename(dataset_dir, split_name, shard_id):
     output_filename = 'image_%s_%05d-of-%05d.tfrecord' % (split_name, shard_id, _NUM_SHARDS)
     return os.path.join(dataset_dir, output_filename)
 
-#判断tfrecord文件是否存在
+# 判断tfrecord文件是否存在
 def _dataset_exists(dataset_dir):
     for split_name in ['train', 'test']:
         for shard_id in range(_NUM_SHARDS):
@@ -38,7 +38,8 @@ def _dataset_exists(dataset_dir):
             return False
     return True
 
-#获取所有文件以及分类
+
+# 获取所有文件以及分类
 def _get_filenames_and_classes(dataset_dir):
     #数据目录
     directories = []
@@ -116,16 +117,16 @@ def _convert_dataset(split_name, filenames, class_names_to_ids, dataset_dir):
                             example = image_to_tfexample(image_data, b'jpg', class_id)
                             tfrecord_writer.write(example.SerializeToString())
                         except IOError as e:
-                            print("Could not read:",filenames[i])
-                            print("Error:",e)
-                            print("Skip it\n")
+                            print("Could not read:", filenames[i])
+                            print("Error:", e)
+                            print("Skip it \n")
                             
     sys.stdout.write('\n')
     sys.stdout.flush()
 
 
 if __name__ == '__main__':
-    #判断tfrecord文件是否存在
+    #  判断tfrecord文件是否存在
     if _dataset_exists(DATASET_DIR):
         print('tfcecord文件已存在')
     else:
@@ -149,7 +150,6 @@ if __name__ == '__main__':
         write_label_file(labels_to_class_names, DATASET_DIR)
 
 
-# In[ ]:
 
 
 

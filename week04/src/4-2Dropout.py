@@ -1,11 +1,14 @@
 # coding:  utf-8
+import os
 import tensorflow as tf
 from tensorflow.examples.tutorials.mnist import input_data
 old_v = tf.logging.get_verbosity()
 tf.logging.set_verbosity(tf.logging.ERROR)
+os.environ["CUDA_VISIBLE_DEVICES"] = '1'
+
 
 # 载入数据集
-mnist = input_data.read_data_sets("/Users/bruce/programme/Python/datasets/MNIST_data", one_hot=True)
+mnist = input_data.read_data_sets("./MNIST_data", one_hot=True)
 
 # 每个批次的大小
 batch_size = 100

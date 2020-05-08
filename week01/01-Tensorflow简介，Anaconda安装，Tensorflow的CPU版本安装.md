@@ -66,8 +66,14 @@ version).
   - Python3.3+用户：`pip3 install tensorflow`
 - GPU版本
   - Python 2.7用户：`pip install tensorflow-gpu`
-  - Python3.3+用户：`pip3 install tensorflow-gpu`
+  - Python3.3+用户：`pip3 install tensorflow-gpu==version(版本号)`
 
+## week01 学到设计到的知识：
+- tf.constant([[2., 1.], [1., 0.]], dtype=tf.float32) 常数
+- tf.matmul(a, b) 矩阵乘法
+- tf.InteractiveSession() 是一种交互的session方式，是默认的session,直观的说就是不用再代码里写sess.run(op),而是直接op.eval()
+- tf.convert_to_tensor 可以把numpy数组转化为tensor
+- tf.nn.sparse_softmax_cross_entropy_with_logits labels不需要one-hot编码
 
 
 

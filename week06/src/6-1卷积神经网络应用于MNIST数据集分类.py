@@ -9,14 +9,13 @@ from mlxtend.data import loadlocal_mnist
 from tensorflow.examples.tutorials.mnist import input_data
 warnings.filterwarnings('ignore')
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+os.environ['CUDA_VISIBLE_DEVICES'] = '2'
 old_v = tf.logging.get_verbosity()
 np.set_printoptions(threshold=100000)
 tf.logging.set_verbosity(tf.logging.ERROR)
-<<<<<<< HEAD
-# mnist = input_data.read_data_sets('../../../fashion_mnist', one_hot=True)
-mnist = input_data.read_data_sets('/Users/bruce/program/Python_file/datasets/fashion_mnist', one_hot=True)
-=======
-mnist = input_data.read_data_sets('/home/bruce/bigVolumn/Datasets/fashion_mnist', one_hot=True)
+mnist = input_data.read_data_sets('./fashion_mnist', one_hot=True)
+# mnist = input_data.read_data_sets('/Users/bruce/program/Python_file/datasets/fashion_mnist', one_hot=True)
+# mnist = input_data.read_data_sets('/home/bruce/bigVolumn/Datasets/fashion_mnist', one_hot=True)
 
 
 def _read32(bytestream):
@@ -52,15 +51,14 @@ def extract_images(f):
         return data
 
 
+print(os.getcwd())
+
+
 def load_mnist(path, kind='train'):
     import os
     """Load MNIST data from `path`"""
-    labels_path = os.path.join(path,
-                               '%s-labels-idx1-ubyte.gz'
-                               % kind)
-    images_path = os.path.join(path,
-                               '%s-images-idx3-ubyte.gz'
-                               % kind)
+    labels_path = os.path.join(path, '%s-labels-idx1-ubyte.gz' % kind)
+    images_path = os.path.join(path, '%s-images-idx3-ubyte.gz' % kind)
 
     with gzip.open(labels_path, 'rb') as lbpath:
         labels = np.frombuffer(lbpath.read(), dtype=np.uint8, offset=8)
@@ -73,13 +71,13 @@ def load_mnist(path, kind='train'):
     return images, labels
 
 
-# x_train, y_train = load_mnist('/home/bruce/bigVolumn/Datasets/fashion_mnist', kind='train')
-# x_test, y_test = load_mnist('/home/bruce/bigVolumn/Datasets/fashion_mnist', kind='t10k')
+x_train, y_train = load_mnist('./fashion_mnist', kind='train')
+x_test, y_test = load_mnist('./fashion_mnist', kind='t10k')
 
-x_train, y_train = loadlocal_mnist(images_path='/home/bruce/bigVolumn/Datasets/fashion_mnist/train-images-idx3-ubyte',
-                   labels_path = '/home/bruce/bigVolumn/Datasets/fashion_mnist/train-labels-idx1-ubyte')
-x_test, y_test = loadlocal_mnist(images_path='/home/bruce/bigVolumn/Datasets/fashion_mnist/t10k-images-idx3-ubyte',
-                                  labels_path='/home/bruce/bigVolumn/Datasets/fashion_mnist/t10k-labels-idx1-ubyte')
+# x_train, y_train = loadlocal_mnist(images_path='./fashion_mnist/train-images-idx3-ubyte.gz',
+#                                    labels_path='./fashion_mnist/train-labels-idx1-ubyte.gz')
+# x_test, y_test = loadlocal_mnist(images_path='./fashion_mnist/t10k-images-idx3-ubyte.gz',
+#                                  labels_path='./fashion_mnist/t10k-labels-idx1-ubyte.gz')
 # y_train = y_train.tolist()
 # y_test = [int(i) for i in y_test]
 # print(np.array(x_train))
@@ -88,7 +86,6 @@ print(y_test.shape)
 print(x_train.shape, )
 print(x_test.shape, )
 
->>>>>>> 054737601996624b90ae40bb35d43875d014de0b
 
 # 每个批次的大小
 batch_size = 128

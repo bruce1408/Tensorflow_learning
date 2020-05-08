@@ -18,10 +18,11 @@ def unpickle(file):
 
 # 生成训练集图片，如果需要png格式，只需要改图片后缀名即可。
 # Xtr['labels']为图片的标签，值范围0-9，本文中，train文件夹需要存在，并与脚本文件在同一目录下。
+# 读取当前目录下的data_batch12345文件，dataName其实也是data_batch文件的路径，本文和脚本文件在同一目录下。
 
 
 for j in range(1, 6):
-    dataName = "/home/bruce/bigVolumn/Datasets/cifar-10-batches-py/data_batch_" + str(j)  # 读取当前目录下的data_batch12345文件，dataName其实也是data_batch文件的路径，本文和脚本文件在同一目录下。
+    dataName = "/home/bruce/bigVolumn/Datasets/cifar-10-batches-py/data_batch_" + str(j)
     Xtr = unpickle(dataName)
     print(dataName + " is loading...")
 
