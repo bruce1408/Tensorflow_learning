@@ -52,12 +52,7 @@ def run_training():
     
     train, train_label = input_data.get_files(train_dir)
     
-    train_batch, train_label_batch = input_data.get_batch(train,
-                                                          train_label,
-                                                          IMG_W,
-                                                          IMG_H,
-                                                          BATCH_SIZE, 
-                                                          CAPACITY)      
+    train_batch, train_label_batch = input_data.get_batch(train, train_label, IMG_W, IMG_H, BATCH_SIZE, CAPACITY)
     train_logits = model.inference(train_batch, BATCH_SIZE, N_CLASSES)
     train_loss = model.losses(train_logits, train_label_batch)        
     train_op = model.trainning(train_loss, learning_rate)
@@ -163,15 +158,15 @@ def run_training():
 #                print('This is a dog with possibility %.6f' %prediction[:, 1])
 #
 def evaluate_all_image():
-	'''
-	Test all image against the saved models and parameters.
-	Return global accuracy of test_image_set
-	##############################################
-	##Notice that test image must has label to compare the prediction and real
-	##############################################
-	'''
+    '''
+    Test all image against the saved models and parameters.
+    Return global accuracy of test_image_set
+    ##############################################
+    ##Notice that test image must has label to compare the prediction and real
+    ##############################################
+    '''
     # you need to change the directories to yours.
-	test_dir = '/home/kevin/tensorflow/cats_vs_dogs/data/test/'
+    test_dir = '/home/kevin/tensorflow/cats_vs_dogs/data/test/'
     N_CLASSES = 2
     print('-------------------------')
     test, test_label = input_data.get_files(test_dir)
@@ -184,12 +179,12 @@ def evaluate_all_image():
                                                           IMG_H,
                                                           BATCH_SIZE, 
                                                           CAPACITY)
-	
-	logits = model.inference(test_batch, BATCH_SIZE, N_CLASSES)
+
+    logits = model.inference(test_batch, BATCH_SIZE, N_CLASSES)
     testloss = model.losses(logits, test_label_batch) 
     testacc = model.evaluation(logits, test_label_batch)
-	
-	logs_train_dir = '/home/kevin/tensorflow/cats_vs_dogs/logs/train/'              
+
+    logs_train_dir = '/home/kevin/tensorflow/cats_vs_dogs/logs/train/'
     saver = tf.train.Saver()
         
     with tf.Session() as sess:
@@ -213,8 +208,7 @@ def evaluate_all_image():
     coord.request_stop()
     coord.join(threads)
     sess.close()
- 
-#%%
+
 
 
 
