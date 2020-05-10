@@ -1,10 +1,6 @@
-import os
 import tensorflow as tf
-import numpy as np
-# os.environ['CUDA_VISIBLE_DEVICES'] = '2'
-
-
-# Dataset Parameters - CHANGE HERE
+import os
+MODE = 'folder'  # or 'file', if you choose a plain text file (see above).
 DATASET_PATH = '101_ObjectCategories'  # the dataset file or root folder path.
 
 # Image Parameters
@@ -12,11 +8,7 @@ N_CLASSES = 102  # CHANGE HERE, total number of classes
 IMG_HEIGHT = 64  # CHANGE HERE, the image height to be resized to
 IMG_WIDTH = 64  # CHANGE HERE, the image width to be resized to
 CHANNELS = 3  # The 3 color channels, change to 1 if grayscale
-n_classes = N_CLASSES  # MNIST total classes (0-9 digits)
-dropout = 0.75
-num_steps = 2000
-display_step = 100
-learning_rate = 0.01
+os.environ['CUDA_VISIBLE_DEVICES'] = '0'
 
 
 # Reading the dataset
@@ -64,7 +56,6 @@ def read_images(dataset_path):
 
     path = os.getcwd()
     dirPath = os.path.join(path, dataset_path)
-    # dirPath = dataset_path
     print(dirPath)
     imagePaths = list()
     labels = list()
@@ -78,6 +69,10 @@ def read_images(dataset_path):
         label += 1
     for i in range(len(labels)):
         labels[i] = labels[i]-1
+
+    # print('the imagePaths is:', imagePaths)
+    # print("the labels is: ", labels)
+    # Convert to Tensor,保存的是图片的路径 和 labels
     return imagePaths, labels
 
 
@@ -90,53 +85,56 @@ def _parse_function(imagepaths, labels):
     """
     image_string = tf.read_file(imagepaths)
     image_decode = tf.image.decode_jpeg(image_string, channels=CHANNELS)
-    image_resized = tf.image.resize_images(image_decode, [IMG_HEIGHT, IMG_WIDTH])
+    image_decode = tf.image.convert_image_dtype(image_decode, tf.float32)
+    image_resized = tf.image.resize_images(image_decode, [IMG_HEIGHT, IMG_WIDTH], method=tf.image.ResizeMethod.AREA)
     return image_resized, labels
 
 
-# convert to tensor
-imagespaths, labels = read_images(DATASET_PATH)
-print(labels)
-print(imagespaths)
-imagespaths = tf.convert_to_tensor(imagespaths, dtype=tf.string)
-labels = tf.convert_to_tensor(labels, dtype=tf.int32)
+# -----------------------------------------------
+# THIS IS A CLASSIC CNN (see examples, section 3)
+# -----------------------------------------------
+# Note that a few elements have changed (usage of queues).
 
-# dataset pipeline
-dataset = tf.data.Dataset.from_tensor_slices((imagespaths, labels))
+# Parameters
+learning_rate = 0.001
+num_steps = 1000
+batch_size = 128
+display_step = 100
+
+# Network Parameters
+dropout = 0.75  # Dropout, probability to keep units
+
+# Build the data input
+sess = tf.Session()
+
+image, labels = read_images(DATASET_PATH)
+print(image.__len__())
+print(labels.__len__())
+# imagespaths = tf.convert_to_tensor(image, dtype=tf.string)
+# labels = tf.convert_to_tensor(labels, dtype=tf.int32)
+
+imagespaths = tf.constant(image)
+labels = tf.constant(labels)
+# Create a dataset tensor from the images and the labels
+dataset = tf.data.Dataset.from_tensor_slices((image, labels))
 dataset = dataset.map(_parse_function)
-dataset = dataset.batch(batch_size=128)
+# Automatically refill the data queue when empty
 dataset = dataset.repeat()
-dataset = dataset.prefetch(128)
+# Create batches of data
+dataset = dataset.batch(batch_size)
+# Prefetch data for faster consumption
+dataset = dataset.prefetch(batch_size)
 
 # Create an iterator over the dataset
 iterator = dataset.make_initializable_iterator()
-X, Y = iterator.get_next()
+# Initialize the iterator
+sess.run(iterator.initializer)
 
 # Neural Net Input (images, labels)
-print(X.shape)
-
-    # # Convert to Tensor,保存的是图片的路径 和 labels
-    # imagsePaths = tf.convert_to_tensor(imagsePaths, dtype=tf.string)
-    # labels = tf.convert_to_tensor(labels, dtype=tf.int32)
-    # # Build a TF Queue, shuffle data
-    # image, label = tf.train.slice_input_producer([imagsePaths, labels], shuffle=True)
-    #
-    # # Read images from disk
-    # image = tf.read_file(image)
-    # image = tf.image.decode_jpeg(image, channels=CHANNELS)
-    #
-    # # Resize images to a common size
-    # image = tf.image.resize_images(image, [IMG_HEIGHT, IMG_WIDTH])
-    #
-    # # Normalize
-    # image = image * 1.0 / 127.5 - 1.0
-    #
-    # # Create batches
-    # X, Y = tf.train.batch([image, label], batch_size=batch_size, capacity=batch_size * 8, num_threads=4)
-    #
-    # return X, Y
+X, Y = iterator.get_next()
 
 
+# Create model
 def conv_net(x, n_classes, dropout, reuse, is_training):
     # Define a scope for reusing the variables
     with tf.variable_scope('ConvNet', reuse=reuse):
@@ -169,11 +167,11 @@ def conv_net(x, n_classes, dropout, reuse, is_training):
 
 # Because Dropout have different behavior at training and prediction time, we
 # need to create 2 distinct computation graphs that share the same weights.
-# Because Dropout have different behavior at training and prediction time, we
-# need to create 2 distinct computation graphs that share the same weights.
+
 # Create a graph for training
 logits_train = conv_net(X, N_CLASSES, dropout, reuse=False, is_training=True)
-# Create another graph for testing that reuse the same weights
+# Create another graph for testing that reuse the same weights, but has
+# different behavior for 'dropout' (not applied).
 logits_test = conv_net(X, N_CLASSES, dropout, reuse=True, is_training=False)
 
 # Define loss and optimizer (with train logits, for dropout to take effect)
@@ -187,31 +185,23 @@ accuracy = tf.reduce_mean(tf.cast(correct_pred, tf.float32))
 
 # Initialize the variables (i.e. assign their default value)
 init = tf.global_variables_initializer()
+
 # Run the initializer
-# Saver object
-saver = tf.train.Saver()
+sess.run(init)
+# Training cycle
+for step in range(1, num_steps + 1):
 
+    # Run optimization
+    sess.run(train_op)
+    # print('the logits train is:\n', sess.run(tf.argmax(logits_train)))
+    # print('the logits test is: \n', sess.run(tf.argmax(logits_test, 1)))
+    # print('the real y is: ', sess.run(Y))
 
-# Start training
-# Initialize the iterator
-with tf.Session() as sess:
-    sess.run(iterator.initializer)
-    sess.run(init)
+    if step % display_step == 0 or step == 1:
+        # Calculate batch loss and accuracy
+        # (note that this consume a new batch of data)
+        loss, acc, correct_ = sess.run([loss_op, accuracy, correct_pred])
+        print("Step " + str(step) + ", Minibatch Loss= " + "{:.4f}".format(loss) + ", Training Accuracy= " +
+              "{:.3f}".format(acc))
 
-    # Training cycle
-    for step in range(1, num_steps + 1):
-        sess.run(train_op)
-        if step % display_step == 0 or step == 1:
-            # Run optimization and calculate batch loss and accuracy
-            _, loss, acc = sess.run([train_op, loss_op, accuracy])
-            print("Step " + str(step) + ", Minibatch Loss= " + "{:.4f}".format(loss) + ", Training Accuracy= " +
-                  "{:.3f}".format(acc))
-        # else:
-        #     # Only run the optimization op (backprop)
-        #     sess.run(train_op)
-
-    print("Optimization Finished!")
-
-    # Save your model
-    saver.save(sess, './model1/my_tf_model.ckpt')
-
+print("Optimization Finished!")

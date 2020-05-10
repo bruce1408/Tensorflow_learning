@@ -26,6 +26,10 @@ dropout = 0.75  # Dropout, probability to keep units
 
 sess = tf.Session()
 
+print(mnist.train.images.shape)
+print(mnist.train.labels.shape)
+print(mnist.train.images[0])
+print(mnist.train.labels[0])
 # Create a dataset tensor from the images and the labels
 dataset = tf.data.Dataset.from_tensor_slices((mnist.train.images, mnist.train.labels))
 # Automatically refill the data queue when empty
@@ -42,7 +46,6 @@ sess.run(iterator.initializer)
 
 # Neural Net Input (images, labels)
 X, Y = iterator.get_next()
-print(X.shape)
 
 # -----------------------------------------------
 # THIS IS A CLASSIC CNN (see examples, section 3)
