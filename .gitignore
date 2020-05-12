@@ -1,0 +1,4 @@
+*.txt
+.gitignore
+MNIST_data/
+fashion_data/

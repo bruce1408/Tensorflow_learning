@@ -42,7 +42,6 @@ skip_window = 3  # How many words to consider left and right
 num_skips = 2  # How many times to reuse an input to generate a label
 num_sampled = 64  # Number of negative examples to sample
 
-
 # Download a small chunk of Wikipedia articles collection
 url = 'http://mattmahoney.net/dc/text8.zip'
 data_path = '/home/bruce/bigVolumn/Datasets/text8.zip'
@@ -69,7 +68,7 @@ for i in range(len(count) - 1, -1, -1):
 vocabulary_size = len(count)
 # Assign an id to each word
 word2id = dict()
-for i, (word, _)in enumerate(count):
+for i, (word, _) in enumerate(count):
     word2id[word] = i
 
 data = list()
@@ -89,6 +88,8 @@ print("Vocabulary size:", vocabulary_size)
 print("Most common words:", count[:10])
 
 data_index = 0
+
+
 # Generate training batch for the skip-gram model
 def next_batch(batch_size, num_skips, skip_window):
     global data_index
@@ -160,7 +161,6 @@ cosine_sim_op = tf.matmul(X_embed_norm, embedding_norm, transpose_b=True)
 init = tf.global_variables_initializer()
 
 with tf.Session() as sess:
-
     # Run the initializer
     sess.run(init)
 
