@@ -54,20 +54,34 @@ print(img_test.__len__())
 print(img_val.__len__())
 
 
-def imgToTfrecord(filepath, labelpath, tfrecordName):
+def _int64_feature(value):
+    return tf.train.Feature(int64_list=tf.train.Int64List(value=[value]))
 
-    writer = tf.python_io.TFRecordWriter("mydata.tfrecords")
-    for path, label in zip(img_train, label_train):
-        img = Image.open(path)
-        img_raw = img.tobytes()  # 将图片转化为二进制格式
+
+def _float_feature(value):
+    return tf.train.Feature(float_list=tf.train.FloatList(value=[value]))
+
+
+def _bytes_feature(value):
+    return tf.train.Feature(bytes_list=tf.train.BytesList(value=[value]))
+
+
+def imageToTfrecord(filepath, labelpath, tfrecordName):
+
+    writer = tf.python_io.TFRecordWriter(tfrecordName)
+    for path, label in zip(filepath, labelpath):
+        image = Image.open(path)
+        img_raw = image.tobytes()  # 将图片转化为二进制格式
         example = tf.train.Example(features=tf.train.Features(feature={
             # value=[index]决定了图片数据的类型label
-            "label": tf.train.Feature(int64_list=tf.train.Int64List(value=[label])),
-            'img_raw': tf.train.Feature(bytes_list=tf.train.BytesList(value=[img_raw]))
-        }))  # example对象对label和image数据进行封装
+            "label": _int64_feature(label),
+            "image": _bytes_feature(img_raw)
+        }))
         writer.write(example.SerializeToString())  # 序列化为字符串
     writer.close()
 
+
+imageToTfrecord(img_train, label_train, './train.tfrecord')
 
 # writer= tf.python_io.TFRecordWriter("mydata.tfrecords")
 # for path, label in zip(img_train, label_train):
@@ -80,14 +94,3 @@ def imgToTfrecord(filepath, labelpath, tfrecordName):
 #     })) #example对象对label和image数据进行封装
 #     writer.write(example.SerializeToString())  #序列化为字符串
 # writer.close()
-
-def _int64_feature(value):
-    return tf.train.Feature(int64List=tf.train.Int64List(value=[value]))
-
-
-def _float_feature(value):
-    return tf.train.Feature(floatList=tf.train.FloatList(value=[value]))
-
-
-def _bytes_feature(value):
-    return tf.train.Feature(bytesList=tf.train.BytesList(value=[value]))

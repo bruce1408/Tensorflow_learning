@@ -5,7 +5,7 @@
 *.swo
 *.idea/
 *.logs/
-.gitignore
+*.gitignore
 week03/src/logs/
 /home/bruce/PycharmProjects/tensorflow-learning/week01/src/imageProcess/ImageProcessing/datasets
 /home/bruce/PycharmProjects/tensorflow-learning/week01/src/imageProcess/ImageProcessing/MNIST_data
@@ -16,5 +16,4 @@ week02/src/my_net/
 MNIST_data/
 fashion_mnist/
 week02/src/101_ObjectCategories/
-.gitignore
-
+*.tfrecord
