@@ -17,3 +17,7 @@ MNIST_data/
 fashion_mnist/
 week02/src/101_ObjectCategories/
 *.tfrecord
+week09/src/slim/train.tfrecords
+week09/src/slim/datasets/
+week02/src/model1/
+

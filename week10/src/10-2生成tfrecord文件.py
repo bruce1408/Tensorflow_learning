@@ -68,7 +68,7 @@ def _convert_dataset(split_name, filenames, dataset_dir):
 
     with tf.Session() as sess:
         # 定义tfrecord文件的路径+名字
-        output_filename = os.path.join(TFRECORD_DIR,split_name + '.tfrecords')
+        output_filename = os.path.join(TFRECORD_DIR, split_name + '.tfrecords')
         with tf.python_io.TFRecordWriter(output_filename) as tfrecord_writer:
             for i, filename in enumerate(filenames):
                 try:

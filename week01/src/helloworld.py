@@ -16,10 +16,14 @@ import tensorflow as tf
 #
 # The value returned by the constructor represents the output
 # of the Constant op.
-hello = tf.constant('Hello, TensorFlow!')
+# hello = tf.constant('Hello, TensorFlow!')
+#
+# # Start tf session
+# sess = tf.Session()
+#
+# # Run the op
+# print(sess.run(hello))
 
-# Start tf session
-sess = tf.Session()
-
-# Run the op
-print(sess.run(hello))
+x = tf.constant(10)
+sess = tf.InteractiveSession()
+print(x.eval())

@@ -37,14 +37,14 @@ import os
 
 # Dataset Parameters - CHANGE HERE
 MODE = 'folder'  # or 'file', if you choose a plain text file (see above).
-DATASET_PATH = '101_ObjectCategories'  # the dataset file or root folder path.
+DATASET_PATH = '/raid/bruce/101_ObjectCategories'  # the dataset file or root folder path.
 
 # Image Parameters
 N_CLASSES = 102  # CHANGE HERE, total number of classes
 IMG_HEIGHT = 64  # CHANGE HERE, the image height to be resized to
 IMG_WIDTH = 64  # CHANGE HERE, the image width to be resized to
 CHANNELS = 3  # The 3 color channels, change to 1 if grayscale
-# os.environ['CUDA_VISIBLE_DEVICES'] = '2'
+os.environ['CUDA_VISIBLE_DEVICES'] = '1'
 
 
 # Reading the dataset
