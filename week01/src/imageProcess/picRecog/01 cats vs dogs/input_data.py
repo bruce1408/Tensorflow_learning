@@ -44,20 +44,23 @@ from PIL import Image
 train_dir = '/home/bruce/Downloads/dogs-vs-cats-redux-kernels-edition/train/'
 HIGHTSIZE = 128
 WIDTHSIZE = 128
+
+
 def get_files(file_dir):
-    '''
+    """
     Args:
         file_dir: file directory
     Returns:
         list of images and labels
-    '''
+    """
     cats = []
     label_cats = []
     dogs = []
     label_dogs = []
     for file in os.listdir(file_dir):
         name = file.split(sep='.')
-        if name[0] ==' cat':
+        print(name)
+        if name[0] == 'cat':
             cats.append(file_dir + file)
             label_cats.append(0)
         else:
