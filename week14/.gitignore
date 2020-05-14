@@ -1,8 +1,0 @@
-notebooks/data*
-notebooks/.ipynb* 
-.ipynb_checkpoints
-*.pyc
-.DS_Store
-notebooks/word2vec_sunghak.ipynb
-notebooks/nets/*
-blank.ipynb
