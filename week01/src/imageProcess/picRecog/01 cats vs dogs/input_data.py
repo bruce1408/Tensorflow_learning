@@ -36,26 +36,31 @@
 import tensorflow as tf
 import numpy as np
 import os
+from PIL import Image
 
 #%%
 
 # you need to change this to your data directory
-train_dir = '/home/kevin/tensorflow/cats_vs_dogs/data/train/'
+train_dir = '/home/bruce/Downloads/dogs-vs-cats-redux-kernels-edition/train/'
+HIGHTSIZE = 128
+WIDTHSIZE = 128
+
 
 def get_files(file_dir):
-    '''
+    """
     Args:
         file_dir: file directory
     Returns:
         list of images and labels
-    '''
+    """
     cats = []
     label_cats = []
     dogs = []
     label_dogs = []
     for file in os.listdir(file_dir):
         name = file.split(sep='.')
-        if name[0]=='cat':
+        print(name)
+        if name[0] == 'cat':
             cats.append(file_dir + file)
             label_cats.append(0)
         else:
@@ -73,12 +78,82 @@ def get_files(file_dir):
     image_list = list(temp[:, 0])
     label_list = list(temp[:, 1])
     label_list = [int(i) for i in label_list]
-    
-    
     return image_list, label_list
 
 
-#%%
+imagepaths, labels = get_files(train_dir)
+print(imagepaths)
+print(labels)
+
+
+def _int64_feature(value):
+    return tf.train.Feature(int64_list=tf.train.Int64List(value=[value]))
+
+
+def _float_feature(value):
+    return tf.train.Feature(float_list=tf.train.FloatList(value=[value]))
+
+
+def _bytes_feature(value):
+    return tf.train.Feature(bytes_list=tf.train.BytesList(value=[value]))
+
+
+def imageToTfrecord(filepath, labelpath, tfrecordName):
+    writer = tf.python_io.TFRecordWriter(tfrecordName)
+    for path, label in zip(filepath, labelpath):
+        image = Image.open(path)
+        # print(image.size)
+        image = image.resize((HIGHTSIZE, WIDTHSIZE), Image.ANTIALIAS)
+        # print(image.size)
+        image = np.array(image)
+        print(image.shape)
+        img_raw = image.tobytes()  # 将图片转化为二进制格式
+        example = tf.train.Example(features=tf.train.Features(feature={
+            # value=[index]决定了图片数据的类型label
+            "label": _int64_feature(label),
+            "image": _bytes_feature(img_raw)
+        }))
+        writer.write(example.SerializeToString())  # 序列化为字符串
+    writer.close()
+
+
+# 生成tfrecord
+# imageToTfrecord(img_train, label_train, './train.tfrecord')
+def convert_to_tfrecord(images, labels):
+    errorCount = 0
+    filename = './train_dogs_cat.tfrecord'
+    n_samples = len(labels)
+    if np.shape(images)[0] != n_samples:
+        raise ValueError('Image size %d does not match label size %d.' % (images.shape, n_samples.shape))
+    writer = tf.python_io.TFRecordWriter(filename)
+    print('\nTransform start....')
+    for i in np.arange(n_samples):
+        try:
+            image = Image.open(images[i])
+            image = image.resize((HIGHTSIZE, WIDTHSIZE))
+            image = np.array(image)
+            if image.shape == (HIGHTSIZE, WIDTHSIZE, 3):
+                errorCount += 1
+                # print(images[i])
+                # print(labels[i])
+                image_raw = image.tostring()
+                label = int(labels[i])
+                example = tf.train.Example(features=tf.train.Features(
+                    feature={"label": tf.train.Feature(int64_list=tf.train.Int64List(value=[label])),
+                             "img_raw": tf.train.Feature(bytes_list=tf.train.BytesList(value=[image_raw]))}
+                ))
+                writer.write(example.SerializeToString())
+        except IOError as e:
+            print('Could not read:', images[i])
+            print('error : %s' % e)
+            print('Skip it! \n')
+    writer.close()
+    print("Transform done!")
+    print(errorCount)
+
+
+convert_to_tfrecord(imagepaths, labels)
+
 
 def get_batch(image, label, image_W, image_H, batch_size, capacity):
     '''

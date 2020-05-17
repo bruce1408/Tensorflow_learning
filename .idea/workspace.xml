@@ -72,10 +72,10 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/week09/src/slim/9_3_tfrecord_dataset.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="69">
+            <state relative-caret-position="79">
               <caret line="81" lean-forward="true" selection-start-line="81" selection-end-line="81" />
               <folding>
                 <element signature="e#0#9#0" expanded="true" />
@@ -106,10 +106,10 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/week02/src/2_0_tensorflow_dataset_api_1.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="465">
+            <state relative-caret-position="2703">
               <caret line="190" column="14" selection-start-line="190" selection-start-column="14" selection-end-line="190" selection-end-column="14" />
               <folding>
                 <element signature="e#0#9#0" expanded="true" />
@@ -201,10 +201,9 @@
     </option>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="59" />
-    <option name="y" value="47" />
-    <option name="width" value="1805" />
-    <option name="height" value="1014" />
+    <option name="y" value="23" />
+    <option name="width" value="1920" />
+    <option name="height" value="1057" />
   </component>
   <component name="ProjectView">
     <navigator proportions="" version="1">
@@ -218,6 +217,17 @@
             <path>
               <item name="tensorflow-learning" type="b2602c69:ProjectViewProjectNode" />
               <item name="tensorflow-learning" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="tensorflow-learning" type="b2602c69:ProjectViewProjectNode" />
+              <item name="tensorflow-learning" type="462c0819:PsiDirectoryNode" />
+              <item name="week02" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="tensorflow-learning" type="b2602c69:ProjectViewProjectNode" />
+              <item name="tensorflow-learning" type="462c0819:PsiDirectoryNode" />
+              <item name="week02" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="tensorflow-learning" type="b2602c69:ProjectViewProjectNode" />
@@ -414,18 +424,17 @@
       <workItem from="1586312004789" duration="17000" />
       <workItem from="1588906550242" duration="18162000" />
       <workItem from="1588952578390" duration="14441000" />
-      <workItem from="1589017155039" duration="13324000" />
+      <workItem from="1589017155039" duration="13377000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="74230000" />
+    <option name="totallyTimeSpent" value="74283000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1920" height="1057" extended-state="6" />
-    <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.13471779" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.13471779" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -439,7 +448,7 @@
       <window_info anchor="bottom" id="Version Control" order="8" />
       <window_info anchor="bottom" id="File Transfer" order="9" weight="0.32908705" />
       <window_info anchor="bottom" id="Database Changes" order="10" />
-      <window_info anchor="bottom" id="Terminal" order="11" visible="true" weight="0.38641188" />
+      <window_info active="true" anchor="bottom" id="Terminal" order="11" visible="true" weight="0.38641188" />
       <window_info anchor="bottom" id="Event Log" order="12" sideWeight="0.50106496" side_tool="true" weight="0.36305732" />
       <window_info anchor="bottom" id="Python Console" order="13" weight="0.32908705" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
@@ -761,25 +770,6 @@
     <entry file="file://$PROJECT_DIR$/week03/src/3_0_basic_linerRegress.py">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/week02/src/2_0_tensorflow_dataset_api_1.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="465">
-          <caret line="190" column="14" selection-start-line="190" selection-start-column="14" selection-end-line="190" selection-end-column="14" />
-          <folding>
-            <element signature="e#0#9#0" expanded="true" />
-            <element signature="e#832#869#0" />
-            <element signature="e#3644#3684#0" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/week02/src/2_0_tensorflow_dataset_api.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="71">
-          <caret line="31" column="28" selection-start-line="31" selection-start-column="28" selection-end-line="31" selection-end-column="28" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/week02/src/2_0_tensorflow_api_2.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="208">
@@ -804,10 +794,29 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/week09/src/slim/9_3_tfrecord_dataset.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="69">
+        <state relative-caret-position="79">
           <caret line="81" lean-forward="true" selection-start-line="81" selection-end-line="81" />
           <folding>
             <element signature="e#0#9#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/week02/src/2_0_tensorflow_dataset_api.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="71">
+          <caret line="31" column="28" selection-start-line="31" selection-start-column="28" selection-end-line="31" selection-end-column="28" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/week02/src/2_0_tensorflow_dataset_api_1.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2703">
+          <caret line="190" column="14" selection-start-line="190" selection-start-column="14" selection-end-line="190" selection-end-column="14" />
+          <folding>
+            <element signature="e#0#9#0" expanded="true" />
+            <element signature="e#832#869#0" />
+            <element signature="e#3644#3684#0" />
           </folding>
         </state>
       </provider>

@@ -9,17 +9,14 @@ from __future__ import print_function
 
 import tensorflow as tf
 
-# Simple hello world using TensorFlow
-
-# Create a Constant op
-# The op is added as a node to the default graph.
-#
-# The value returned by the constructor represents the output
-# of the Constant op.
+# 方法 1，使用传统的图
 hello = tf.constant('Hello, TensorFlow!')
-
 # Start tf session
 sess = tf.Session()
-
 # Run the op
 print(sess.run(hello))
+
+# 方法 2，使用interactivesession 来直接大于，使用eval就可以输出
+x = tf.constant(10)
+sess = tf.InteractiveSession()
+print(x.eval())

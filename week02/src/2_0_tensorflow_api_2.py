@@ -1,10 +1,12 @@
 import tensorflow as tf
+from PIL import Image
+import numpy as np
 import os
 MODE = 'folder'  # or 'file', if you choose a plain text file (see above).
-DATASET_PATH = '101_ObjectCategories'  # the dataset file or root folder path.
+DATASET_PATH = '/home/bruce/bigVolumn/Datasets/10_data'  # the dataset file or root folder path.
 
 # Image Parameters
-N_CLASSES = 102  # CHANGE HERE, total number of classes
+N_CLASSES = 10  # CHANGE HERE, total number of classes
 IMG_HEIGHT = 64  # CHANGE HERE, the image height to be resized to
 IMG_WIDTH = 64  # CHANGE HERE, the image width to be resized to
 CHANNELS = 3  # The 3 color channels, change to 1 if grayscale
@@ -57,21 +59,46 @@ def read_images(dataset_path):
     path = os.getcwd()
     dirPath = os.path.join(path, dataset_path)
     print(dirPath)
+    np.random.seed(0)
+    pathDir = dataset_path
+    classes = os.walk(pathDir).__next__()[1]
     imagePaths = list()
     labels = list()
     label = 0
-    for parent, _, filenames in os.walk(dirPath):
-        # print("the parent is: ", parent)
-        for img in filenames:
-            if img.endswith('.jpg') or img.endswith('.jpeg') or img.endswith(".JPEG"):
-                imagePaths.append(os.path.join(parent, img))
-                labels.append(label)
+    for folder in classes:
+        folderPath = os.path.join(pathDir, folder)
+        for img in os.listdir(folderPath):
+            if img.endswith(".jpeg") or img.endswith('.JPEG') or img.endswith(".jpg"):
+                imgpath = os.path.join(folderPath, img)
+                image = Image.open(imgpath)
+                image = image.resize((64, 64))
+                image = np.array(image)
+                if image.shape == (64, 64, 3):
+                    imagePaths.append(imgpath)
+                    labels.append(label)
         label += 1
-    for i in range(len(labels)):
-        labels[i] = labels[i]-1
 
-    # print('the imagePaths is:', imagePaths)
-    # print("the labels is: ", labels)
+
+    # imagePaths = list()
+    # labels = list()
+    # label = 0
+    # for parent, _, filenames in os.walk(dirPath):
+    #     # print("the parent is: ", parent)
+    #     for img in filenames:
+    #         if img.endswith('.jpg') or img.endswith('.jpeg') or img.endswith(".JPEG"):
+    #             imgpath = os.path.join(parent, img)
+    #             image = Image.open(imgpath)
+    #             image = image.resize((64, 64))
+    #             image = np.array(image)
+    #             if image.shape == (64, 64, 3):
+    #                 imagePaths.append(imgpath)
+    #                 labels.append(label)
+    #     label += 1
+    # for i in range(len(labels)):
+    #     labels[i] = labels[i]-1
+
+    print('the imagePaths is:', imagePaths)
+    print("the labels is: ", labels)
     # Convert to Tensor,保存的是图片的路径 和 labels
     return imagePaths, labels
 
