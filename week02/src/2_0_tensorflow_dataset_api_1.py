@@ -117,7 +117,7 @@ def _parse_function(record):
 # dataset = tf.data.Dataset.from_tensor_slices((imagespaths, labels))
 # dataset = tf.data.TFRecordDataset("/home/bruce/PycharmProjects/tensorflow-learning/week09/src/slim/train_1.tfrecord")
 dataset = tf.data.TFRecordDataset(
-    "/raid/bruce/tmp/tmp/tensorflow_learning_remote/week01/src/imageProcess/picRecog/01_cats_vs_dogs/train_dogs_cat.tfrecord")
+    "/home/bruce/PycharmProjects/tensorflow-learning/week01/src/imageProcess/picRecog/01 cats vs dogs/train_dogs_cat.tfrecord")
 dataset = dataset.map(_parse_function)
 dataset = dataset.repeat()
 dataset = dataset.batch(batch_size=BATCHSIZE)

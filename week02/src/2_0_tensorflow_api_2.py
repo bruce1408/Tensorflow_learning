@@ -4,7 +4,8 @@ import numpy as np
 import os
 MODE = 'folder'  # or 'file', if you choose a plain text file (see above).
 DATASET_PATH = '/home/bruce/bigVolumn/Datasets/10_data'  # the dataset file or root folder path.
-
+config = tf.ConfigProto()
+config.gpu_options.allow_growth=True
 # Image Parameters
 N_CLASSES = 10  # CHANGE HERE, total number of classes
 IMG_HEIGHT = 64  # CHANGE HERE, the image height to be resized to
@@ -132,7 +133,7 @@ display_step = 100
 dropout = 0.75  # Dropout, probability to keep units
 
 # Build the data input
-sess = tf.Session()
+sess = tf.Session(config=config)
 
 image, labels = read_images(DATASET_PATH)
 print(image.__len__())
