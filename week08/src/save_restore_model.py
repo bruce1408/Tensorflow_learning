@@ -11,7 +11,8 @@ from __future__ import print_function
 
 # Import MNIST data
 from tensorflow.examples.tutorials.mnist import input_data
-mnist = input_data.read_data_sets("MNIST_data/", one_hot=True)
+
+mnist = input_data.read_data_sets("/raid/bruce/MNIST_data/", one_hot=True)
 
 import tensorflow as tf
 
@@ -22,10 +23,10 @@ display_step = 1
 model_path = "/tmp/model.ckpt"
 
 # Network Parameters
-n_hidden_1 = 256 # 1st layer number of features
-n_hidden_2 = 256 # 2nd layer number of features
-n_input = 784 # MNIST data input (img shape: 28*28)
-n_classes = 10 # MNIST total classes (0-9 digits)
+n_hidden_1 = 256  # 1st layer number of features
+n_hidden_2 = 256  # 2nd layer number of features
+n_input = 784  # MNIST data input (img shape: 28*28)
+n_classes = 10  # MNIST total classes (0-9 digits)
 
 # tf Graph input
 x = tf.placeholder("float", [None, n_input])
@@ -43,6 +44,7 @@ def multilayer_perceptron(x, weights, biases):
     # Output layer with linear activation
     out_layer = tf.matmul(layer_2, weights['out']) + biases['out']
     return out_layer
+
 
 # Store layers weight & bias
 weights = {
@@ -72,14 +74,13 @@ saver = tf.train.Saver()
 # Running first session
 print("Starting 1st session...")
 with tf.Session() as sess:
-
     # Run the initializer
     sess.run(init)
 
     # Training cycle
     for epoch in range(3):
-        avg_cost = 0.
-        total_batch = int(mnist.train.num_examples/batch_size)
+        avg_cost = 0.0
+        total_batch = int(mnist.train.num_examples / batch_size)
         # Loop over all batches
         for i in range(total_batch):
             batch_x, batch_y = mnist.train.next_batch(batch_size)
@@ -90,8 +91,7 @@ with tf.Session() as sess:
             avg_cost += c / total_batch
         # Display logs per epoch step
         if epoch % display_step == 0:
-            print("Epoch:", '%04d' % (epoch+1), "cost=", \
-                "{:.9f}".format(avg_cost))
+            print("Epoch:", '%04d' % (epoch + 1), "cost={:.9f}".format(avg_cost))
     print("First Optimization Finished!")
 
     # Test model
@@ -116,7 +116,7 @@ with tf.Session() as sess:
 
     # Resume training
     for epoch in range(7):
-        avg_cost = 0.
+        avg_cost = 0.0
         total_batch = int(mnist.train.num_examples / batch_size)
         # Loop over all batches
         for i in range(total_batch):
@@ -128,8 +128,7 @@ with tf.Session() as sess:
             avg_cost += c / total_batch
         # Display logs per epoch step
         if epoch % display_step == 0:
-            print("Epoch:", '%04d' % (epoch + 1), "cost=", \
-                "{:.9f}".format(avg_cost))
+            print("Epoch:", '%04d' % (epoch + 1), "cost={:.9f}".format(avg_cost))
     print("Second Optimization Finished!")
 
     # Test model

@@ -4,19 +4,19 @@ import os
 import tarfile
 import requests
 
-#inception模型下载地址
+# inception模型下载地址
 inception_pretrain_model_url = 'http://download.tensorflow.org/models/image/imagenet/inception-2015-12-05.tgz'
 
-#模型存放地址
+# 模型存放地址
 inception_pretrain_model_dir = "inception_model"
 if not os.path.exists(inception_pretrain_model_dir):
     os.makedirs(inception_pretrain_model_dir)
-    
-#获取文件名，以及文件路径
+
+# 获取文件名，以及文件路径
 filename = inception_pretrain_model_url.split('/')[-1]
 filepath = os.path.join(inception_pretrain_model_dir, filename)
 
-#下载模型
+# 下载模型
 if not os.path.exists(filepath):
     print("download: ", filename)
     r = requests.get(inception_pretrain_model_url, stream=True)
@@ -27,7 +27,7 @@ if not os.path.exists(filepath):
 print("finish: ", filename)
 # 解压文件
 tarfile.open(filepath, 'r:gz').extractall(inception_pretrain_model_dir)
- 
+
 # 模型结构存放文件
 log_dir = 'inception_log'
 if not os.path.exists(log_dir):
@@ -41,11 +41,6 @@ with tf.Session() as sess:
         graph_def = tf.GraphDef()
         graph_def.ParseFromString(f.read())
         tf.import_graph_def(graph_def, name='')
-    #保存图的结构
+    # 保存图的结构
     writer = tf.summary.FileWriter(log_dir, sess.graph)
     writer.close()
-
-
-
-
-
