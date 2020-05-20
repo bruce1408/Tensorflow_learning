@@ -21,24 +21,23 @@ os.environ['CUDA_VISIBLE_DEVICES']='1'
 不再重新定义图结构，而是使用保存模型的图结构即可，使用tf.train.import_meta_graph(checkpoint.meta 地址即可)
 仅仅加载图是没用的，还需要使用前面的模型参数，比如本例子中的w1:0这个参数
 """
-saver = tf.train.import_meta_graph('./8_5basic/model.ckpt.meta')
-with tf.Session() as sess:
-    saver.restore(sess, '8_5basic/model.ckpt')
-    print(sess.run(tf.get_default_graph().get_tensor_by_name('w1:0')))  # 不管是w1还是w2都是可以打印出来的
-    print(sess.run("w2:0"))
-    a = tf.get_default_graph().get_tensor_by_name('a:0')
+# saver = tf.train.import_meta_graph('./8_5basic/model.ckpt.meta')
+# with tf.Session() as sess:
+#     saver.restore(sess, '8_5basic/model.ckpt')
+#     print(sess.run(tf.get_default_graph().get_tensor_by_name('w1:0')))  # 不管是w1还是w2都是可以打印出来的
+#     print(sess.run("w2:0"))
+#     a = tf.get_default_graph().get_tensor_by_name('a:0')
 
 """
 不再重新构建图来做神经网络，同时加载运算
 """
-# saver = tf.train.import_meta_graph('./8_5basic/model.ckpt.meta')
-# with tf.Session() as sess:
-#     saver.restore(sess, '8_5basic/model.ckpt')
-#     graph = tf.get_default_graph()
-#     a = graph.get_tensor_by_name("a:0")
-#     b = graph.get_tensor_by_name("b:0")
-#     print(sess.run(a))  # w1打印出来
-#     feed_dict = {a: 12.0, b: 12.0}
-#     add_op = graph.get_tensor_by_name("final_op_add:0")
-#     print(sess.run(add_op, feed_dict))
+saver = tf.train.import_meta_graph('./8_5basic/model.ckpt.meta')
+with tf.Session() as sess:
+    saver.restore(sess, '8_5basic/model.ckpt')
+    graph = tf.get_default_graph()
+    a = graph.get_tensor_by_name("a:0")
+    b = graph.get_tensor_by_name("b:0")
+    feed_dict = {a: 12.0, b: 12.0}
+    add_op = graph.get_tensor_by_name("final_op_add:0")
+    print(sess.run(add_op, feed_dict))
 

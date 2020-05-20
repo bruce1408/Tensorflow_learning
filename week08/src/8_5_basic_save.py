@@ -1,6 +1,6 @@
 import os
 import tensorflow as tf
-os.environ['CUDA_VISIBLE_DEVICES']='0'
+os.environ['CUDA_VISIBLE_DEVICES']='1'
 """
 tensorflow 模型保存的几个文件，meta表示保存的是图解钩，包括变量还有集合等。
 checkpoint 保存的是checkpoint文件的目录，记录了保存的最新的checkpoint文件以及checkp文件列表
@@ -17,7 +17,7 @@ r2 = tf.multiply(w2, b)
 y = tf.add(r1, r2, name='final_op_add')
 
 init = tf.global_variables_initializer()
-saver = tf.train.Saver()
+saver = tf.train.Saver()  # 默认是保存所有的变量
 
 with tf.Session() as sess:
     sess.run(init)
