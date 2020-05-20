@@ -1,5 +1,0 @@
-*.txt
-.gitignore
-MNIST_data/
-fashion_data/
-*/.DS_Store

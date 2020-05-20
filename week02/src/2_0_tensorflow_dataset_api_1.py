@@ -1,12 +1,8 @@
 import os
 import tensorflow as tf
 import numpy as np
-<<<<<<< HEAD
-os.environ['CUDA_VISIBLE_DEVICES'] = '0,1'
-=======
-os.environ['CUDA_VISIBLE_DEVICES'] = '1'
->>>>>>> 822fcdd34e0894eac4f5cee15731392a80e15045
 
+os.environ['CUDA_VISIBLE_DEVICES'] = '2'
 
 # Dataset Parameters - CHANGE HERE
 # DATASET_PATH = '101_ObjectCategories'  # the dataset file or root folder path.
@@ -17,15 +13,12 @@ IMG_HEIGHT = 128  # CHANGE HERE, the image height to be resized to
 IMG_WIDTH = 128  # CHANGE HERE, the image width to be resized to
 CHANNELS = 3  # The 3 color channels, change to 1 if grayscale
 n_classes = N_CLASSES  # MNIST total classes (0-9 digits)
-<<<<<<< HEAD
 dropout = 0.25
-=======
 dropout = 0.45
->>>>>>> 822fcdd34e0894eac4f5cee15731392a80e15045
 num_steps = 20000
 display_step = 100
 learning_rate = 0.0001
-BATCHSIZE=32
+BATCHSIZE = 32
 
 
 # Reading the dataset
@@ -85,7 +78,7 @@ def read_images(dataset_path):
                 labels.append(label)
         label += 1
     for i in range(len(labels)):
-        labels[i] = labels[i]-1
+        labels[i] = labels[i] - 1
     return imagePaths, labels
 
 
@@ -114,6 +107,7 @@ def _parse_function(record):
     label = tf.cast(parsed['label'], tf.int32)
     return image, label
 
+
 # convert to tensor
 # imagespaths, labels = read_images(DATASET_PATH)
 # print(labels)
@@ -137,26 +131,27 @@ X, Y = iterator.get_next()
 # Neural Net Input (images, labels)
 print(X.shape)
 
-    # # Convert to Tensor,保存的是图片的路径 和 labels
-    # imagsePaths = tf.convert_to_tensor(imagsePaths, dtype=tf.string)
-    # labels = tf.convert_to_tensor(labels, dtype=tf.int32)
-    # # Build a TF Queue, shuffle data
-    # image, label = tf.train.slice_input_producer([imagsePaths, labels], shuffle=True)
-    #
-    # # Read images from disk
-    # image = tf.read_file(image)
-    # image = tf.image.decode_jpeg(image, channels=CHANNELS)
-    #
-    # # Resize images to a common size
-    # image = tf.image.resize_images(image, [IMG_HEIGHT, IMG_WIDTH])
-    #
-    # # Normalize
-    # image = image * 1.0 / 127.5 - 1.0
-    #
-    # # Create batches
-    # X, Y = tf.train.batch([image, label], batch_size=batch_size, capacity=batch_size * 8, num_threads=4)
-    #
-    # return X, Y
+
+# # Convert to Tensor,保存的是图片的路径 和 labels
+# imagsePaths = tf.convert_to_tensor(imagsePaths, dtype=tf.string)
+# labels = tf.convert_to_tensor(labels, dtype=tf.int32)
+# # Build a TF Queue, shuffle data
+# image, label = tf.train.slice_input_producer([imagsePaths, labels], shuffle=True)
+#
+# # Read images from disk
+# image = tf.read_file(image)
+# image = tf.image.decode_jpeg(image, channels=CHANNELS)
+#
+# # Resize images to a common size
+# image = tf.image.resize_images(image, [IMG_HEIGHT, IMG_WIDTH])
+#
+# # Normalize
+# image = image * 1.0 / 127.5 - 1.0
+#
+# # Create batches
+# X, Y = tf.train.batch([image, label], batch_size=batch_size, capacity=batch_size * 8, num_threads=4)
+#
+# return X, Y
 
 
 def conv_net(x, n_classes, dropout, reuse, is_training):
@@ -256,7 +251,6 @@ init = tf.global_variables_initializer()
 # Saver object
 saver = tf.train.Saver()
 
-
 # Start training
 # Initialize the iterator
 with tf.Session() as sess:
@@ -279,4 +273,3 @@ with tf.Session() as sess:
 
     # Save your model
     saver.save(sess, './model1/my_tf_model.ckpt')
-

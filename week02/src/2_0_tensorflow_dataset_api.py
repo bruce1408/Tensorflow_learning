@@ -12,7 +12,7 @@ import os
 import tensorflow as tf
 from tensorflow.examples.tutorials.mnist import input_data
 mnist = input_data.read_data_sets("../../MNIST_data/", one_hot=True)
-os.environ['CUDA_VISIBLE_DEVICES'] = '0'
+os.environ['CUDA_VISIBLE_DEVICES'] = '1'
 # Parameters
 learning_rate = 0.001
 num_steps = 2000
