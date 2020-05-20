@@ -2,9 +2,8 @@
 import tensorflow as tf
 from tensorflow.examples.tutorials.mnist import input_data
 
-
 # 载入数据集
-mnist = input_data.read_data_sets("/Users/bruce/programme/Python/datasets/MNIST_data", one_hot=True)
+mnist = input_data.read_data_sets("/raid/bruce/MNIST_data", one_hot=True)
 
 # 每个批次100张照片
 batch_size = 100

@@ -35,7 +35,6 @@
 
 - YouTube：[tensorflow教程（十课）](https://www.youtube.com/watch?v=eAtGqz8ytOI&list=PLjSwXXbVlK6IHzhLOMpwHHLjYmINRstrk&index=2&t=0s)
 - 或 B 站：[《深度学习框架TensorFlow学习与应用》](https://www.bilibili.com/video/av20542427/)
-
 2）下载：
 
 - 《深度学习框架Tensorflow学习与应用》（含视频+代码+课件，视频总时长：13小时31分钟）
@@ -85,7 +84,7 @@
 ## TensorFlow快速入门总结
 
 参考「机器之心」编译文章：
-
+- [模型保存]((https://blog.csdn.net/loveliuzz/article/details/81661875#commentBox))
 - [令人困惑的TensorFlow！](https://zhuanlan.zhihu.com/p/38812133)
 - [令人困惑的 TensorFlow！(II)](https://zhuanlan.zhihu.com/p/46008208)
 
