@@ -46,6 +46,7 @@ sess.run(iterator.initializer)
 
 # Neural Net Input (images, labels)
 X, Y = iterator.get_next()
+print(X.shape)
 
 # -----------------------------------------------
 # THIS IS A CLASSIC CNN (see examples, section 3)

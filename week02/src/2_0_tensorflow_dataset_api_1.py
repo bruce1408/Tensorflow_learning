@@ -1,7 +1,7 @@
 import os
 import tensorflow as tf
 import numpy as np
-os.environ['CUDA_VISIBLE_DEVICES'] = '0'
+os.environ['CUDA_VISIBLE_DEVICES'] = '0,1'
 
 
 # Dataset Parameters - CHANGE HERE
@@ -13,10 +13,10 @@ IMG_HEIGHT = 128  # CHANGE HERE, the image height to be resized to
 IMG_WIDTH = 128  # CHANGE HERE, the image width to be resized to
 CHANNELS = 3  # The 3 color channels, change to 1 if grayscale
 n_classes = N_CLASSES  # MNIST total classes (0-9 digits)
-dropout = 0.75
+dropout = 0.25
 num_steps = 20000
 display_step = 100
-learning_rate = 0.01
+learning_rate = 0.0001
 BATCHSIZE=32
 
 
@@ -170,15 +170,15 @@ def conv_net(x, n_classes, dropout, reuse, is_training):
         pool2 = tf.layers.max_pooling2d(conv2_2, 2, 2)
 
         conv3_1 = tf.layers.conv2d(pool2, 512, 3, activation=tf.nn.relu)
-        conv3_2 = tf.layers.conv2d(conv3_1, 512, 3, activation=tf.nn.relu)
-        conv3_3 = tf.layers.conv2d(conv3_2, 512, 3, activation=tf.nn.relu)
-        conv3_4 = tf.layers.conv2d(conv3_3, 512, 3, activation=tf.nn.relu)
-        pool3 = tf.layers.max_pooling2d(conv3_4, 2, 2)
+        # conv3_2 = tf.layers.conv2d(conv3_1, 512, 3, activation=tf.nn.relu)
+        # conv3_3 = tf.layers.conv2d(conv3_2, 512, 3, activation=tf.nn.relu)
+        # conv3_4 = tf.layers.conv2d(conv3_3, 512, 3, activation=tf.nn.relu)
+        pool3 = tf.layers.max_pooling2d(conv3_1, 2, 2)
 
         conv4_1 = tf.layers.conv2d(pool3, 512, 3, activation=tf.nn.relu)
-        conv4_2 = tf.layers.conv2d(conv4_1, 512, 3, activation=tf.nn.relu)
-        conv4_3 = tf.layers.conv2d(conv4_2, 512, 3, activation=tf.nn.relu)
-        conv4_4 = tf.layers.conv2d(conv4_3, 512, 3, activation=tf.nn.relu)
+        # conv4_2 = tf.layers.conv2d(conv4_1, 512, 3, activation=tf.nn.relu)
+        # conv4_3 = tf.layers.conv2d(conv4_2, 512, 3, activation=tf.nn.relu)
+        conv4_4 = tf.layers.conv2d(conv4_1, 512, 3, activation=tf.nn.relu)
         pool4 = tf.layers.max_pooling2d(conv4_4, 2, 2)
 
         # Flatten the data to a 1-D vector for the fully connected layer
@@ -261,7 +261,7 @@ with tf.Session() as sess:
         sess.run(train_op)
         if step % display_step == 0 or step == 1:
             # Run optimization and calculate batch loss and accuracy
-            _, loss, acc = sess.run([train_op, loss_op, accuracy])
+            loss, acc = sess.run([loss_op, accuracy])
             print("Step " + str(step) + ", Minibatch Loss= " + "{:.4f}".format(loss) + ", Training Accuracy= " +
                   "{:.3f}".format(acc))
         # else:
