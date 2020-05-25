@@ -1,10 +1,7 @@
 import os
 import tensorflow as tf
 import numpy as np
-<<<<<<< HEAD
 os.environ['CUDA_VISIBLE_DEVICES'] = '0,1,2'
-=======
->>>>>>> 394659de3e1357785373003484f6e7520b034a87
 
 os.environ['CUDA_VISIBLE_DEVICES'] = '2'
 
