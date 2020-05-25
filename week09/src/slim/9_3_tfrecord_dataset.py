@@ -33,7 +33,8 @@ tf.train.BytesList、tf.train.Int64List、tf.train.FloatList写入tf.train.Featu
 把数据汇总,最后构建tf.train.Features：本文主要通过tensorflow的最新形式来读取数据.
 """
 np.random.seed(0)
-pathDir = "/home/bruce/dataSets/101_ObjectCategories"
+os.environ['CUDA_VISIBLE_DEVICES'] = '0'
+pathDir = "/raid/bruce/datasets/101_ObjectCategories"
 classes = os.walk(pathDir).__next__()[1]
 imgPath = list()
 labels = list()
@@ -70,29 +71,41 @@ def _bytes_feature(value):
 
 
 def imageToTfrecord(filepath, labelpath, tfrecordName):
+    """
+    两种生成tfrecord的方法，这种的方法没有进行图片的shape判断，很容易训练的时候出错，最好是在图片预训练阶段
+    进行图片判断。如果不是3通道的图片，那么就直接忽略即可
+    :param filepath: 图片的地址
+    :param labelpath: label的list
+    :param tfrecordName: 生成tfrecord格式
+    :return:
+    """
     writer = tf.python_io.TFRecordWriter(tfrecordName)
     for path, label in zip(filepath, labelpath):
         image = Image.open(path)
-        # print(image.size)
         image = image.resize((HIGHTSIZE, WIDTHSIZE), Image.ANTIALIAS)
-        # print(image.size)
         image = np.array(image)
         print(image.shape)
-        img_raw = image.tobytes()  # 将图片转化为二进制格式
+        img_raw = image.tobytes()  # 将图片转化为二进制格式 tostring也可以
         example = tf.train.Example(features=tf.train.Features(feature={
-            # value=[index]决定了图片数据的类型label
             "label": _int64_feature(label),
-            "image": _bytes_feature(img_raw)
+            "img_raw": _bytes_feature(img_raw)
         }))
         writer.write(example.SerializeToString())  # 序列化为字符串
     writer.close()
 
 
-# 生成tfrecord
-# imageToTfrecord(img_train, label_train, './train.tfrecord')
-def convert_to_tfrecord(images, labels):
+# imageToTfrecord(img_train, label_train, './train2.tfrecord')
+def convert_to_tfrecord(images, labels, tfrecordname):
+    """
+    生成个tfrecord格式的文件，这里加了校验部分，如果是图片的尺寸不满足(高，宽，通道数)，
+    那么就不对这个图片进行操作
+    :param images:
+    :param labels:
+    :return:
+    """
     errorCount = 0
     filename = './train_1.tfrecord'
+    filename = tfrecordname
     n_samples = len(labels)
     if np.shape(images)[0] != n_samples:
         raise ValueError('Image size %d does not match label size %d.' % (images.shape, n_samples.shape))
@@ -105,14 +118,18 @@ def convert_to_tfrecord(images, labels):
             image = np.array(image)
             if image.shape == (HIGHTSIZE, WIDTHSIZE, 3):
                 errorCount += 1
-                print(images[i])
-                print(labels[i])
+                # print(images[i])
+                # print(labels[i])
                 # os.remove(images[i])  # 去除掉所有的非rgb图
                 image_raw = image.tostring()
                 label = int(labels[i])
                 example = tf.train.Example(features=tf.train.Features(
-                    feature={"label": tf.train.Feature(int64_list=tf.train.Int64List(value=[label])),
-                             "img_raw": tf.train.Feature(bytes_list=tf.train.BytesList(value=[image_raw]))}
+                    feature={
+                        "label": _int64_feature(label),
+                        "img_raw": _bytes_feature(image_raw)
+                    }
+                    # feature={"label": tf.train.Feature(int64_list=tf.train.Int64List(value=[label])),
+                    #          "img_raw": tf.train.Feature(bytes_list=tf.train.BytesList(value=[image_raw]))}
                 ))
                 writer.write(example.SerializeToString())
         except IOError as e:
@@ -123,7 +140,10 @@ def convert_to_tfrecord(images, labels):
     print("Transform done!")
     print(errorCount)
 
-convert_to_tfrecord(img_train, label_train)
+
+# convert_to_tfrecord(img_train, label_train, "train3.tfrecord")
+
+
 # 读取tfrecord文件
 # def read_and_decode(filename):  # 读入tfrecords
 #     filename_queue = tf.train.string_input_producer([filename])  # 生成一个queue队列
@@ -135,8 +155,8 @@ convert_to_tfrecord(img_train, label_train)
 #                                            'img_raw': tf.FixedLenFeature([], tf.string),
 #                                        })  # 将image数据和label取出来
 #     img = tf.decode_raw(features['img_raw'], tf.uint8)
-#     img = tf.reshape(img, [128, 128, 3])  # reshape为128*128的3通道图片
-#     img = tf.cast(img, tf.float32) * (1. / 255) - 0.5  # 在流中抛出img张量
+#     img1 = tf.reshape(img, [128, 128, 3])  # reshape为128*128的3通道图片
+#     img2 = tf.cast(img1, tf.float32) * (1. / 255) - 0.5  # 在流中抛出img张量
 #     label = tf.cast(features['label'], tf.int32)  # 在流中抛出label张量
 #     with tf.Session() as sess:  # 开始一个会话
 #         init_op = tf.initialize_all_variables()
@@ -144,18 +164,18 @@ convert_to_tfrecord(img_train, label_train)
 #         coord = tf.train.Coordinator()  # 创建一个协调器，管理线程
 #         threads = tf.train.start_queue_runners(coord=coord)  # 启动QueueRunner, 此时文件名队列已经进队
 #         for i in range(20):
-#             example, l = sess.run([img, label])  # 在会话中取出image和label
-#             img = Image.fromarray(example, 'RGB')  # 这里Image是之前提到的
-#             print(i, l)
-#             img.save('./datasets/' + str(i) + '_''Label_' + str(l) + '.jpg')  # 存下图片
+#             example, l = sess.run([img2, label])  # 在会话中取出image和label
+#             img_ = Image.fromarray(example, 'RGB')  # 这里Image是之前提到的
+#             # print(i, l)
+#             img_.save('./datasets/' + str(i) + '_''Label_' + str(l) + '.jpg')  # 存下图片
 #         coord.request_stop()
 #         coord.join(threads)
-#     # return img, label
-#
-#
-# read_and_decode('./train_1.tfrecord')
-# print(img)
-# print(label)
+#     return img, label
+
+
+# img, label = read_and_decode('./train_1.tfrecord')
+# print('img is: ', img)
+# print('label is: ', label)
 
 
 def read_and_decode(tfrecords_file, batch_size):
@@ -168,12 +188,9 @@ def read_and_decode(tfrecords_file, batch_size):
                                                'img_raw': tf.FixedLenFeature([], tf.string),
                                            })
     image = tf.decode_raw(img_features['img_raw'], tf.uint8)
-
     image = tf.reshape(image, [HIGHTSIZE, WIDTHSIZE, 3])
-
     image = tf.cast(image, tf.float32) * (1. / 255)  # 在流中抛出img张量
     label = tf.cast(img_features['label'], tf.int32)
-
     image_batch, label_batch = tf.train.batch([image, label],
                                               batch_size=batch_size,
                                               num_threads=2,
@@ -188,12 +205,13 @@ def plot_images(images, labels):
         plt.subplot(4, 5, i + 1)
         plt.axis('off')
         plt.title(labels[i], fontsize=14)
-        plt.subplots_adjust(top=1.5)
+        plt.subplots_adjust(wspace=0.5, hspace=3)
+
         plt.imshow(images[i])
     plt.show()
 
 
-image_batch, label_batch = read_and_decode('./train_1.tfrecord', batch_size=BATCH_SIZE)
+image_batch, label_batch = read_and_decode('./train3.tfrecord', batch_size=BATCH_SIZE)
 
 x = image_batch
 in_channels = x.get_shape()[-1]
@@ -209,44 +227,9 @@ with tf.Session() as sess:
             # print(label.shape)
             plot_images(image, label)
             i = i + 1
-
     except tf.errors.OutOfRangeError:
         print('done!')
     finally:
         coord.request_stop()
     coord.join(threads)
-# filename_queue = tf.train.string_input_producer(["./train.tfrecord"])  # 读入流中
-# reader = tf.TFRecordReader()
-# _, serialized_example = reader.read(filename_queue)  # 返回文件名和文件
-# features = tf.parse_single_example(serialized_example,
-#                                    features={
-#                                        'label': tf.FixedLenFeature([], tf.int64),
-#                                        'image': tf.FixedLenFeature([], tf.string),
-#                                    })  # 取出包含image和label的feature对象
-# image = tf.decode_raw(features['image'], tf.uint8)
-# image = tf.reshape(image, [64, 64, 3])
-# label = tf.cast(features['label'], tf.int32)
-# with tf.Session() as sess:  # 开始一个会话
-#     init_op = tf.initialize_all_variables()
-#     sess.run(init_op)
-#     coord = tf.train.Coordinator()  # 创建一个协调器，管理线程
-#     threads = tf.train.start_queue_runners(coord=coord)  # 启动QueueRunner, 此时文件名队列已经进队
-#     for i in range(20):
-#         example, l = sess.run([image, label])  # 在会话中取出image和label
-#         img = Image.fromarray(example, 'RGB')  # 这里Image是之前提到的
-#         img.save('./datasets/'+str(i) + '_''Label_' + str(l) + '.jpg')  # 存下图片
-#         print(example, l)
-#     coord.request_stop()
-#     coord.join(threads)
 
-# writer= tf.python_io.TFRecordWriter("mydata.tfrecords")
-# for path, label in zip(img_train, label_train):
-#     img=Image.open(img_path)
-#     img_raw=img.tobytes()#将图片转化为二进制格式
-#     example = tf.train.Example(features=tf.train.Features(feature={
-#         #value=[index]决定了图片数据的类型label
-#         "label": tf.train.Feature(int64_list=tf.train.Int64List(value=[index])),
-#         'img_raw': tf.train.Feature(bytes_list=tf.train.BytesList(value=[img_raw]))
-#     })) #example对象对label和image数据进行封装
-#     writer.write(example.SerializeToString())  #序列化为字符串
-# writer.close()

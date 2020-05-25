@@ -6,6 +6,7 @@ import natsort as nst
 from multiprocessing import Lock, Manager, Process, Queue
 from multiprocessing import Pool
 import os, time, random
+
 MODE = 'folder'  # or 'file', if you choose a plain text file (see above).
 DATASET_PATH = '/home/bruce/bigVolumn/Datasets/aptos/train_images'  # the dataset file or root folder path.
 pathNew = "/home/bruce/bigVolumn/Datasets/aptos/train_data"
@@ -16,6 +17,7 @@ N_CLASSES = 5  # CHANGE HERE, total number of classes
 IMG_WIDTH = 1736  # CHANGE HERE, the image width to be resized to
 IMG_HEIGHT = 1736  # CHANGE HERE, the image height to be resized to
 CHANNELS = 3  # The 3 color channels, change to 1 if grayscale
+
 
 def picResize(filename):
     fileWPath = os.path.join(path, filename)
@@ -36,7 +38,6 @@ def picResize_(scrPath, tarPath):
 
 
 if __name__ == "__main__":
-
     # ## method 1
     startTime = time.time()
     newPath = "/home/bruce/bigVolumn/Datasets/aptos/train_data_"
@@ -44,7 +45,4 @@ if __name__ == "__main__":
     pool.apply_async(picResize_, args=(path, newPath))
     pool.close()
     pool.join()
-    print("程序总共运行时间 %f 分钟" % ((time.time() - startTime)/60))
-
-
-
+    print("程序总共运行时间 %f 分钟" % ((time.time() - startTime) / 60))

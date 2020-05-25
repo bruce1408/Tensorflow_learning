@@ -31,14 +31,10 @@
 # Otherwise errors may occur: conv1/weights/biases already exist......
 
 
-#%%
-
 import tensorflow as tf
 import numpy as np
 import os
 from PIL import Image
-
-#%%
 
 # you need to change this to your data directory
 train_dir = '/home/bruce/Downloads/dogs-vs-cats-redux-kernels-edition/train/'
@@ -66,7 +62,7 @@ def get_files(file_dir):
         else:
             dogs.append(file_dir + file)
             label_dogs.append(1)
-    print('There are %d cats\nThere are %d dogs' %(len(cats), len(dogs)))
+    print('There are %d cats\n There are %d dogs' %(len(cats), len(dogs)))
     
     image_list = np.hstack((cats, dogs))
     label_list = np.hstack((label_cats, label_dogs))
@@ -252,10 +248,4 @@ def get_batch(image, label, image_W, image_H, batch_size, capacity):
 #    coord.join(threads)
 
 
-#%%
 
-
-
-
-
-    
