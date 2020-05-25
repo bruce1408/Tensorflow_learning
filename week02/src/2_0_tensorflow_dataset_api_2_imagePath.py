@@ -2,20 +2,48 @@ import tensorflow as tf
 from PIL import Image
 import numpy as np
 import os
+from sklearn.model_selection import train_test_split
 MODE = 'folder'  # or 'file', if you choose a plain text file (see above).
-DATASET_PATH = '/raid/bruce/datasets/10_data'  # the dataset file or root folder path.
+DATASET_PATH = '/raid/bruce/dog_cat/train/'  # the dataset file or root folder path.
 config = tf.ConfigProto()
-config.gpu_options.allow_growth=True
+config.gpu_options.allow_growth = True
 # Image Parameters
-N_CLASSES = 10  # CHANGE HERE, total number of classes
+N_CLASSES = 2  # CHANGE HERE, total number of classes
 IMG_HEIGHT = 64  # CHANGE HERE, the image height to be resized to
 IMG_WIDTH = 64  # CHANGE HERE, the image width to be resized to
 CHANNELS = 3  # The 3 color channels, change to 1 if grayscale
-os.environ['CUDA_VISIBLE_DEVICES'] = '1'
+os.environ['CUDA_VISIBLE_DEVICES'] = '2'
 
 
 # Reading the dataset
 # 2 modes: 'file' or 'folder'
+def get_files_path(file_dir):
+    cats = []
+    dogs = []
+    label_cats = []
+    label_dogs = []
+    for file in os.listdir(file_dir):
+        name = file.split(sep='.')
+        if name[0] == 'cat':
+            cats.append(file_dir+file)
+            label_cats.append(0)
+        else:
+            dogs.append(file_dir+file)
+            label_dogs.append(1)
+
+    print("there are %d cats and there are %d dogs" % (len(cats), len(dogs)))
+    image_list = np.hstack((cats, dogs))
+    label_list = np.hstack((label_cats, label_dogs))
+    temp = np.array([image_list, label_list])
+    temp = temp.transpose()
+    np.random.shuffle(temp)
+    image_list = list(temp[:, 0])
+    label_list = list(temp[:, 1])
+    print(label_list)
+    label_list = [int(i) for i in label_list]
+    return image_list, label_list
+
+
 def read_images(dataset_path):
     """
     imagepaths 保存的是所有的图片的路径
@@ -75,7 +103,7 @@ def _parse_function(imagepaths, labels):
 # Parameters
 learning_rate = 0.0001
 num_steps = 1000
-batch_size = 128
+batch_size = 256
 display_step = 100
 
 # Network Parameters
@@ -84,7 +112,10 @@ dropout = 0.25  # Dropout, probability to keep units
 # Build the data input
 sess = tf.Session(config=config)
 
-image, labels = read_images(DATASET_PATH)
+# image, labels = read_images(DATASET_PATH)
+image, labels = get_files_path(DATASET_PATH)
+image_train, image_test, label_train, label_test = train_test_split(image, labels, test_size=0.25, random_state=0)
+
 print(image.__len__())
 print(labels.__len__())
 # imagespaths = tf.convert_to_tensor(image, dtype=tf.string)
@@ -93,7 +124,7 @@ print(labels.__len__())
 imagespaths = tf.constant(image)
 labels = tf.constant(labels)
 # Create a dataset tensor from the images and the labels
-dataset = tf.data.Dataset.from_tensor_slices((image, labels))
+dataset = tf.data.Dataset.from_tensor_slices((image_train, label_train))
 dataset = dataset.map(_parse_function)
 # Automatically refill the data queue when empty
 dataset = dataset.repeat()
