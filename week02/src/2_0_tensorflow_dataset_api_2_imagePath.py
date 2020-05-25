@@ -3,7 +3,7 @@ from PIL import Image
 import numpy as np
 import os
 MODE = 'folder'  # or 'file', if you choose a plain text file (see above).
-DATASET_PATH = '/home/bruce/bigVolumn/Datasets/10_data'  # the dataset file or root folder path.
+DATASET_PATH = '/raid/bruce/datasets/10_data'  # the dataset file or root folder path.
 config = tf.ConfigProto()
 config.gpu_options.allow_growth=True
 # Image Parameters
@@ -11,7 +11,7 @@ N_CLASSES = 10  # CHANGE HERE, total number of classes
 IMG_HEIGHT = 64  # CHANGE HERE, the image height to be resized to
 IMG_WIDTH = 64  # CHANGE HERE, the image width to be resized to
 CHANNELS = 3  # The 3 color channels, change to 1 if grayscale
-os.environ['CUDA_VISIBLE_DEVICES'] = '0'
+os.environ['CUDA_VISIBLE_DEVICES'] = '1'
 
 
 # Reading the dataset
@@ -24,38 +24,6 @@ def read_images(dataset_path):
     :param batch_size:
     :return:
     """
-    # imagepaths, labels = list(), list()
-    # if mode == 'file':
-    #     # Read dataset file
-    #     with open(dataset_path) as f:
-    #         data = f.read().splitlines()
-    #     for d in data:
-    #         imagepaths.append(d.split(' ')[0])
-    #         labels.append(int(d.split(' ')[1]))
-    # elif mode == 'folder':
-    #     # An ID will be affected to each sub-folders by alphabetical order
-    #     label = 0
-    #     # List the directory
-    #
-    #     classes = sorted(os.walk(dataset_path).__next__()[1])
-    #     # print("the calsses is: ", classes)
-    #     # List each sub-directory (the classes)
-    #     for c in classes:
-    #         c_dir = os.path.join(dataset_path, c)
-    #         # print("the c_dir is: ", c_dir)
-    #         walk = os.walk(c_dir).__next__()
-    #         # print("the walk is: ", walk)
-    #         # Add each image to the training set
-    #         for sample in walk[2]:
-    #             # Only keeps jpeg images
-    #             if sample.endswith('.jpg') or sample.endswith('.jpeg'):
-    #                 imagepaths.append(os.path.join(c_dir, sample))
-    #                 labels.append(label)
-    #         label += 1
-    # else:
-    #     raise Exception("Unknown mode.")
-    # print(imagepaths)
-    # print(labels)
 
     path = os.getcwd()
     dirPath = os.path.join(path, dataset_path)
@@ -78,25 +46,6 @@ def read_images(dataset_path):
                     imagePaths.append(imgpath)
                     labels.append(label)
         label += 1
-
-
-    # imagePaths = list()
-    # labels = list()
-    # label = 0
-    # for parent, _, filenames in os.walk(dirPath):
-    #     # print("the parent is: ", parent)
-    #     for img in filenames:
-    #         if img.endswith('.jpg') or img.endswith('.jpeg') or img.endswith(".JPEG"):
-    #             imgpath = os.path.join(parent, img)
-    #             image = Image.open(imgpath)
-    #             image = image.resize((64, 64))
-    #             image = np.array(image)
-    #             if image.shape == (64, 64, 3):
-    #                 imagePaths.append(imgpath)
-    #                 labels.append(label)
-    #     label += 1
-    # for i in range(len(labels)):
-    #     labels[i] = labels[i]-1
 
     print('the imagePaths is:', imagePaths)
     print("the labels is: ", labels)
@@ -124,13 +73,13 @@ def _parse_function(imagepaths, labels):
 # Note that a few elements have changed (usage of queues).
 
 # Parameters
-learning_rate = 0.001
+learning_rate = 0.0001
 num_steps = 1000
 batch_size = 128
 display_step = 100
 
 # Network Parameters
-dropout = 0.75  # Dropout, probability to keep units
+dropout = 0.25  # Dropout, probability to keep units
 
 # Build the data input
 sess = tf.Session(config=config)
@@ -162,12 +111,21 @@ sess.run(iterator.initializer)
 X, Y = iterator.get_next()
 
 
-# Create model
 def conv_net(x, n_classes, dropout, reuse, is_training):
+    """
+    Create model padding有两种类型，一种是valid，还有一种是same，valid表示不够卷积核大小就丢弃，same表示不够的话就补0
+    max_pooling2d 默认的padding是valid，就是说不够的话丢弃，否则same补充0；
+    :param x:
+    :param n_classes:
+    :param dropout:
+    :param reuse:
+    :param is_training:
+    :return:
+    """
     # Define a scope for reusing the variables
     with tf.variable_scope('ConvNet', reuse=reuse):
         # Convolution Layer with 32 filters and a kernel size of 5
-        conv1 = tf.layers.conv2d(x, 32, 5, activation=tf.nn.relu)
+        conv1 = tf.layers.conv2d(x, filters=32, kernel_size=5, padding="same", activation=tf.nn.relu)
         # Max Pooling (down-sampling) with strides of 2 and kernel size of 2
         conv1 = tf.layers.max_pooling2d(conv1, 2, 2)
 
