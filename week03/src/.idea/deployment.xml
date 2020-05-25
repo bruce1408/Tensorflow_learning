@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="PublishConfigData" autoUpload="Always" serverName="serve_50230">
+    <serverData>
+      <paths name="Copy of project-level server 'serve_50562'">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/tmp/pycharm_project_786" local="$PROJECT_DIR$" />
+          </mappings>
+        </serverdata>
+      </paths>
+      <paths name="serve_50230">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/tmp/pycharm_project_975" local="$PROJECT_DIR$" />
+          </mappings>
+          <excludedPaths>
+            <excludedPath path="/anaconda3/envs/python36/bin/python" />
+          </excludedPaths>
+        </serverdata>
+      </paths>
+      <paths name="serve_50562">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/tensorflow-learning" local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
+    </serverData>
+    <option name="myAutoUpload" value="ALWAYS" />
+  </component>
+</project>

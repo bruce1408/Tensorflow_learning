@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="ee1aa4ef-3bb8-4f08-aee0-8c040d4e75b6" name="serve_50562" url="http://166.111.76.48">
+        <fileTransfer host="166.111.76.48" port="50562" rootFolder="/home/bruce" accessType="SFTP">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+          <option name="port" value="50562" />
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>
