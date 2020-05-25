@@ -31,13 +31,31 @@ os.environ['CUDA_VISIBLE_DEVICES']='1'
 """
 不再重新构建图来做神经网络，同时加载运算
 """
+# saver = tf.train.import_meta_graph('./8_5basic/model.ckpt.meta')
+# with tf.Session() as sess:
+#     saver.restore(sess, '8_5basic/model.ckpt')
+#     graph = tf.get_default_graph()
+#     a = graph.get_tensor_by_name("a:0")
+#     b = graph.get_tensor_by_name("b:0")
+#     feed_dict = {a: 12.0, b: 12.0}
+#     # for x, y in enumerate(range(9)):
+#     #     feed_dict['a'] = x
+#     #     feed_dict['b'] = y
+#     add_op = graph.get_tensor_by_name("final_op_add:0")
+#     print(sess.run(add_op, feed_dict))
+
+"""
+多个输入进行预测
+"""
 saver = tf.train.import_meta_graph('./8_5basic/model.ckpt.meta')
-with tf.Session() as sess:
-    saver.restore(sess, '8_5basic/model.ckpt')
-    graph = tf.get_default_graph()
-    a = graph.get_tensor_by_name("a:0")
-    b = graph.get_tensor_by_name("b:0")
-    feed_dict = {a: 12.0, b: 12.0}
+sess = tf.Session()
+saver.restore(sess, '8_5basic/model.ckpt')
+graph = tf.get_default_graph()
+a = graph.get_tensor_by_name("a:0")
+b = graph.get_tensor_by_name("b:0")
+feed_dict = {a: 12.0, b: 12.0}
+print(feed_dict)
+for x, y in enumerate(range(9)):
+    feed_dict = {a: x, b: y}
     add_op = graph.get_tensor_by_name("final_op_add:0")
     print(sess.run(add_op, feed_dict))
-

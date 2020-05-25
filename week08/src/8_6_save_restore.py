@@ -1,46 +1,83 @@
 import tensorflow as tf
-import os
-os.environ['CUDA_VISIBLE_DEVICES'] = '1'
+from tensorflow.examples.tutorials.mnist import input_data
 
-sess = tf.Session()
-# 先加载图和变量
-saver = tf.train.import_meta_graph('my_test_model-1000.meta')
-saver.restore(sess, tf.train.latest_checkpoint('./'))
+# 加载数据集
+mnist = input_data.read_data_sets("../.../MNIST_data", one_hot=True)
 
-# 访问placeholders变量，并且创建feed-dict来作为placeholders的新值
-graph = tf.get_default_graph()
-w1 = graph.get_tensor_by_name("w1:0")
-w2 = graph.get_tensor_by_name("w2:0")
-feed_dict = {w1: 13.0, w2: 17.0}
+# Parameters
+learning_rate = 0.001
+batch_size = 100
+display_step = 10
+model_path = "./8_6/model.ckpt"
 
-# 接下来，访问你想要执行的op
-op_to_restore = graph.get_tensor_by_name("op_to_restore:0")
+# Network Parameters
+n_hidden_1 = 256  # 1st layer number of features
+n_hidden_2 = 256  # 2st layer number of features
+n_input = 784  # MNIST data input (img shape: 28*28)
+n_classes = 10  # MNIST total classes (0-9 digits)
 
-# 在当前图中能够加入op
-add_on_op = tf.multiply(op_to_restore, 2)
+# tf Graph input
+x = tf.placeholder(tf.float32, [None, n_input], name="input_x")
+y = tf.placeholder(tf.float32, [None, n_classes], name="input_y")
 
-print(sess.run(add_on_op, feed_dict))
-# 打印120.0==>(13+17)*2*2
+# Store layers weight & bias
+weights = {
+    'h1': tf.Variable(tf.random_normal([n_input, n_hidden_1])),
+    'h2': tf.Variable(tf.random_normal([n_hidden_1, n_hidden_2])),
+    'out': tf.Variable(tf.random_normal([n_hidden_2, n_classes]))
+}
+biases = {
+    'b1': tf.Variable(tf.random_normal([n_hidden_1])),
+    'b2': tf.Variable(tf.random_normal([n_hidden_2])),
+    'out': tf.Variable(tf.random_normal([n_classes]))
+}
 
 
-"""
-加载模型部分
-"""
-# saver = tf.train.import_meta_graph('vgg.meta')
-# # 访问图
-# graph = tf.get_default_graph()
-#
-# # 访问用于fine-tuning的output
-# fc7 = graph.get_tensor_by_name('fc7:0')
-#
-# # 如果你想修改最后一层梯度，需要如下
-# fc7 = tf.stop_gradient(fc7)  # It's an identity function
-# fc7_shape = fc7.get_shape().as_list()
-#
-# new_outputs = 2
-# weights = tf.Variable(tf.truncated_normal([fc7_shape[3], num_outputs], stddev=0.05))
-# biases = tf.Variable(tf.constant(0.05, shape=[num_outputs]))
-# output = tf.matmul(fc7, weights) + biases
-# pred = tf.nn.softmax(output)
+# Create model
+def multilayer_perceptron(x, weights, biases):
+    # layer1
+    h1 = tf.add(tf.matmul(x, weights['h1']), biases['b1'])
+    h1 = tf.nn.relu(h1)
 
-# Now, you run this with fine-tuning data in sess.run()
+    # layer2
+    h2 = tf.add(tf.matmul(h1, weights['h2']), biases['b2'])
+    h2 = tf.nn.relu(h2)
+
+    # out
+    out = tf.add(tf.matmul(h2, weights['out']), biases['out'])
+
+    return out
+
+
+# Construct model
+logits = multilayer_perceptron(x, weights, biases)
+pred = tf.nn.softmax(logits)
+
+# Define loss and optimizer
+cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=logits, labels=y))
+optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate).minimize(cost)
+
+corrcet_pred = tf.equal(tf.argmax(pred, 1), tf.argmax(y, 1))
+accuracy = tf.reduce_mean(tf.cast(corrcet_pred, tf.float32))
+
+# Initializing the variables
+init = tf.global_variables_initializer()
+
+# 保存模型
+saver = tf.train.Saver()
+tf.add_to_collection("pred", pred)
+tf.add_to_collection('acc', accuracy)
+
+with tf.Session() as sess:
+    sess.run(init)
+
+    step = 0
+    while step * batch_size < 180000:
+        batch_xs, batch_ys = mnist.train.next_batch(batch_size)
+        loss, _, acc = sess.run([cost, optimizer, accuracy], feed_dict={x: batch_xs, y: batch_ys})
+        if step % display_step == 0:
+            # step: 1790 loss: 16.9724 acc: 0.95
+            print("step: ", step, "loss: ", loss, "acc: ", acc)
+            saver.save(sess, save_path=model_path, global_step=step)
+        step += 1
+    print("Train Finish!")
