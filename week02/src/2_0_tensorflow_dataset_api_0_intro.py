@@ -53,6 +53,27 @@ print(X.shape)
 # -----------------------------------------------
 # Note that a few elements have changed (usage of sess run).
 
+# # Convert to Tensor,保存的是图片的路径 和 labels
+# imagsePaths = tf.convert_to_tensor(imagsePaths, dtype=tf.string)
+# labels = tf.convert_to_tensor(labels, dtype=tf.int32)
+# # Build a TF Queue, shuffle data
+# image, label = tf.train.slice_input_producer([imagsePaths, labels], shuffle=True)
+#
+# # Read images from disk
+# image = tf.read_file(image)
+# image = tf.image.decode_jpeg(image, channels=CHANNELS)
+#
+# # Resize images to a common size
+# image = tf.image.resize_images(image, [IMG_HEIGHT, IMG_WIDTH])
+#
+# # Normalize
+# image = image * 1.0 / 127.5 - 1.0
+#
+# # Create batches
+# X, Y = tf.train.batch([image, label], batch_size=batch_size, capacity=batch_size * 8, num_threads=4)
+#
+# return X, Y
+
 
 # Create model
 def conv_net(x, n_classes, dropout, reuse, is_training):

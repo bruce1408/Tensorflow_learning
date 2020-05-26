@@ -1,6 +1,4 @@
-
 # coding: utf-8
-
 import tensorflow as tf
 import os
 import random
@@ -9,15 +7,12 @@ import sys
 from PIL import Image
 import numpy as np
 
-#验证集数量
+# 验证集数量
 _NUM_TEST = 500
-
-#随机种子
+# 随机种子
 _RANDOM_SEED = 0
-
-#数据集路径
+# 数据集路径
 DATASET_DIR = "./captcha/images/"
-
 # tfrecord文件存放路径
 TFRECORD_DIR = "./captcha/"
 
@@ -25,7 +20,7 @@ TFRECORD_DIR = "./captcha/"
 # 判断tfrecord文件是否存在
 def _dataset_exists(dataset_dir):
     for split_name in ['train', 'test']:
-        output_filename = os.path.join(dataset_dir,split_name + '.tfrecords')
+        output_filename = os.path.join(dataset_dir, split_name + '.tfrecords')
         if not tf.gfile.Exists(output_filename):
             return False
     return True
@@ -35,9 +30,10 @@ def _dataset_exists(dataset_dir):
 def _get_filenames_and_classes(dataset_dir):
     photo_filenames = []
     for filename in os.listdir(dataset_dir):
-        #获取文件路径
+        # 获取文件路径
         path = os.path.join(dataset_dir, filename)
         photo_filenames.append(path)
+    print('所有的图片的路径: ', photo_filenames)
     return photo_filenames
 
 
@@ -54,11 +50,11 @@ def bytes_feature(values):
 def image_to_tfexample(image_data, label0, label1, label2, label3):
     # Abstract base class for protocol messages.
     return tf.train.Example(features=tf.train.Features(feature={
-      'image': bytes_feature(image_data),
-      'label0': int64_feature(label0),
-      'label1': int64_feature(label1),
-      'label2': int64_feature(label2),
-      'label3': int64_feature(label3),
+        'image': bytes_feature(image_data),
+        'label0': int64_feature(label0),
+        'label1': int64_feature(label1),
+        'label2': int64_feature(label2),
+        'label3': int64_feature(label3),
     }))
 
 
@@ -72,28 +68,28 @@ def _convert_dataset(split_name, filenames, dataset_dir):
         with tf.python_io.TFRecordWriter(output_filename) as tfrecord_writer:
             for i, filename in enumerate(filenames):
                 try:
-                    sys.stdout.write('\r>> Converting image %d/%d' % (i+1, len(filenames)))
+                    sys.stdout.write('\r>> Converting image %d/%d' % (i + 1, len(filenames)))
                     sys.stdout.flush()
 
                     # 读取图片
-                    image_data = Image.open(filename)  
+                    image_data = Image.open(filename)
                     # 根据模型的结构resize
                     image_data = image_data.resize((224, 224))
                     # 灰度化
                     image_data = np.array(image_data.convert('L'))
                     # 将图片转化为bytes
-                    image_data = image_data.tobytes()              
+                    image_data = image_data.tobytes()
 
                     # 获取label
                     labels = filename.split('/')[-1][0:4]
                     num_labels = []
                     for j in range(4):
                         num_labels.append(int(labels[j]))
-                                            
+
                     # 生成protocol数据类型
                     example = image_to_tfexample(image_data, num_labels[0], num_labels[1], num_labels[2], num_labels[3])
                     tfrecord_writer.write(example.SerializeToString())
-                    
+
                 except IOError as e:
                     print('Could not read:', filename)
                     print('Error:', e)
@@ -115,12 +111,7 @@ else:
     training_filenames = photo_filenames[_NUM_TEST:]
     testing_filenames = photo_filenames[:_NUM_TEST]
 
-    #数据转换
+    # 数据转换
     _convert_dataset('train', training_filenames, DATASET_DIR)
     _convert_dataset('test', testing_filenames, DATASET_DIR)
     print('生成tfcecord文件')
-
-
-
-
-

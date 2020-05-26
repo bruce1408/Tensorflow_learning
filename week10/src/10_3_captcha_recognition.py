@@ -4,11 +4,12 @@
 import os
 import sys
 
-sys.path.append("/Users/bruce/programme/Python/PycharmProjects/tensorflow-learning/week10/src/nets")
+# sys.path.append("/Users/bruce/programme/Python/PycharmProjects/tensorflow-learning/week10/src/nets")
 import tensorflow as tf
 from PIL import Image
 from nets import nets_factory
 import numpy as np
+os.environ['CUDA_VISIBLE_DEVICES'] = '1'
 
 # 不同字符数量
 CHAR_SET_LEN = 10

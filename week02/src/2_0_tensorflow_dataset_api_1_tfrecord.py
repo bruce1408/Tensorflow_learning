@@ -1,8 +1,6 @@
 import os
 import tensorflow as tf
 import numpy as np
-# os.environ['CUDA_VISIBLE_DEVICES'] = '0,1,2'
-
 os.environ['CUDA_VISIBLE_DEVICES'] = '2'
 
 # Dataset Parameters - CHANGE HERE
@@ -118,7 +116,7 @@ def _parse_function(record):
 # dataset pipeline
 # dataset = tf.data.Dataset.from_tensor_slices((imagespaths, labels))
 # dataset = tf.data.TFRecordDataset("/home/bruce/PycharmProjects/tensorflow-learning/week09/src/slim/train_1.tfrecord")
-dataset = tf.data.TFRecordDataset("/raid/bruce/dog_cat/train_dogs_cat.tfrecord")
+dataset = tf.data.TFRecordDataset("./train_dog_cat.tfrecord")
 dataset = dataset.map(_parse_function)
 dataset = dataset.repeat()
 dataset = dataset.batch(batch_size=BATCHSIZE)
@@ -130,28 +128,6 @@ X, Y = iterator.get_next()
 
 # Neural Net Input (images, labels)
 print(X.shape)
-
-
-# # Convert to Tensor,保存的是图片的路径 和 labels
-# imagsePaths = tf.convert_to_tensor(imagsePaths, dtype=tf.string)
-# labels = tf.convert_to_tensor(labels, dtype=tf.int32)
-# # Build a TF Queue, shuffle data
-# image, label = tf.train.slice_input_producer([imagsePaths, labels], shuffle=True)
-#
-# # Read images from disk
-# image = tf.read_file(image)
-# image = tf.image.decode_jpeg(image, channels=CHANNELS)
-#
-# # Resize images to a common size
-# image = tf.image.resize_images(image, [IMG_HEIGHT, IMG_WIDTH])
-#
-# # Normalize
-# image = image * 1.0 / 127.5 - 1.0
-#
-# # Create batches
-# X, Y = tf.train.batch([image, label], batch_size=batch_size, capacity=batch_size * 8, num_threads=4)
-#
-# return X, Y
 
 
 def conv_net(x, n_classes, dropout, reuse, is_training):

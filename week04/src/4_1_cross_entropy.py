@@ -6,11 +6,10 @@ os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"
 old_v = tf.logging.get_verbosity()
 tf.logging.set_verbosity(tf.logging.ERROR)
 # 载入数据集
-mnist = input_data.read_data_sets("./MNIST_data", one_hot=True)
+mnist = input_data.read_data_sets("../../MNIST_data", one_hot=True)
 
 # 每个批次的大小
 batch_size = 1000
-# 计算一共有多少个批次
 n_batch = mnist.train.num_examples // batch_size
 
 # 定义两个placeholder

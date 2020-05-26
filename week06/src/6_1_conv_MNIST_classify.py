@@ -193,12 +193,12 @@ with tf.Session() as sess:
     sess.run(tf.global_variables_initializer())
     for epoch in range(21):
         for batch in range(n_batch):
-            if epoch % 2 == 0:
+            if batch % 200 == 0:
                 batch_xs, batch_ys = mnist.train.next_batch(batch_size)
                 # print(batch_xs.shape, batch_ys.shape)
                 # print(batch_xs)
                 loss_result, _, acc = sess.run([cross_entropy, train_step, accuracy], feed_dict={x: batch_xs, y: batch_ys, keep_prob: 0.7})
-                print("loss is : %f, and the train acc is: %f" % (loss_result, acc))
+                print("MiniBatch Loss is: %f, the Training acc is: %f" % (loss_result, acc))
         acc = sess.run(accuracy, feed_dict={x: mnist.test.images, y: mnist.test.labels, keep_prob: 1.0})
         print("Iter " + str(epoch) + ", Testing Accuracy= " + str(acc) + " loss = " + str(loss_result))
 

@@ -1,8 +1,4 @@
 # coding: utf-8
-
-# In[1]:
-
-# 验证码生成库
 from captcha.image import ImageCaptcha  # pip install captcha
 import numpy as np
 from PIL import Image
@@ -21,7 +17,7 @@ def random_captcha_text(char_set=number, captcha_size=4):
     captcha_text = []
     for i in range(captcha_size):
         # 随机选择
-        c = random.choice(char_set)
+        c = random.choice(char_set)  # 随机选择0-9之间的一个数字
         # 加入验证码列表
         captcha_text.append(c)
     return captcha_text
@@ -29,7 +25,7 @@ def random_captcha_text(char_set=number, captcha_size=4):
 
 # 生成字符对应的验证码
 def gen_captcha_text_and_image():
-    image = ImageCaptcha()
+    image = ImageCaptcha()  # 调用验证码的数字函数
     # 获得随机生成的验证码
     captcha_text = random_captcha_text()
     # 把验证码列表转为字符串

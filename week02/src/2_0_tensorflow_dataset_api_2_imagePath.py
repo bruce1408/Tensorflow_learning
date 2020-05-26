@@ -94,7 +94,6 @@ def _parse_function(imagepaths, labels):
     image_resized = tf.image.resize_images(image_decode, [IMG_HEIGHT, IMG_WIDTH], method=tf.image.ResizeMethod.AREA)
     return image_resized, labels
 
-
 # -----------------------------------------------
 # THIS IS A CLASSIC CNN (see examples, section 3)
 # -----------------------------------------------
