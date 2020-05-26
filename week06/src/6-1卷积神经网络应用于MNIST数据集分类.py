@@ -5,7 +5,7 @@ import struct
 import numpy as np
 import warnings
 import tensorflow as tf
-from mlxtend.data import loadlocal_mnist
+# from mlxtend.data import loadlocal_mnist
 from tensorflow.examples.tutorials.mnist import input_data
 warnings.filterwarnings('ignore')
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
@@ -13,7 +13,7 @@ os.environ['CUDA_VISIBLE_DEVICES'] = '2'
 old_v = tf.logging.get_verbosity()
 np.set_printoptions(threshold=100000)
 tf.logging.set_verbosity(tf.logging.ERROR)
-mnist = input_data.read_data_sets('./fashion_mnist', one_hot=True)
+mnist = input_data.read_data_sets('../../fashion_mnist', one_hot=True)
 # mnist = input_data.read_data_sets('/Users/bruce/program/Python_file/datasets/fashion_mnist', one_hot=True)
 # mnist = input_data.read_data_sets('/home/bruce/bigVolumn/Datasets/fashion_mnist', one_hot=True)
 
@@ -71,8 +71,8 @@ def load_mnist(path, kind='train'):
     return images, labels
 
 
-x_train, y_train = load_mnist('./fashion_mnist', kind='train')
-x_test, y_test = load_mnist('./fashion_mnist', kind='t10k')
+x_train, y_train = load_mnist('../../fashion_mnist', kind='train')
+x_test, y_test = load_mnist('../../fashion_mnist', kind='t10k')
 
 # x_train, y_train = loadlocal_mnist(images_path='./fashion_mnist/train-images-idx3-ubyte.gz',
 #                                    labels_path='./fashion_mnist/train-labels-idx1-ubyte.gz')
@@ -193,11 +193,12 @@ with tf.Session() as sess:
     sess.run(tf.global_variables_initializer())
     for epoch in range(21):
         for batch in range(n_batch):
-            batch_xs, batch_ys = mnist.train.next_batch(batch_size)
-            # print(batch_xs.shape, batch_ys.shape)
-            # print(batch_xs)
-            loss_result, _ = sess.run([cross_entropy, train_step], feed_dict={x: batch_xs, y: batch_ys, keep_prob: 0.7})
-            print("loss is : ", loss_result)
+            if epoch % 2 == 0:
+                batch_xs, batch_ys = mnist.train.next_batch(batch_size)
+                # print(batch_xs.shape, batch_ys.shape)
+                # print(batch_xs)
+                loss_result, _, acc = sess.run([cross_entropy, train_step, accuracy], feed_dict={x: batch_xs, y: batch_ys, keep_prob: 0.7})
+                print("loss is : %f, and the train acc is: %f" % (loss_result, acc))
         acc = sess.run(accuracy, feed_dict={x: mnist.test.images, y: mnist.test.labels, keep_prob: 1.0})
         print("Iter " + str(epoch) + ", Testing Accuracy= " + str(acc) + " loss = " + str(loss_result))
 

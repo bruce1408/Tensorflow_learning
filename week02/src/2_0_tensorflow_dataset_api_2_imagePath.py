@@ -121,8 +121,8 @@ print(labels.__len__())
 # imagespaths = tf.convert_to_tensor(image, dtype=tf.string)
 # labels = tf.convert_to_tensor(labels, dtype=tf.int32)
 
-imagespaths = tf.constant(image)
-labels = tf.constant(labels)
+# imagespaths = tf.constant(image)
+# labels = tf.constant(labels)
 # Create a dataset tensor from the images and the labels
 dataset = tf.data.Dataset.from_tensor_slices((image_train, label_train))
 dataset = dataset.map(_parse_function)

@@ -3,13 +3,10 @@ import tensorflow as tf
 from tensorflow.examples.tutorials.mnist import input_data
 old_v = tf.logging.get_verbosity()
 tf.logging.set_verbosity(tf.logging.ERROR)
-
+import os
+os.environ['CUDA_VISIBLE_DEVICES'] = '2'
 # input data
-<<<<<<< HEAD
-mnist_data = input_data.read_data_sets('/Users/bruce/program/Python_file/datasets/fashion_mnist', one_hot=True)
-=======
-mnist_data = input_data.read_data_sets('/home/bruce/bigVolumn/Datasets/MNIST_data', one_hot=True)
->>>>>>> 054737601996624b90ae40bb35d43875d014de0b
+mnist_data = input_data.read_data_sets('../../fashion_mnist', one_hot=True)
 batch_size = 100
 n_batch = mnist_data.train.num_examples // batch_size
 epoch = 21
@@ -84,10 +81,14 @@ accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
 init = tf.global_variables_initializer()
 with tf.Session() as sess:
     sess.run(init)
+    count = 0
     for eachEpoch in range(epoch):
         for i in range(n_batch):
+            count += 1
             batch_x, batch_y = mnist_data.train.next_batch(batch_size)
-            sess.run(train_step, feed_dict={x: batch_x, y: batch_y, keep_prob: 0.7})
+            acctrain, _ = sess.run([accuracy, train_step], feed_dict={x: batch_x, y: batch_y, keep_prob: 0.7})
+            if i % 100 == 0:
+                print("Step " + str(int(count/100)) + ", training Accuracy= " + str(acctrain))
         acc = sess.run(accuracy, feed_dict={x: mnist_data.test.images, y: mnist_data.test.labels, keep_prob: 1.0})
-        print("Iter " + str(eachEpoch) + ", Testing Accuracy= " + str(acc))
+        print("Epoch " + str(eachEpoch) + ", Testing Accuracy= " + str(acc))
 

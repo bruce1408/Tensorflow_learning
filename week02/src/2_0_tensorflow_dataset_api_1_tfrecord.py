@@ -15,7 +15,6 @@ IMG_WIDTH = 128  # CHANGE HERE, the image width to be resized to
 CHANNELS = 3  # The 3 color channels, change to 1 if grayscale
 n_classes = N_CLASSES  # MNIST total classes (0-9 digits)
 dropout = 0.25
-dropout = 0.45
 num_steps = 20000
 display_step = 100
 learning_rate = 0.0001
