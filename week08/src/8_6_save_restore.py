@@ -72,7 +72,7 @@ with tf.Session() as sess:
     sess.run(init)
 
     step = 0
-    while step * batch_size < 180000:
+    while step * batch_size < 1000:
         batch_xs, batch_ys = mnist.train.next_batch(batch_size)
         loss, _, acc = sess.run([cost, optimizer, accuracy], feed_dict={x: batch_xs, y: batch_ys})
         if step % display_step == 0:

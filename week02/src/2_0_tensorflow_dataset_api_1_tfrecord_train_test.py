@@ -1,7 +1,7 @@
 import os
 import tensorflow as tf
 import numpy as np
-os.environ['CUDA_VISIBLE_DEVICES'] = '2'
+os.environ['CUDA_VISIBLE_DEVICES'] = '1,2'
 
 # Image Parameters
 N_CLASSES = 2  # CHANGE HERE, total number of classes
@@ -10,8 +10,9 @@ IMG_WIDTH = 128  # CHANGE HERE, the image width to be resized to
 CHANNELS = 3  # The 3 color channels, change to 1 if grayscale
 n_classes = N_CLASSES  # MNIST total classes (0-9 digits)
 dropout = 0.25
-num_steps = 20000
-display_step = 100
+num_steps = 1000
+train_display = 100
+val_display = 300
 learning_rate = 0.0001
 BATCHSIZE = 32
 
@@ -40,7 +41,6 @@ def read_images(dataset_path):
     #     # List the directory
     #
     #     classes = sorted(os.walk(dataset_path).__next__()[1])
-    #     # print("the calsses is: ", classes)
     #     # List each sub-directory (the classes)
     #     for c in classes:
     #         c_dir = os.path.join(dataset_path, c)
@@ -56,17 +56,12 @@ def read_images(dataset_path):
     #         label += 1
     # else:
     #     raise Exception("Unknown mode.")
-    # print(imagepaths)
-    # print(labels)
     path = os.getcwd()
     dirPath = os.path.join(path, dataset_path)
-    # dirPath = dataset_path
-    print(dirPath)
     imagePaths = list()
     labels = list()
     label = 0
     for parent, _, filenames in os.walk(dirPath):
-        # print("the parent is: ", parent)
         for img in filenames:
             if img.endswith('.jpg') or img.endswith('.jpeg') or img.endswith(".JPEG"):
                 imagePaths.append(os.path.join(parent, img))
@@ -192,10 +187,6 @@ def conv_net(x, n_classes, dropout, reuse, is_training):
     # return out
 
 
-# Because Dropout have different behavior at training and prediction time, we
-# need to create 2 distinct computation graphs that share the same weights.
-# Because Dropout have different behavior at training and prediction time, we
-# need to create 2 distinct computation graphs that share the same weights.
 # Create a graph for training
 logits_train = conv_net(X, N_CLASSES, dropout, reuse=False, is_training=True)
 # Create another graph for testing that reuse the same weights
@@ -212,9 +203,6 @@ accuracy = tf.reduce_mean(tf.cast(correct_pred, tf.float32))
 
 # Initialize the variables (i.e. assign their default value)
 init = tf.global_variables_initializer()
-# Run the initializer
-# Saver object
-saver = tf.train.Saver()
 
 # Start training
 # Initialize the iterator
@@ -222,30 +210,35 @@ with tf.Session() as sess:
     # sess.run(iterator.initializer)
     sess.run(init)
     sess.run(traindata_init)
-
+    sess.run(valdata_init)
+    saver = tf.train.Saver()
+    ckpt = tf.train.get_checkpoint_state('./model1')
+    if ckpt is None:
+        print("Model not found, please train your model first...")
+    else:
+        path = ckpt.model_checkpoint_path
+        print('loading pre-trained model from %s.....' % path)
+        saver.restore(sess, path)
     # Training cycle
     for step in range(1, num_steps + 1):
         sess.run(train_op)
-        if step % display_step == 0 or step == 1:
+        if step % train_display == 0 or step == 1:
             # Run optimization and calculate batch loss and accuracy
             loss, acc = sess.run([loss_op, accuracy])
             print("Step " + str(step) + ", Minibatch Loss= " + "{:.4f}".format(loss) + ", Training Accuracy= " +
                   "{:.3f}".format(acc))
-        # else:
-        #     # Only run the optimization op (backprop)
-        #     sess.run(train_op)
 
-    sess.run(valdata_init)
-    avg_acc = 0
-    valid_iters = 100
-    for i in range(valid_iters):
-        acc = sess.run([accuracy])
-        avg_acc += acc[0]
-    print(
-        'Average validation set accuracy over {} iterations is {:.2f}%'.format(
-            valid_iters, (avg_acc / valid_iters) * 100))
+        if step % val_display == 0:
+            avg_acc = 0
+            loss, acc = sess.run([loss_op, accuracy])
+            print("\033[1;36m=\033[0m"*60)
+            print("\033[1;36m Step %d, Minibatch Loss= %.4f, Test Accuracy= %.4f\033[0m" % (step, loss, acc))
+            print("\033[1;36m=\033[0m"*60)
+
+        if step % 500 == 0:
+            path_name = "./model1/model" + str(step) + ".ckpt"
+            print(path_name)
+            saver.save(sess, path_name)
+            print("model has been saved")
 
     print("Optimization Finished!")
-
-    # Save your model
-    saver.save(sess, './model1/my_tf_model.ckpt')

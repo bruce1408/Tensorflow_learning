@@ -99,27 +99,7 @@ def _bytes_feature(value):
     return tf.train.Feature(bytes_list=tf.train.BytesList(value=[value]))
 
 
-def imageToTfrecord(filepath, labelpath, tfrecordName):
-    writer = tf.python_io.TFRecordWriter(tfrecordName)
-    for path, label in zip(filepath, labelpath):
-        image = Image.open(path)
-        # print(image.size)
-        image = image.resize((HIGHTSIZE, WIDTHSIZE), Image.ANTIALIAS)
-        # print(image.size)
-        image = np.array(image)
-        print(image.shape)
-        img_raw = image.tobytes()  # 将图片转化为二进制格式
-        example = tf.train.Example(features=tf.train.Features(feature={
-            # value=[index]决定了图片数据的类型label
-            "label": _int64_feature(label),
-            "img_raw": _bytes_feature(img_raw)
-        }))
-        writer.write(example.SerializeToString())  # 序列化为字符串
-    writer.close()
 
-
-# 生成tfrecord
-# imageToTfrecord(img_train, label_train, './train.tfrecord')
 def convert_to_tfrecord(images, labels, filename):
     errorCount = 0
     # filename = './train_dogs_cat.tfrecord'
@@ -251,3 +231,26 @@ def get_batch(image, label, image_W, image_H, batch_size, capacity):
 #    finally:
 #        coord.request_stop()
 #    coord.join(threads)
+
+
+# def imageToTfrecord(filepath, labelpath, tfrecordName):
+#     writer = tf.python_io.TFRecordWriter(tfrecordName)
+#     for path, label in zip(filepath, labelpath):
+#         image = Image.open(path)
+#         # print(image.size)
+#         image = image.resize((HIGHTSIZE, WIDTHSIZE), Image.ANTIALIAS)
+#         # print(image.size)
+#         image = np.array(image)
+#         print(image.shape)
+#         img_raw = image.tobytes()  # 将图片转化为二进制格式
+#         example = tf.train.Example(features=tf.train.Features(feature={
+#             # value=[index]决定了图片数据的类型label
+#             "label": _int64_feature(label),
+#             "img_raw": _bytes_feature(img_raw)
+#         }))
+#         writer.write(example.SerializeToString())  # 序列化为字符串
+#     writer.close()
+
+
+# 生成tfrecord
+# imageToTfrecord(img_train, label_train, './train.tfrecord')

@@ -178,8 +178,7 @@ with tf.Session() as sess:
         if step % display_step == 0 or step == 1:
             if step > 1:
                 average_loss /= display_step
-            print("Step " + str(step) + ", Average Loss= " + \
-                  "{:.4f}".format(average_loss))
+            print("Step " + str(step) + ", Average Loss= " + "{:.4f}".format(average_loss))
             average_loss = 0
 
         # Evaluation

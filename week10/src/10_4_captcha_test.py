@@ -7,8 +7,8 @@ from nets import nets_factory
 import numpy as np
 import matplotlib.pyplot as plt
 
-# In[2]:
-
+import os
+os.environ['CUDA_VISIBLE)DEVICES'] = '0'
 # 不同字符数量
 CHAR_SET_LEN = 10
 # 图片高度
@@ -57,8 +57,6 @@ def read_and_decode(filename):
 
     return image, image_raw, label0, label1, label2, label3
 
-
-# In[3]:
 
 # 获取图片数据和标签
 image, image_raw, label0, label1, label2, label3 = read_and_decode(TFRECORD_FILE)

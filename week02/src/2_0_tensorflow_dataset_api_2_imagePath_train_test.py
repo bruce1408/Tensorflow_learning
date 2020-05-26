@@ -81,7 +81,7 @@ learning_rate = 0.0001
 num_steps = 2000
 batch_size = 128
 display_step = 100
-
+val_display = 300
 # Network Parameters
 dropout = 0.25  # Dropout, probability to drop during training the units
 
@@ -283,6 +283,16 @@ with tf.Session(config=config) as sess:
 
     sess.run(init)
     sess.run(traindata_init)
+    sess.run(valdata_init)
+    # save the model
+    saver = tf.train.Saver()
+    ckpt = tf.train.get_checkpoint_state('./model2')
+    if ckpt is None:
+        print("Model not found, please train your model first...")
+    else:
+        path = ckpt.model_checkpoint_path
+        print('loading pre-trained model from %s.....' % path)
+        saver.restore(sess, path)
 
     # Training cycle
     for step in range(1, num_steps + 1):
@@ -298,14 +308,20 @@ with tf.Session(config=config) as sess:
             loss, acc, correct_ = sess.run([loss_op, accuracy, correct_pred])
             print("Step " + str(step) + ", Minibatch Loss= " + "{:.4f}".format(loss) + ", Training Accuracy= " +
                   "{:.3f}".format(acc))
-    sess.run(valdata_init)
-    avg_acc = 0
-    valid_iters = 100
-    for i in range(valid_iters):
-        acc = sess.run([accuracy])
-        avg_acc += acc[0]
-    print(
-        'Average validation set accuracy over {} iterations is {:.2f}%'.format(
-            valid_iters, (avg_acc / valid_iters) * 100))
+
+            path_name = "./model2/model" + str(step) + ".ckpt"
+            print(path_name)
+            if step % 200 == 0:
+                saver.save(sess, path_name)
+                print("model has been saved")
+
+        if step % val_display == 0:
+            avg_acc = 0
+            loss, acc = sess.run([loss_op, accuracy])
+            # avg_acc += acc[0]
+            print("="*58)
+            print("Step " + str(step) + ', Minibatch Loss= ' + "{:.4f}".format(loss) + ", Test Accuracy= " + "{:.3f}".format(acc))
+            print("="*58)
+
 
 print("Optimization Finished!")
