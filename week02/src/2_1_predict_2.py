@@ -8,7 +8,8 @@ import os
 os.environ['CUDA_VISIBLE_DEVICES'] = '0'
 MODEL_SAVE_PATH = "model1/"
 MODEL_NAME = "model1000.ckpt.data-00000-of-00001"
-imgPath = "/raid/bruce/tmp/tmp/tensorflow_learning_remote/pred/"
+# imgPath = "/raid/bruce/tmp/tmp/tensorflow_learning_remote/pred/"
+imgPath = "../../week03/src/images/dogs"
 labels = {'0': 'cat', '1': 'dog'}
 
 image = tf.placeholder(tf.float32, [None, 128, 128, 3])
@@ -22,11 +23,11 @@ labelList = list()
 
 
 def plot_images(images, labels, num, reallabel):
-    for i in np.arange(0, num):
-        plt.subplot(2, 3, i + 1)
+    for i in np.arange(0, 30):
+        plt.subplot(5, 6, i + 1)
         plt.axis('off')
-        print(labels[i])
-        plt.title(reallabel[str(labels[i])], fontsize=14)
+        # print(labels[i])
+        plt.title(reallabel[str(labels[i])], fontsize=8)
         plt.subplots_adjust(wspace=0.5, hspace=3)
         plt.imshow(images[i])
     plt.show()
