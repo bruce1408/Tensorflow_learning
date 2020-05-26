@@ -298,7 +298,7 @@ with tf.Session(config=config) as sess:
             loss, acc, correct_ = sess.run([loss_op, accuracy, correct_pred])
             print("Step " + str(step) + ", Minibatch Loss= " + "{:.4f}".format(loss) + ", Training Accuracy= " +
                   "{:.3f}".format(acc))
-
+    sess.run(valdata_init)
     avg_acc = 0
     valid_iters = 100
     for i in range(valid_iters):
