@@ -16,11 +16,11 @@ from tensorflow.python.ops import resources
 
 # Ignore all GPUs, tf random forest does not benefit from it.
 import os
-os.environ["CUDA_VISIBLE_DEVICES"] = ""
+os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 
 # Import MNIST data
 from tensorflow.examples.tutorials.mnist import input_data
-mnist = input_data.read_data_sets("/home/bruce/bigVolumn/Datasets/MNIST_data", one_hot=False)
+mnist = input_data.read_data_sets("../../MNIST_data", one_hot=False)
 
 # Parameters
 num_steps = 500  # Total steps to train

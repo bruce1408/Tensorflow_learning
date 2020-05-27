@@ -3,6 +3,7 @@ import os
 import warnings
 import tensorflow as tf
 from tensorflow.examples.tutorials.mnist import input_data
+
 # fashion_mnist = keras.datasets.fashion_mnist
 # (train_images, train_labels), (test_images, test_labels) = fashion_mnist.load_data()
 # warnings.filterwarnings('ignore')
@@ -12,19 +13,13 @@ old_v = tf.logging.get_verbosity()
 tf.logging.set_verbosity(tf.logging.ERROR)
 
 # 载入数据集
-mnist = input_data.read_data_sets("Users/bruce/program/Python/datasets/fashion_mnist", one_hot=True)
-
+mnist = input_data.read_data_sets("../../fashion_mnist", one_hot=True)
 # 每个批次的大小
-#载入数据集
-mnist = input_data.read_data_sets("/home/bruce/bigVolumn/Datasets/fashion_mnist", one_hot=True)
-
-#每个批次的大小
 batch_size = 100
 # 计算一共有多少个批次
 
 n_batch = mnist.train.num_examples // batch_size  # 一次完全训练需要多少batch数
 print(n_batch)  # n_batch 550, train=55000, test_example = 10000个
-
 
 # 定义两个placeholder
 x = tf.placeholder(tf.float32, [None, 784])
@@ -35,11 +30,11 @@ y = tf.placeholder(tf.float32, [None, 10])
 # b = tf.Variable(tf.random_normal([10]))
 W = tf.Variable(tf.zeros([784, 10]))
 b = tf.Variable(tf.zeros([1, 10]))
-prediction = tf.nn.softmax(tf.matmul(x, W)+b)
+prediction = tf.nn.softmax(tf.matmul(x, W) + b)
 print(prediction)
 
 # 二次代价函数
-loss = tf.reduce_mean(tf.square(y-prediction))
+loss = tf.reduce_mean(tf.square(y - prediction))
 # 使用梯度下降法
 train_step = tf.train.GradientDescentOptimizer(0.2).minimize(loss)
 
@@ -47,9 +42,9 @@ train_step = tf.train.GradientDescentOptimizer(0.2).minimize(loss)
 init = tf.global_variables_initializer()
 
 # 结果存放在一个布尔型列表中
-correct_prediction = tf.equal(tf.argmax(y, 1), tf.argmax(prediction, 1)) # argmax返回一维张量中最大的值所在的位置
+correct_prediction = tf.equal(tf.argmax(y, 1), tf.argmax(prediction, 1))  # argmax返回一维张量中最大的值所在的位置
 # 求准确率，tf.cast是类型转换，把correct_prediction转换为tf.float32,例如[true,false,true,false]->[1,0,1,0]
-accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32)) # 把这个加起来就是准确率
+accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))  # 把这个加起来就是准确率
 with tf.Session() as sess:
     sess.run(init)
     for epoch in range(21):  # 一共是完整迭代整个数据21次
@@ -64,7 +59,7 @@ with tf.Session() as sess:
 init = tf.global_variables_initializer()
 
 # 结果存放在一个布尔型列表中
-correct_prediction = tf.equal(tf.argmax(y, 1), tf.argmax(prediction, 1))#argmax返回一维张量中最大的值所在的位置
+correct_prediction = tf.equal(tf.argmax(y, 1), tf.argmax(prediction, 1))  # argmax返回一维张量中最大的值所在的位置
 # 求准确率
 accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
 
@@ -76,7 +71,7 @@ with tf.Session() as sess:
             sess.run(train_step, feed_dict={x: batch_xs, y: batch_ys})
 
         acc, loss_ = sess.run([accuracy, loss], feed_dict={x: mnist.test.images, y: mnist.test.labels})
-        print("Iter " + str(epoch) + ",Testing Accuracy " + str(acc)+" ,loss= " + str(loss_))
+        print("Iter " + str(epoch) + ",Testing Accuracy " + str(acc) + " ,loss= " + str(loss_))
 
 # import tensorflow as tf
 # import numpy as np
@@ -203,5 +198,3 @@ with tf.Session() as sess:
 #     print("Test Accuracy:", accuracy.eval({x: X_test, y: y_test}))
 #     print(sess.run(tf.argmax(y_test[:30], 1)), "Real Number")
 #     print(sess.run(tf.argmax(pred[:30], 1), feed_dict={x: X_test, y: y_test}), "Prediction Number")
-
-

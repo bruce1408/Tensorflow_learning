@@ -10,7 +10,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import os
 
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'  # 只显示 Error
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'  # 只显示 Error
 np.random.seed(1)  # 随机采样一个随机值
 # create data
 x_data = np.random.rand(100).astype(np.float32)  # 0~1之间的随机的100个数

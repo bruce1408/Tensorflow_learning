@@ -211,7 +211,7 @@ with tf.Session() as sess:
     sess.run(init)
     sess.run(traindata_init)
     sess.run(valdata_init)
-    saver = tf.train.Saver()
+    saver = tf.train.Saver(max_to_keep=3)
     ckpt = tf.train.get_checkpoint_state('./model1')
     if ckpt is None:
         print("Model not found, please train your model first...")
@@ -232,7 +232,7 @@ with tf.Session() as sess:
             avg_acc = 0
             loss, acc = sess.run([loss_op, accuracy])
             print("\033[1;36m=\033[0m"*60)
-            print("\033[1;36m Step %d, Minibatch Loss= %.4f, Test Accuracy= %.4f\033[0m" % (step, loss, acc))
+            print("\033[1;36mStep %d, Minibatch Loss= %.4f, Test Accuracy= %.4f\033[0m" % (step, loss, acc))
             print("\033[1;36m=\033[0m"*60)
 
         if step % 500 == 0:

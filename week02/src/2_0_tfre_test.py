@@ -30,47 +30,13 @@ def read_images(dataset_path):
     :param batch_size:
     :return:
     """
-    # imagepaths, labels = list(), list()
-    # if mode == 'file':
-    #     # Read dataset file
-    #     with open(dataset_path) as f:
-    #         data = f.read().splitlines()
-    #     for d in data:
-    #         imagepaths.append(d.split(' ')[0])
-    #         labels.append(int(d.split(' ')[1]))
-    # elif mode == 'folder':
-    #     # An ID will be affected to each sub-folders by alphabetical order
-    #     label = 0
-    #     # List the directory
-    #
-    #     classes = sorted(os.walk(dataset_path).__next__()[1])
-    #     # print("the calsses is: ", classes)
-    #     # List each sub-directory (the classes)
-    #     for c in classes:
-    #         c_dir = os.path.join(dataset_path, c)
-    #         # print("the c_dir is: ", c_dir)
-    #         walk = os.walk(c_dir).__next__()
-    #         # print("the walk is: ", walk)
-    #         # Add each image to the training set
-    #         for sample in walk[2]:
-    #             # Only keeps jpeg images
-    #             if sample.endswith('.jpg') or sample.endswith('.jpeg'):
-    #                 imagepaths.append(os.path.join(c_dir, sample))
-    #                 labels.append(label)
-    #         label += 1
-    # else:
-    #     raise Exception("Unknown mode.")
-    # print(imagepaths)
-    # print(labels)
     path = os.getcwd()
     dirPath = os.path.join(path, dataset_path)
-    # dirPath = dataset_path
     print(dirPath)
     imagePaths = list()
     labels = list()
     label = 0
     for parent, _, filenames in os.walk(dirPath):
-        # print("the parent is: ", parent)
         for img in filenames:
             if img.endswith('.jpg') or img.endswith('.jpeg') or img.endswith(".JPEG"):
                 imagePaths.append(os.path.join(parent, img))
@@ -106,16 +72,7 @@ def _parse_function(record):
     label = tf.cast(parsed['label'], tf.int32)
     return image, label
 
-# convert to tensor
-# imagespaths, labels = read_images(DATASET_PATH)
-# print(labels)
-# print(imagespaths)
-# imagespaths = tf.convert_to_tensor(imagespaths, dtype=tf.string)
-# labels = tf.convert_to_tensor(labels, dtype=tf.int32)
 
-# dataset pipeline
-# dataset = tf.data.Dataset.from_tensor_slices((imagespaths, labels))
-# dataset = tf.data.TFRecordDataset("/home/bruce/PycharmProjects/tensorflow-learning/week09/src/slim/train_1.tfrecord")
 dataset = tf.data.TFRecordDataset(
     "/raid/bruce/tmp/tmp/tensorflow_learning_remote/week01/src/imageProcess/picRecog/01_cats_vs_dogs/train_dogs_cat.tfrecord")
 dataset = dataset.map(_parse_function)
