@@ -4,7 +4,7 @@ import tensorflow as tf
 from tensorflow.examples.tutorials.mnist import input_data
 
 
-mnist = input_data.read_data_sets("../week06/fashion_mnist", one_hot=True)
+mnist = input_data.read_data_sets("../../fashion_mnist", one_hot=True)
 
 # 每个批次的大小
 batch_size = 100
@@ -172,5 +172,4 @@ with tf.Session() as sess:
             test_acc = sess.run(accuracy, feed_dict={x: mnist.test.images, y: mnist.test.labels, keep_prob: 1.0})
             train_acc = sess.run(accuracy, feed_dict={x: mnist.train.images[:10000], y: mnist.train.labels[:10000],
                                                       keep_prob: 1.0})
-            print(
-                "Iter " + str(i) + ",  Testing Accuracy= " + str(test_acc) + ",  Training Accuracy= " + str(train_acc))
+            print("Iter " + str(i) + ", Testing Accuracy= " + str(test_acc) + ",  Training Accuracy= " + str(train_acc))

@@ -1,12 +1,10 @@
 
-#  coding:  utf-8
-
-
+# coding:  utf-8
 import tensorflow as tf
 from tensorflow.examples.tutorials.mnist import input_data
 
 # 载入数据集
-mnist = input_data.read_data_sets("/Users/bruce/programme/Python/PycharmProjects/tensorflowTUT_source_code_pratice/MNIST_data", one_hot=True)
+mnist = input_data.read_data_sets("../../MNIST_data", one_hot=True)
 
 # 每个批次的大小
 batch_size = 100
@@ -43,7 +41,7 @@ train_step = tf.train.AdamOptimizer(lr).minimize(loss)
 init = tf.global_variables_initializer()
 
 # 结果存放在一个布尔型列表中
-correct_prediction = tf.equal(tf.argmax(y,  1),  tf.argmax(prediction,  1))# argmax返回一维张量中最大的值所在的位置
+correct_prediction = tf.equal(tf.argmax(y,  1),  tf.argmax(prediction,  1))  # argmax返回一维张量中最大的值所在的位置
 # 求准确率
 accuracy = tf.reduce_mean(tf.cast(correct_prediction,  tf.float32))
 

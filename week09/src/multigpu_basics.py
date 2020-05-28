@@ -13,7 +13,7 @@ This tutorial requires your machine to have 2 GPUs
 "/gpu:0": The first GPU of your machine
 "/gpu:1": The second GPU of your machine
 '''
-
+import os
 import numpy as np
 import tensorflow as tf
 import datetime
@@ -49,45 +49,58 @@ def matpow(M, n):
 '''
 Single GPU computing
 '''
-with tf.device('/gpu:0'):
-    a = tf.placeholder(tf.float32, [10000, 10000])
-    b = tf.placeholder(tf.float32, [10000, 10000])
-    # Compute A^n and B^n and store results in c1
-    c1.append(matpow(a, n))
-    c1.append(matpow(b, n))
 
-with tf.device('/cpu:0'):
-    sum = tf.add_n(c1)  # Addition of all elements in c1, i.e. A^n + B^n
 
-t1_1 = datetime.datetime.now()
-with tf.Session(config=tf.ConfigProto(log_device_placement=log_device_placement)) as sess:
-    # Run the op.
-    sess.run(sum, {a: A, b: B})
-t2_1 = datetime.datetime.now()
+def singleCPU():
+    os.environ['CUDA_VISIBLE_DEVICES'] = '0'
+    with tf.device('/gpu:0'):
+        a = tf.placeholder(tf.float32, [10000, 10000])
+        b = tf.placeholder(tf.float32, [10000, 10000])
+        # Compute A^n and B^n and store results in c1
+        c1.append(matpow(a, n))
+        c1.append(matpow(b, n))
+
+    with tf.device('/cpu:0'):
+        sum = tf.add_n(c1)  # Addition of all elements in c1, i.e. A^n + B^n
+
+    t1_1 = datetime.datetime.now()
+    with tf.Session(config=tf.ConfigProto(log_device_placement=log_device_placement)) as sess:
+        # Run the op.
+        sess.run(sum, {a: A, b: B})
+    t2_1 = datetime.datetime.now()
+    print("Single GPU computation time: " + str(t2_1 - t1_1))
+
 
 '''
 Multi GPU computing
 '''
-# GPU:0 computes A^n
-with tf.device('/gpu:0'):
-    # Compute A^n and store result in c2
-    a = tf.placeholder(tf.float32, [10000, 10000])
-    c2.append(matpow(a, n))
 
-# GPU:1 computes B^n
-with tf.device('/gpu:1'):
-    # Compute B^n and store result in c2
-    b = tf.placeholder(tf.float32, [10000, 10000])
-    c2.append(matpow(b, n))
 
-with tf.device('/cpu:0'):
-    sum = tf.add_n(c2)  # Addition of all elements in c2, i.e. A^n + B^n
+def multiGPU():
+    os.environ['CUDA_VISIBLE_DEVICES'] = '0,1'
 
-t1_2 = datetime.datetime.now()
-with tf.Session(config=tf.ConfigProto(log_device_placement=log_device_placement)) as sess:
-    # Run the op.
-    sess.run(sum, {a: A, b: B})
-t2_2 = datetime.datetime.now()
+    # GPU:0 computes A^n
+    with tf.device('/gpu:0'):
+        # Compute A^n and store result in c2
+        a = tf.placeholder(tf.float32, [10000, 10000])
+        c2.append(matpow(a, n))
 
-print("Single GPU computation time: " + str(t2_1 - t1_1))
-print("Multi GPU computation time: " + str(t2_2 - t1_2))
+    # GPU:1 computes B^n
+    with tf.device('/gpu:1'):
+        # Compute B^n and store result in c2
+        b = tf.placeholder(tf.float32, [10000, 10000])
+        c2.append(matpow(b, n))
+
+    with tf.device('/cpu:0'):
+        sum = tf.add_n(c2)  # Addition of all elements in c2, i.e. A^n + B^n
+
+    t1_2 = datetime.datetime.now()
+    with tf.Session(config=tf.ConfigProto(log_device_placement=log_device_placement)) as sess:
+        # Run the op.
+        sess.run(sum, {a: A, b: B})
+    t2_2 = datetime.datetime.now()
+    print("Multi GPU computation time: " + str(t2_2 - t1_2))
+
+
+# singleCPU()
+multiGPU()

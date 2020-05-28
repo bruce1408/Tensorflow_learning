@@ -30,7 +30,7 @@ import tensorflow as tf
 # Import MNIST data
 from tensorflow.examples.tutorials.mnist import input_data
 
-mnist = input_data.read_data_sets("MNIST_data", one_hot=True)
+mnist = input_data.read_data_sets("../../MNIST_data", one_hot=True)
 
 # Parameters
 learning_rate = 0.001
@@ -138,8 +138,7 @@ with tf.Session() as sess:
         for j, xi in enumerate(y_axis):
             z_mu = np.array([[xi, yi]] * batch_size)
             x_mean = sess.run(decoder, feed_dict={noise_input: z_mu})
-            canvas[(n - i - 1) * 28:(n - i) * 28, j * 28:(j + 1) * 28] = \
-                x_mean[0].reshape(28, 28)
+            canvas[(n - i - 1) * 28:(n - i) * 28, j * 28:(j + 1) * 28] = x_mean[0].reshape(28, 28)
 
     plt.figure(figsize=(8, 10))
     Xi, Yi = np.meshgrid(x_axis, y_axis)

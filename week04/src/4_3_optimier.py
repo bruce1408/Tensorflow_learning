@@ -3,7 +3,7 @@ import tensorflow as tf
 from tensorflow.examples.tutorials.mnist import input_data
 
 # 载入数据集
-mnist = input_data.read_data_sets("./fashion", one_hot=True)
+mnist = input_data.read_data_sets("../../fashion", one_hot=True)
 
 # 每个批次的大小
 batch_size = 100
@@ -41,5 +41,5 @@ with tf.Session() as sess:
             batch_xs, batch_ys = mnist.train.next_batch(batch_size)
             sess.run(train_step, feed_dict={x: batch_xs, y: batch_ys})
 
-        acc = sess.run(accuracy, feed_dict={x: mnist.test.images, y: mnist.test.labels})
-        print("Iter " + str(epoch) + ", Testing Accuracy " + str(acc))
+        corr, acc = sess.run([correct_prediction, accuracy], feed_dict={x: mnist.test.images, y: mnist.test.labels})
+        print("Iter " + str(epoch) + ", Testing Accuracy " + str(acc) + "corr is: " + str(corr))

@@ -28,7 +28,7 @@ y_ = tf.constant([[0.0, 0.0, 1.0], [0.0, 0.0, 1.0], [0.0, 0.0, 1.0]])
 # 将标签稠密化, 找到最大的值的index
 dense_y = tf.argmax(y_, 1)  # dense_y = [2 2 2]
 # 采用普通方式计算交叉熵
-cross_entropy = -tf.reduce_sum(y_ * tf.log(y))
+cross_entropy1 = -tf.reduce_sum(y_ * tf.log(y))
 # 使用softmax_cross_entropy_with_logits方法计算交叉熵, y的真实标签是one-hot类型
 cross_entropy2 = tf.reduce_sum(tf.nn.softmax_cross_entropy_with_logits(logits=logits, labels=y_))
 # 使用sparse_softmax_cross_entropy_with_logits方法计算交叉熵，y的真实标签不是one-hot类型
@@ -46,7 +46,7 @@ with tf.Session() as sess:
     print("dense_y =")
     print(sess.run(dense_y))
     print("step2:cross_entropy result=")
-    c_e = sess.run(cross_entropy)
+    c_e = sess.run(cross_entropy1)
     print(c_e)
     print("Function(softmax_cross_entropy_with_logits) result=")
     c_e2 = sess.run(cross_entropy2)
