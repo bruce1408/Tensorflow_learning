@@ -4,12 +4,16 @@ import os
 import numpy as np
 from PIL import Image
 import matplotlib.pyplot as plt
-import os
+import pandas as pd
+
 os.environ['CUDA_VISIBLE_DEVICES'] = '0'
 MODEL_SAVE_PATH = "model1/"
 MODEL_NAME = "model1000.ckpt.data-00000-of-00001"
 # imgPath = "/raid/bruce/tmp/tmp/tensorflow_learning_remote/pred/"
-imgPath = "../../week03/src/images/dogs"
+# imgPath = "../../week03/src/images/dogs"
+imgPath = "/raid/bruce/dog_cat/test1"
+from natsort import natsorted
+
 labels = {'0': 'cat', '1': 'dog'}
 
 image = tf.placeholder(tf.float32, [None, 128, 128, 3])
@@ -32,7 +36,10 @@ def plot_images(images, labels, num, reallabel):
         plt.imshow(images[i])
     plt.show()
 
+
 cnt = 0
+predict_val = list()
+data = dict()
 with tf.Session() as sess:
     sess.run((tf.global_variables_initializer(), tf.local_variables_initializer()))
 
@@ -46,8 +53,8 @@ with tf.Session() as sess:
         # 通过文件名得到模型保存时迭代的轮数.格式：model.ckpt-6000.data-00000-of-00001
         global_step = ckpt.model_checkpoint_path.split('/')[-1].split('-')[-1]
 
-        for i in os.listdir(imgPath):
-            cnt+=1
+        for i in natsorted(os.listdir(imgPath)):
+            cnt += 1
             imgpath = os.path.join(imgPath, i)
             img = Image.open(imgpath)
 
@@ -62,9 +69,18 @@ with tf.Session() as sess:
             probability = probabilities_[0][label]
             labelList.append(label[0])
             imageList.append(img)
+            probability = probability.clip(min=0.005, max=0.995)
+            data[i.split('.')[0]] = probability[0]
+            sorted(data.keys())
 
             print("After %s training step(s),validation label = %d, has %g probability, the img path is %s" %
                   (global_step, label, probability, imgpath))
+        print('the result is:', data)
+        result = pd.DataFrame.from_dict(data, orient='index', columns=['label'])
+        result = result.reset_index().rename(columns={'index': 'id'})
+        result.to_csv('/raid/bruce/dog_cat/result.csv', index=False)
+        print("predict is done!")
+
         plot_images(imageList, labelList, cnt, labels)
     else:
         print("模型加载失败！" + ckpt.model_checkpoint_path)
