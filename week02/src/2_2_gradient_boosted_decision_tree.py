@@ -2,13 +2,7 @@
 
 Implement a Gradient Boosted Decision tree with TensorFlow to classify
 handwritten digit images. This example is using the MNIST database of
-handwritten digits as training samples (http://yann.lecun.com/exdb/mnist/).
-
-Links:
-    [MNIST Dataset](http://yann.lecun.com/exdb/mnist/).
-
-Author: Aymeric Damien
-Project: https://github.com/aymericdamien/TensorFlow-Examples/
+handwritten digits as training samples (http://yann.lecun.com/exdb/mnist/)
 """
 
 from __future__ import print_function
@@ -27,8 +21,7 @@ os.environ["CUDA_VISIBLE_DEVICES"] = "2"
 tf.logging.set_verbosity(tf.logging.ERROR)
 from tensorflow.examples.tutorials.mnist import input_data
 
-mnist = input_data.read_data_sets("../../MNIST_data/", one_hot=False,
-                                  source_url='http://yann.lecun.com/exdb/mnist/')
+mnist = input_data.read_data_sets("../../MNIST_data/", one_hot=False, source_url='http://yann.lecun.com/exdb/mnist/')
 
 # Parameters
 batch_size = 4096  # The number of samples per batch
@@ -53,7 +46,7 @@ learner_config.constraints.max_tree_depth = max_depth
 growing_mode = gbdt_learner.LearnerConfig.LAYER_BY_LAYER
 learner_config.growing_mode = growing_mode
 run_config = tf.contrib.learn.RunConfig(save_checkpoints_secs=300)
-learner_config.multi_class_strategy = (gbdt_learner.LearnerConfig.DIAGONAL_HESSIAN)
+learner_config.multi_class_strategy = gbdt_learner.LearnerConfig.DIAGONAL_HESSIAN
 # Create a TensorFlor GBDT Estimator
 gbdt_model = GradientBoostedDecisionTreeClassifier(
     model_dir=None,  # No save directory specified
@@ -68,17 +61,15 @@ gbdt_model = GradientBoostedDecisionTreeClassifier(
 tf.logging.set_verbosity(tf.logging.INFO)
 
 # Define the input function for training
-input_fn = tf.estimator.inputs.numpy_input_fn(
-    x={'images': mnist.train.images}, y=mnist.train.labels,
-    batch_size=batch_size, num_epochs=None, shuffle=True)
+input_fn = tf.estimator.inputs.numpy_input_fn(x={'images': mnist.train.images}, y=mnist.train.labels,
+                                              batch_size=batch_size, num_epochs=None, shuffle=True)
 # Train the Model
 gbdt_model.fit(input_fn=input_fn, max_steps=max_steps)
 
 # Evaluate the Model
 # Define the input function for evaluating
-input_fn = tf.estimator.inputs.numpy_input_fn(
-    x={'images': mnist.test.images}, y=mnist.test.labels,
-    batch_size=batch_size, shuffle=False)
+input_fn = tf.estimator.inputs.numpy_input_fn(x={'images': mnist.test.images}, y=mnist.test.labels,
+                                              batch_size=batch_size, shuffle=False)
 # Use the Estimator 'evaluate' method
 e = gbdt_model.evaluate(input_fn=input_fn)
 

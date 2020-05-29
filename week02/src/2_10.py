@@ -35,6 +35,7 @@ eval_step = 200000
 eval_words = ['five', 'of', 'going', 'hardware', 'american', 'britain']
 
 # Word2Vec Parameters
+data_index = 0
 embedding_size = 200  # Dimension of the embedding vector
 max_vocabulary_size = 50000  # Total number of different words in the vocabulary
 min_occurrence = 10  # Remove all words that does not appears at least n times
@@ -44,7 +45,7 @@ num_sampled = 64  # Number of negative examples to sample
 
 # Download a small chunk of Wikipedia articles collection
 url = 'http://mattmahoney.net/dc/text8.zip'
-data_path = '/home/bruce/bigVolumn/Datasets/text8.zip'
+data_path = '/raid/bruce/tmp/text8.zip'
 if not os.path.exists(data_path):
     print("Downloading the dataset... (It may take some time)")
     filename, _ = urllib.request.urlretrieve(url, data_path)
@@ -86,8 +87,6 @@ print("Words count:", len(text_words))
 print("Unique words:", len(set(text_words)))
 print("Vocabulary size:", vocabulary_size)
 print("Most common words:", count[:10])
-
-data_index = 0
 
 
 # Generate training batch for the skip-gram model

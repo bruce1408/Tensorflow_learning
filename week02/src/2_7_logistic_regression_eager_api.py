@@ -1,4 +1,4 @@
-''' Logistic Regression with Eager API.
+""" Logistic Regression with Eager API.
 
 A logistic regression learning algorithm example using TensorFlow's Eager API.
 This example is using the MNIST database of handwritten digits
@@ -6,7 +6,7 @@ This example is using the MNIST database of handwritten digits
 
 Author: Aymeric Damien
 Project: https://github.com/aymericdamien/TensorFlow-Examples/
-'''
+"""
 from __future__ import absolute_import, division, print_function
 
 import tensorflow as tf
@@ -17,7 +17,7 @@ tfe = tf.contrib.eager
 
 # Import MNIST data
 from tensorflow.examples.tutorials.mnist import input_data
-mnist = input_data.read_data_sets("../../week04/src/MNIST_data/", one_hot=False)
+mnist = input_data.read_data_sets("../../MNIST_data/", one_hot=False)
 
 # Parameters
 learning_rate = 0.1
