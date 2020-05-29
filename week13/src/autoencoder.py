@@ -18,15 +18,15 @@ from __future__ import division, print_function, absolute_import
 import tensorflow as tf
 import numpy as np
 import matplotlib.pyplot as plt
-
+from PIL import Image
 # Import MNIST data
 from tensorflow.examples.tutorials.mnist import input_data
 
-mnist = input_data.read_data_sets("MNIST_data", one_hot=True)
+mnist = input_data.read_data_sets("../../MNIST_data", one_hot=True)
 
 # Training Parameters
 learning_rate = 0.01
-num_steps = 30000
+num_steps = 10000
 batch_size = 256
 
 display_step = 1000
@@ -57,22 +57,18 @@ biases = {
 # Building the encoder
 def encoder(x):
     # Encoder Hidden layer with sigmoid activation #1
-    layer_1 = tf.nn.sigmoid(tf.add(tf.matmul(x, weights['encoder_h1']),
-                                   biases['encoder_b1']))
+    layer_1 = tf.nn.sigmoid(tf.add(tf.matmul(x, weights['encoder_h1']), biases['encoder_b1']))
     # Encoder Hidden layer with sigmoid activation #2
-    layer_2 = tf.nn.sigmoid(tf.add(tf.matmul(layer_1, weights['encoder_h2']),
-                                   biases['encoder_b2']))
+    layer_2 = tf.nn.sigmoid(tf.add(tf.matmul(layer_1, weights['encoder_h2']), biases['encoder_b2']))
     return layer_2
 
 
 # Building the decoder
 def decoder(x):
     # Decoder Hidden layer with sigmoid activation #1
-    layer_1 = tf.nn.sigmoid(tf.add(tf.matmul(x, weights['decoder_h1']),
-                                   biases['decoder_b1']))
+    layer_1 = tf.nn.sigmoid(tf.add(tf.matmul(x, weights['decoder_h1']), biases['decoder_b1']))
     # Decoder Hidden layer with sigmoid activation #2
-    layer_2 = tf.nn.sigmoid(tf.add(tf.matmul(layer_1, weights['decoder_h2']),
-                                   biases['decoder_b2']))
+    layer_2 = tf.nn.sigmoid(tf.add(tf.matmul(layer_1, weights['decoder_h2']), biases['decoder_b2']))
     return layer_2
 
 
@@ -127,18 +123,16 @@ with tf.Session(config=config) as sess:
         # Display original images
         for j in range(n):
             # Draw the original digits
-            canvas_orig[i * 28:(i + 1) * 28, j * 28:(j + 1) * 28] = \
-                batch_x[j].reshape([28, 28])
+            canvas_orig[i * 28:(i + 1) * 28, j * 28:(j + 1) * 28] = batch_x[j].reshape([28, 28])
         # Display reconstructed images
         for j in range(n):
             # Draw the reconstructed digits
-            canvas_recon[i * 28:(i + 1) * 28, j * 28:(j + 1) * 28] = \
-                g[j].reshape([28, 28])
-
-    print("Original Images")
-    plt.figure(figsize=(n, n))
-    plt.imshow(canvas_orig, origin="upper", cmap="gray")
-    plt.show()
+            canvas_recon[i * 28:(i + 1) * 28, j * 28:(j + 1) * 28] = g[j].reshape([28, 28])
+    print(canvas_recon.shape)
+    # print("Original Images")
+    # plt.figure(figsize=(n, n))
+    # plt.imshow(canvas_orig, origin="upper", cmap="gray")
+    # plt.show()
 
     print("Reconstructed Images")
     plt.figure(figsize=(n, n))

@@ -245,7 +245,7 @@ decoder_hidden_units = encoder_hidden_units * 2
 
 
 
-
+feature_size = 9
 
 def get_data(batch_size):
     train_data = np.random.normal(-1, 1, size=[batch_size, 7, feature_size])

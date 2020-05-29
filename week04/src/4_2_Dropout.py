@@ -8,7 +8,7 @@ os.environ["CUDA_VISIBLE_DEVICES"] = '1'
 
 
 # 载入数据集
-mnist = input_data.read_data_sets("./MNIST_data", one_hot=True)
+mnist = input_data.read_data_sets("../../MNIST_data", one_hot=True)
 
 # 每个批次的大小
 batch_size = 100
@@ -69,7 +69,7 @@ with tf.Session() as sess:
 # example 2
 import tensorflow.examples.tutorials.mnist.input_data as tf_input
 
-mnist = tf_input.read_data_sets('MNIST_data/', one_hot=True)
+mnist = tf_input.read_data_sets('../../MNIST_data/', one_hot=True)
 sess = tf.InteractiveSession()
 in_units = 784
 h1_units = 300

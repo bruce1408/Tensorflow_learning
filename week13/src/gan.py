@@ -27,10 +27,10 @@ import tensorflow as tf
 
 # Import MNIST data
 from tensorflow.examples.tutorials.mnist import input_data
-mnist = input_data.read_data_sets("/home/bruce/bigVolumn/Datasets/MNIST_data", one_hot=True)
+mnist = input_data.read_data_sets("../../MNIST_data", one_hot=True)
 
 # Training Params
-num_steps = 100000
+num_steps = 10000
 batch_size = 128
 learning_rate = 0.0002
 
@@ -107,11 +107,9 @@ optimizer_disc = tf.train.AdamOptimizer(learning_rate=learning_rate)
 # By default in TensorFlow, all variables are updated by each optimizer, so we
 # need to precise for each one of them the specific variables to update.
 # Generator Network Variables
-gen_vars = [weights['gen_hidden1'], weights['gen_out'],
-            biases['gen_hidden1'], biases['gen_out']]
+gen_vars = [weights['gen_hidden1'], weights['gen_out'], biases['gen_hidden1'], biases['gen_out']]
 # Discriminator Network Variables
-disc_vars = [weights['disc_hidden1'], weights['disc_out'],
-            biases['disc_hidden1'], biases['disc_out']]
+disc_vars = [weights['disc_hidden1'], weights['disc_out'], biases['disc_hidden1'], biases['disc_out']]
 
 # Create training operations
 train_gen = optimizer_gen.minimize(gen_loss, var_list=gen_vars)
@@ -151,8 +149,7 @@ with tf.Session() as sess:
         g = -1 * (g - 1)
         for j in range(4):
             # Generate image from noise. Extend to 3 channels for matplot figure.
-            img = np.reshape(np.repeat(g[j][:, :, np.newaxis], 3, axis=2),
-                             newshape=(28, 28, 3))
+            img = np.reshape(np.repeat(g[j][:, :, np.newaxis], 3, axis=2), newshape=(28, 28, 3))
             a[j][i].imshow(img)
 
     f.show()
