@@ -143,6 +143,7 @@ def get_encoder_layer(input_data, rnn_size, num_layers, source_sequence_length, 
     # encoder_embed_input = tf.Print(encoder_embed_input, [tf.shape(encoder_embed_input)],
     #  message='encoder_embed_input', summarize=10000)
     # RNN cell
+
     def get_lstm_cell(rnn_size):
         lstm_cell = tf.contrib.rnn.LSTMCell(rnn_size, initializer=tf.random_uniform_initializer(-0.1, 0.1, seed=2))
         return lstm_cell
@@ -280,7 +281,7 @@ def seq2seq_model(input_data, targets,
 
 # 超参数
 # Number of Epochs
-epochs = 500
+epochs = 2000
 # Batch Size
 batch_size = 128
 # RNN Size
@@ -396,7 +397,7 @@ def source_to_seq(text):
 
 
 # 输入一个单词
-input_word = 'common'
+input_word = 'teilx'
 text = source_to_seq(input_word)
 checkpoint = "./trained_model"
 
