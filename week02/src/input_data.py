@@ -99,7 +99,6 @@ def _bytes_feature(value):
     return tf.train.Feature(bytes_list=tf.train.BytesList(value=[value]))
 
 
-
 def convert_to_tfrecord(images, labels, filename):
     errorCount = 0
     # filename = './train_dogs_cat.tfrecord'
@@ -189,7 +188,6 @@ def get_batch(image, label, image_W, image_H, batch_size, capacity):
 
     label_batch = tf.reshape(label_batch, [batch_size])
     image_batch = tf.cast(image_batch, tf.float32)
-
     return image_batch, label_batch
 
 # %% TEST
