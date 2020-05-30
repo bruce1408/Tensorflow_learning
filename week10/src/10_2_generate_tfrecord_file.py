@@ -73,10 +73,12 @@ def _convert_dataset(split_name, filenames, dataset_dir):
 
                     # 读取图片
                     image_data = Image.open(filename)
+                    print('read image', image_data)
                     # 根据模型的结构resize
                     image_data = image_data.resize((224, 224))
                     # 灰度化
                     image_data = np.array(image_data.convert('L'))
+                    print('灰度化之后 shape: ', image_data.shape)
                     # 将图片转化为bytes
                     image_data = image_data.tobytes()
 

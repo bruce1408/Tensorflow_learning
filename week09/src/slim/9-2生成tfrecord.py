@@ -1,6 +1,5 @@
 # coding: utf-8
 
-# In[2]:
 
 import tensorflow as tf
 import os
@@ -8,7 +7,6 @@ import random
 import math
 import sys
 
-# In[3]:
 
 # 验证集数量
 _NUM_TEST = 500

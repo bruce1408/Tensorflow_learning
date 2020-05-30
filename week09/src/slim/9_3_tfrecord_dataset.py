@@ -33,7 +33,7 @@ tf.train.BytesList、tf.train.Int64List、tf.train.FloatList写入tf.train.Featu
 把数据汇总,最后构建tf.train.Features：本文主要通过tensorflow的最新形式来读取数据.
 """
 np.random.seed(0)
-os.environ['CUDA_VISIBLE_DEVICES'] = '0'
+os.environ['CUDA_VISIBLE_DEVICES'] = '1'
 pathDir = "/raid/bruce/datasets/101_ObjectCategories"
 BATCH_SIZE = 20
 HIGHTSIZE = 128

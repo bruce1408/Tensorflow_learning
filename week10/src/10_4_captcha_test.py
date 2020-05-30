@@ -8,7 +8,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 import os
-os.environ['CUDA_VISIBLE)DEVICES'] = '0'
+os.environ['CUDA_VISIBLE)DEVICES'] = '1'
 # 不同字符数量
 CHAR_SET_LEN = 10
 # 图片高度

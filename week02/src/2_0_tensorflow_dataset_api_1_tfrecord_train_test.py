@@ -1,7 +1,7 @@
 import os
 import tensorflow as tf
 import numpy as np
-os.environ['CUDA_VISIBLE_DEVICES'] = '1,2'
+os.environ['CUDA_VISIBLE_DEVICES'] = '1'
 
 # Image Parameters
 N_CLASSES = 2  # CHANGE HERE, total number of classes
