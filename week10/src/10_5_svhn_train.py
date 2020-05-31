@@ -1,7 +1,7 @@
 import os
 import numpy as np
 import tensorflow as tf
-os.environ['CUDA_VISIBLE_DEVICES'] = '1, 2'
+os.environ['CUDA_VISIBLE_DEVICES'] = '1'
 
 # Image Parameters
 N_CLASSES = 11  # CHANGE HERE, total number of classes
@@ -37,7 +37,8 @@ def _parse_function(record):
         'label1': tf.FixedLenFeature([], tf.int64),
         'label2': tf.FixedLenFeature([], tf.int64),
         'label3': tf.FixedLenFeature([], tf.int64),
-        'label4': tf.FixedLenFeature([], tf.int64)
+        'length': tf.FixedLenFeature([], tf.int64)
+
     }
     parsed = tf.parse_single_example(record, keys_to_features)
     image = tf.decode_raw(parsed['img_raw'], tf.uint8)
@@ -47,18 +48,18 @@ def _parse_function(record):
     label1 = tf.cast(parsed['label1'], tf.int32)
     label2 = tf.cast(parsed['label2'], tf.int32)
     label3 = tf.cast(parsed['label3'], tf.int32)
-    label4 = tf.cast(parsed['label4'], tf.int32)
+    label4 = tf.cast(parsed['length'], tf.int32)
 
     return image, label0, label1, label2, label3, label4
 
 
 # 训练集
-traindata = tf.data.TFRecordDataset("./trainData.tfrecord").\
+traindata = tf.data.TFRecordDataset("./trainData_4_len.tfrecord").\
     map(_parse_function).\
     repeat().shuffle(buffer_size=1000).batch(BATCHSIZE).prefetch(BATCHSIZE)
 
 # 验证集
-valdata = tf.data.TFRecordDataset("./valData.tfrecord").\
+valdata = tf.data.TFRecordDataset("./valData_4_len.tfrecord").\
     map(_parse_function).\
     repeat().shuffle(buffer_size=1000).batch(BATCHSIZE).prefetch(BATCHSIZE)
 
@@ -117,7 +118,7 @@ def conv_net(x, n_classes, dropout, reuse, is_training):
         digit2 = tf.layers.dense(fc2, n_classes)
         digit3 = tf.layers.dense(fc2, n_classes)
         digit4 = tf.layers.dense(fc2, n_classes)
-        digit5 = tf.layers.dense(fc2, n_classes)
+        digit5 = tf.layers.dense(fc2, 6)
 
         digit1 = tf.nn.softmax(digit1) if not is_training else digit1
         digit2 = tf.nn.softmax(digit2) if not is_training else digit2
@@ -144,6 +145,7 @@ loss_op2 = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(logits=
 loss_op3 = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(logits=logits_train_digit3, labels=Y3))
 loss_op4 = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(logits=logits_train_digit4, labels=Y4))
 
+
 loss_op = loss_op0 + loss_op1 + loss_op2 + loss_op3 + loss_op4
 optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate)
 train_op = optimizer.minimize(loss_op)
@@ -161,6 +163,7 @@ accuracy_train2 = tf.reduce_mean(tf.cast(correct_pred2, tf.float32))
 # label 3 is:
 correct_pred3 = tf.equal(tf.argmax(logits_train_digit3, 1), tf.cast(Y3, tf.int64))
 accuracy_train3 = tf.reduce_mean(tf.cast(correct_pred3, tf.float32))
+
 # label 4 is:
 correct_pred4 = tf.equal(tf.argmax(logits_train_digit4, 1), tf.cast(Y4, tf.int64))
 accuracy_train4 = tf.reduce_mean(tf.cast(correct_pred4, tf.float32))
@@ -179,6 +182,7 @@ accuracy_test2 = tf.reduce_mean(tf.cast(correct_pred2, tf.float32))
 # label 3 is:
 correct_pred3 = tf.equal(tf.argmax(logits_test_digit3, 1), tf.cast(Y3, tf.int64))
 accuracy_test3 = tf.reduce_mean(tf.cast(correct_pred3, tf.float32))
+
 # label 4 is:
 correct_pred4 = tf.equal(tf.argmax(logits_test_digit4, 1), tf.cast(Y4, tf.int64))
 accuracy_test4 = tf.reduce_mean(tf.cast(correct_pred4, tf.float32))
@@ -193,7 +197,7 @@ with tf.Session() as sess:
     sess.run(traindata_init)
     sess.run(valdata_init)
     saver = tf.train.Saver(max_to_keep=3)
-    ckpt = tf.train.get_checkpoint_state('./model_svhn')
+    ckpt = tf.train.get_checkpoint_state('./model_svhn2')
     if ckpt is None:
         print("Model not found, please train your model first...")
     else:
@@ -212,14 +216,15 @@ with tf.Session() as sess:
                   + ", {:.3f}".format(acc4))
 
         if step % val_display == 0:
-            loss, acc0, acc1, acc2, acc3, acc4 = sess.run([loss_op, accuracy_test0, accuracy_test1, accuracy_test2, accuracy_test3, accuracy_test4])
+            loss, acct0, acct1, acct2, acct3, acct4 = sess.run([loss_op, accuracy_test0, accuracy_test1, accuracy_test2,
+                                                           accuracy_test3, accuracy_test4])
             print("\033[1;36m=\033[0m"*60)
             print("\033[1;36mStep %d, Minibatch Loss= %.4f, Test Accuracy= %.4f, %.4f, %.4f, %.4f, %.4f\033[0m" %
-                  (step, loss, acc0, acc1, acc2, acc3, acc4))
+                  (step, loss, acct0, acct1, acct2, acct3, acct4))
             print("\033[1;36m=\033[0m"*60)
 
-        if step % 500 == 0:
-            path_name = "./model_svhn/model" + str(step) + ".ckpt"
+        if step % 1000 == 0:
+            path_name = "./model_svhn2/model" + str(step) + ".ckpt"
             print(path_name)
             saver.save(sess, path_name)
             print("model has been saved")
