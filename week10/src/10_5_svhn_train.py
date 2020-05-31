@@ -43,6 +43,7 @@ def _parse_function(record):
     parsed = tf.parse_single_example(record, keys_to_features)
     image = tf.decode_raw(parsed['img_raw'], tf.uint8)
     image = tf.reshape(image, [IMG_HEIGHT, IMG_WIDTH])
+
     image = tf.cast(image, tf.float32)
     label0 = tf.cast(parsed['label0'], tf.int32)
     label1 = tf.cast(parsed['label1'], tf.int32)
