@@ -119,24 +119,24 @@ def conv_net(x, n_classes, dropout, reuse, is_training):
         digit2 = tf.layers.dense(fc2, n_classes)
         digit3 = tf.layers.dense(fc2, n_classes)
         digit4 = tf.layers.dense(fc2, n_classes)
-        digit5 = tf.layers.dense(fc2, 6)
+        # digit5 = tf.layers.dense(fc2, 6)
 
         digit1 = tf.nn.softmax(digit1) if not is_training else digit1
         digit2 = tf.nn.softmax(digit2) if not is_training else digit2
         digit3 = tf.nn.softmax(digit3) if not is_training else digit3
         digit4 = tf.nn.softmax(digit4) if not is_training else digit4
-        digit5 = tf.nn.softmax(digit5) if not is_training else digit5
+        # digit5 = tf.nn.softmax(digit5) if not is_training else digit5
 
         # we only apply softmax to testing network
         # out = tf.nn.softmax(out) if not is_training else out
-    return digit1, digit2, digit3, digit4, digit5
+    return digit1, digit2, digit3, digit4
 
 
 # Create a graph for training
-logits_train_digit0, logits_train_digit1, logits_train_digit2, logits_train_digit3, logits_train_digit4 = \
+logits_train_digit0, logits_train_digit1, logits_train_digit2, logits_train_digit3 = \
     conv_net(X, N_CLASSES, dropout, reuse=False, is_training=True)
 # Create another graph for testing that reuse the same weights
-logits_test_digit0, logits_test_digit1, logits_test_digit2, logits_test_digit3, logits_test_digit4 = \
+logits_test_digit0, logits_test_digit1, logits_test_digit2, logits_test_digit3 = \
     conv_net(X, N_CLASSES, dropout, reuse=True, is_training=False)
 
 # Define loss and optimizer (with train logits, for dropout to take effect)
@@ -144,10 +144,10 @@ loss_op0 = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(logits=
 loss_op1 = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(logits=logits_train_digit1, labels=Y1))
 loss_op2 = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(logits=logits_train_digit2, labels=Y2))
 loss_op3 = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(logits=logits_train_digit3, labels=Y3))
-loss_op4 = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(logits=logits_train_digit4, labels=Y4))
+# loss_op4 = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(logits=logits_train_digit4, labels=Y4))
 
 
-loss_op = loss_op0 + loss_op1 + loss_op2 + loss_op3 + loss_op4
+loss_op = loss_op0 + loss_op1 + loss_op2 + loss_op3
 optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate)
 train_op = optimizer.minimize(loss_op)
 
@@ -166,8 +166,8 @@ correct_pred3 = tf.equal(tf.argmax(logits_train_digit3, 1), tf.cast(Y3, tf.int64
 accuracy_train3 = tf.reduce_mean(tf.cast(correct_pred3, tf.float32))
 
 # label 4 is:
-correct_pred4 = tf.equal(tf.argmax(logits_train_digit4, 1), tf.cast(Y4, tf.int64))
-accuracy_train4 = tf.reduce_mean(tf.cast(correct_pred4, tf.float32))
+# correct_pred4 = tf.equal(tf.argmax(logits_train_digit4, 1), tf.cast(Y4, tf.int64))
+# accuracy_train4 = tf.reduce_mean(tf.cast(correct_pred4, tf.float32))
 
 
 # Evaluate model (with test logits, for dropout to be disabled)
@@ -185,8 +185,8 @@ correct_pred3 = tf.equal(tf.argmax(logits_test_digit3, 1), tf.cast(Y3, tf.int64)
 accuracy_test3 = tf.reduce_mean(tf.cast(correct_pred3, tf.float32))
 
 # label 4 is:
-correct_pred4 = tf.equal(tf.argmax(logits_test_digit4, 1), tf.cast(Y4, tf.int64))
-accuracy_test4 = tf.reduce_mean(tf.cast(correct_pred4, tf.float32))
+# correct_pred4 = tf.equal(tf.argmax(logits_test_digit4, 1), tf.cast(Y4, tf.int64))
+# accuracy_test4 = tf.reduce_mean(tf.cast(correct_pred4, tf.float32))
 
 # Initialize the variables (i.e. assign their default value)
 init = tf.global_variables_initializer()
@@ -210,18 +210,18 @@ with tf.Session() as sess:
         sess.run(train_op)
         if step % train_display == 0 or step == 1:
             # Run optimization and calculate batch loss and accuracy
-            loss, acc0, acc1, acc2, acc3, acc4 = sess.run([loss_op, accuracy_train0, accuracy_train1,
-                                  accuracy_train2, accuracy_train3, accuracy_train4])
+            loss, acc0, acc1, acc2, acc3 = sess.run([loss_op, accuracy_train0, accuracy_train1,
+                                  accuracy_train2, accuracy_train3])
             print("Step " + str(step) + ", Minibatch Loss= " + "{:.4f}".format(loss) + ", Training Accuracy= " +
                   "{:.3f}".format(acc0) + ", {:.3f}".format(acc1) + ", {:.3f}".format(acc2) + ", {:.3f}".format(acc3)
-                  + ", {:.3f}".format(acc4))
+                  )
 
         if step % val_display == 0:
-            loss, acct0, acct1, acct2, acct3, acct4 = sess.run([loss_op, accuracy_test0, accuracy_test1, accuracy_test2,
-                                                           accuracy_test3, accuracy_test4])
+            loss, acct0, acct1, acct2, acct3 = sess.run([loss_op, accuracy_test0, accuracy_test1, accuracy_test2,
+                                                           accuracy_test3])
             print("\033[1;36m=\033[0m"*60)
-            print("\033[1;36mStep %d, Minibatch Loss= %.4f, Test Accuracy= %.4f, %.4f, %.4f, %.4f, %.4f\033[0m" %
-                  (step, loss, acct0, acct1, acct2, acct3, acct4))
+            print("\033[1;36mStep %d, Minibatch Loss= %.4f, Test Accuracy= %.4f, %.4f, %.4f, %.4f\033[0m" %
+                  (step, loss, acct0, acct1, acct2, acct3))
             print("\033[1;36m=\033[0m"*60)
 
         if step % 1000 == 0:

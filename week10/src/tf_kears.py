@@ -35,6 +35,7 @@ def generate_dataset(X, y):
     # 新数据集对应的label，最终的shape为（5,  X_len，11）
     y_gen = [np.zeros((X_len, n_class), dtype=np.uint8) for i in range(n_len)]
 
+    # print('y gen shape is:', len(y_gen))
     for i in range(X_len):
         # 随机确定数字长度
         rand_len = random.randint(1, 5)
@@ -114,8 +115,7 @@ learnrate_reduce_5 = ReduceLROnPlateau(monitor='val_dense_10_acc', patience=2, v
 
 model.fit(X_train, y_train, epochs=20, batch_size=128,
           validation_data=(X_valid, y_valid),
-          callbacks=[learnrate_reduce_1, learnrate_reduce_2, learnrate_reduce_3, learnrate_reduce_4,
-                     learnrate_reduce_5])
+          callbacks=[learnrate_reduce_1, learnrate_reduce_2, learnrate_reduce_3, learnrate_reduce_4, learnrate_reduce_5])
 
 
 def evaluate(model):
