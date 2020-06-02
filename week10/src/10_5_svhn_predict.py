@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 
 os.environ['CUDA_VISIBLE_DEVICES'] = '1'
-MODEL_SAVE_PATH = "model_svhn2/"
+MODEL_SAVE_PATH = "model_svhn5/"
 MODEL_NAME = "model10000.ckpt.data-00000-of-00001"
 # imgPath = "/raid/bruce/tmp/tmp/tensorflow_learning_remote/pred/"
 # imgPath = "../../week03/src/images/dogs"
@@ -26,14 +26,14 @@ probabilities0 = tf.nn.softmax(test_logit0)
 probabilities1 = tf.nn.softmax(test_logit1)
 probabilities2 = tf.nn.softmax(test_logit2)
 probabilities3 = tf.nn.softmax(test_logit3)
-probabilities4 = tf.nn.softmax(test_logit4)
+# probabilities4 = tf.nn.softmax(test_logit4)
 
 # 获取最大概率的标签位置
 correct_prediction0 = tf.argmax(test_logit0, 1)
 correct_prediction1 = tf.argmax(test_logit1, 1)
 correct_prediction2 = tf.argmax(test_logit2, 1)
 correct_prediction3 = tf.argmax(test_logit3, 1)
-correct_prediction4 = tf.argmax(test_logit4, 1)
+# correct_prediction4 = tf.argmax(test_logit4, 1)
 
 saver = tf.train.Saver()
 
