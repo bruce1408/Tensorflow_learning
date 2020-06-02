@@ -42,7 +42,7 @@ def _parse_function(record):
     }
     parsed = tf.parse_single_example(record, keys_to_features)
     image = tf.decode_raw(parsed['img_raw'], tf.uint8)
-    image = tf.reshape(image, [IMG_HEIGHT, IMG_WIDTH])
+    image = tf.reshape(image, [IMG_HEIGHT, IMG_WIDTH, 3])
 
     image = tf.cast(image, tf.float32)
     label0 = tf.cast(parsed['label0'], tf.int32)
@@ -55,12 +55,12 @@ def _parse_function(record):
 
 
 # 训练集
-traindata = tf.data.TFRecordDataset("./trainData_4_len.tfrecord").\
+traindata = tf.data.TFRecordDataset("./trainData_4_len_3channles_label0.tfrecord").\
     map(_parse_function).\
     repeat().shuffle(buffer_size=1000).batch(BATCHSIZE).prefetch(BATCHSIZE)
 
 # 验证集
-valdata = tf.data.TFRecordDataset("./valData_4_len.tfrecord").\
+valdata = tf.data.TFRecordDataset("./valData_4_len_3channles_label0.tfrecord").\
     map(_parse_function).\
     repeat().shuffle(buffer_size=1000).batch(BATCHSIZE).prefetch(BATCHSIZE)
 
@@ -77,7 +77,7 @@ def conv_net(x, n_classes, dropout, reuse, is_training):
     # Define a scope for reusing the variables
     with tf.variable_scope('ConvNet', reuse=reuse):
         # Convolution Layer with 32 filters and a kernel size of 3
-        x = tf.reshape(x, shape=[-1, IMG_HEIGHT, IMG_WIDTH, 1])
+        x = tf.reshape(x, shape=[-1, IMG_HEIGHT, IMG_WIDTH, 3])
         # Convolution Layer with 32 filters and a kernel size of 3
         conv1 = tf.layers.conv2d(x, 64, 3, activation=tf.nn.relu)
         conv1_1 = tf.layers.conv2d(conv1, 64, 3, activation=tf.nn.relu)
@@ -119,7 +119,7 @@ def conv_net(x, n_classes, dropout, reuse, is_training):
         digit2 = tf.layers.dense(fc2, n_classes)
         digit3 = tf.layers.dense(fc2, n_classes)
         digit4 = tf.layers.dense(fc2, n_classes)
-        digit5 = tf.layers.dense(fc2, 6)
+        digit5 = tf.layers.dense(fc2, 5)
 
         digit1 = tf.nn.softmax(digit1) if not is_training else digit1
         digit2 = tf.nn.softmax(digit2) if not is_training else digit2
@@ -198,7 +198,7 @@ with tf.Session() as sess:
     sess.run(traindata_init)
     sess.run(valdata_init)
     saver = tf.train.Saver(max_to_keep=3)
-    ckpt = tf.train.get_checkpoint_state('./model_svhn2')
+    ckpt = tf.train.get_checkpoint_state('./model_svhn4')
     if ckpt is None:
         print("Model not found, please train your model first...")
     else:
@@ -219,13 +219,13 @@ with tf.Session() as sess:
         if step % val_display == 0:
             loss, acct0, acct1, acct2, acct3, acct4 = sess.run([loss_op, accuracy_test0, accuracy_test1, accuracy_test2,
                                                            accuracy_test3, accuracy_test4])
-            print("\033[1;36m=\033[0m"*60)
+            print("\033[1;36m=\033[0m"*90)
             print("\033[1;36mStep %d, Minibatch Loss= %.4f, Test Accuracy= %.4f, %.4f, %.4f, %.4f, %.4f\033[0m" %
                   (step, loss, acct0, acct1, acct2, acct3, acct4))
-            print("\033[1;36m=\033[0m"*60)
+            print("\033[1;36m=\033[0m"*90)
 
         if step % 1000 == 0:
-            path_name = "./model_svhn2/model" + str(step) + ".ckpt"
+            path_name = "./model_svhn4/model" + str(step) + ".ckpt"
             print(path_name)
             saver.save(sess, path_name)
             print("model has been saved")
