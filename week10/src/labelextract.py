@@ -29,7 +29,7 @@ valImg = "/raid/bruce/datasets/svhn/mchar_val"
 valLabel = "http://tianchi-competition.oss-cn-hangzhou.aliyuncs.com/531795/mchar_val.json"
 HIGHTSIZE = 224
 WIDTHSIZE = 224
-CHANNELS = 1
+CHANNELS = 3
 BATCH_SIZE = 16
 
 
@@ -47,7 +47,7 @@ def readImgPath(dataimg, datalabel):
             continue
         while len(value['label']) < 5:
             value['label'].append(10)
-        value['label'].insert(0, length)
+        value['label'].insert(0, length-1)
         imgLabelData[key] = value['label']
     return imgLabelData
 
@@ -78,8 +78,9 @@ def convert_to_tfrecord(imageLabelData, filename):
         try:
             image = Image.open(imgpath)
             image = image.resize((HIGHTSIZE, WIDTHSIZE))
-            image = np.array(image.convert('L'))  # 转成灰度图即可 尺寸变成 224*224*1
-            if image.shape == (HIGHTSIZE, WIDTHSIZE):
+            image = np.array(image)
+            # image = np.array(image.convert('L'))  # 转成灰度图即可 尺寸变成 224*224*1
+            if image.shape == (HIGHTSIZE, WIDTHSIZE, 3):
                 errorCount += 1
                 image_raw = image.tostring()
                 label = value
@@ -110,6 +111,7 @@ def convert_to_tfrecord(imageLabelData, filename):
 # 生成tfrecord
 imgLabelData = readImgPath(trainImg, trainLabel)
 print(imgLabelData)
+convert_to_tfrecord(imgLabelData, "valData_4_len_3channles_label0.tfrecord")
 convert_to_tfrecord(imgLabelData, "trainData_4_digit_nolen.tfrecord")
 
 
@@ -130,17 +132,21 @@ def read_and_decode(tfrecords_file, batch_size):
                                                'label1': tf.FixedLenFeature([], tf.int64),
                                                'label2': tf.FixedLenFeature([], tf.int64),
                                                'label3': tf.FixedLenFeature([], tf.int64),
-                                               'label4': tf.FixedLenFeature([], tf.int64),
+                                               # 'label4': tf.FixedLenFeature([], tf.int64),
                                                'img_raw': tf.FixedLenFeature([], tf.string),
                                            })
     image = tf.decode_raw(img_features['img_raw'], tf.uint8)
-    image = tf.reshape(image, [HIGHTSIZE, WIDTHSIZE])
+    image = tf.reshape(image, [HIGHTSIZE, WIDTHSIZE, 3])
     image = tf.cast(image, tf.float32) * (1. / 255)  # 在流中抛出img张量
     # length = tf.cast(img_features['length'], tf.int32)
     label0 = tf.cast(img_features['label0'], tf.int32)
     label1 = tf.cast(img_features['label1'], tf.int32)
     label2 = tf.cast(img_features['label2'], tf.int32)
     label3 = tf.cast(img_features['label3'], tf.int32)
+    # label4 = tf.cast(img_features['label4'], tf.int32)
+
+    image_batch, length_batch, label_batch0, label_batch1, label_batch2, label_batch3 = \
+        tf.train.batch([image, length, label0, label1, label2, label3],
 
     image_batch, length_batch, label_batch0, label_batch1, label_batch2, label_batch3, label_batch4 = \
         tf.train.batch([image, label0, label1, label2, label3],
@@ -155,14 +161,15 @@ def read_and_decode(tfrecords_file, batch_size):
     # label_batch4 = tf.reshape(label_batch4, [batch_size])
 
     print("Read tfrecord doc done!")
+    return image_batch, length_batch, label_batch0, label_batch1, label_batch2, label_batch3
     return image_batch, label_batch0, label_batch1, label_batch2, label_batch3
 
 
-def plot_images(images, label0, label1, label2, label3, label4):
+def plot_images(images, label0, label1, label2, label3):
     for i in np.arange(0, BATCH_SIZE):
         plt.subplot(4, 4, i + 1)
         plt.axis('off')
-        title = str(label0[i]) + str(label1[i]) + str(label2[i]) + str(label3[i]) + str(label4[i])
+        title = str(label0[i]) + str(label1[i]) + str(label2[i]) + str(label3[i])
         plt.title(title, fontsize=10)
         plt.subplots_adjust(wspace=0.5, hspace=0.5)
         plt.imshow(images[i])
@@ -171,6 +178,31 @@ def plot_images(images, label0, label1, label2, label3, label4):
 
 
 # 验证图片生成的tfrecord文件是否正确
+# def valTfrecord(tfrecordName):
+image_batch, length_batch, label_batch0, label_batch1, label_batch2, label_batch3 = \
+    read_and_decode("trainData_4_len_3channles.tfrecord", batch_size=BATCH_SIZE)
+x = image_batch
+in_channels = x.get_shape()[-1]
+
+with tf.Session() as sess:
+    i = 0
+    coord = tf.train.Coordinator()
+    threads = tf.train.start_queue_runners(coord=coord)
+    try:
+        while not coord.should_stop() and i < 1:
+            # just plot one batch size
+            image, label0, label1, label2, label3 = sess.run([image_batch, label_batch0, label_batch1, label_batch2, label_batch3])
+            print(image.shape)
+            plot_images(image, label0, label1, label2, label3)
+            i = i + 1
+    except tf.errors.OutOfRangeError:
+        print('done!')
+    finally:
+        coord.request_stop()
+    coord.join(threads)
+
+
+# valTfrecord('valData_4_len_3channles.tfrecord')
 def valTfrecord(tfrecordName):
     image_batch, label_batch0, label_batch1, label_batch2, label_batch3 = \
         read_and_decode(tfrecordName, batch_size=BATCH_SIZE)

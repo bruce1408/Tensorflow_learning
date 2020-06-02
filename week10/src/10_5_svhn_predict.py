@@ -7,6 +7,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 
 os.environ['CUDA_VISIBLE_DEVICES'] = '1'
+MODEL_SAVE_PATH = "model_svhn3/"
 MODEL_SAVE_PATH = "model_svhn5/"
 MODEL_NAME = "model10000.ckpt.data-00000-of-00001"
 # imgPath = "/raid/bruce/tmp/tmp/tensorflow_learning_remote/pred/"
@@ -15,7 +16,7 @@ imgPath = "/raid/bruce/datasets/svhn/mchar_test_a"
 from natsort import natsorted
 
 
-image = tf.placeholder(tf.float32, [None, 224, 224, 1])
+image = tf.placeholder(tf.float32, [None, 224, 224, 3])
 test_logit0, test_logit1, test_logit2, test_logit3, test_logit4 = svhn_inference.conv_net(image,
                                                                                           11,
                                                                                           0.2,
@@ -78,8 +79,12 @@ with tf.Session() as sess:
             img = Image.open(imgpath)
 
             img = img.resize((224, 224))
-            image_ = np.array(img.convert('L'))
-            image_ = image_.reshape([1, 224, 224, 1])
+
+            image_ = np.array(img)
+            # print('image shape ', image_.shape)
+
+            # image_ = np.array(img.convert('L'))
+            image_ = image_.reshape([1, 224, 224, 3])
 
             # image = np.array(image.convert('L'))  # 转成灰度图即可 尺寸变成 224*224*1
 
@@ -102,9 +107,9 @@ with tf.Session() as sess:
                 tempLabel += str(labelList[i])
             data[im] = tempLabel
 
-            # print("After %s training step(s), validation label0 = %d, label1 = %d, label2 = %d, label3 = %d, "
-            #       "label4 = %d the img path is %s" % (global_step, label0[0], label1[0], label2[0], label3[0],
-            #                                           label4[0], imgpath))
+            print("After %s training step(s), validation label0 = %d, label1 = %d, label2 = %d, label3 = %d, "
+                  "label4 = %d the img path is %s" % (global_step, label0[0], label1[0], label2[0], label3[0],
+                                                      label4[0], imgpath))
         # print('the result is:', data)
             sys.stdout.write('\r>> Creating image %d/%d' % (cnt + 1, num))
             sys.stdout.flush()

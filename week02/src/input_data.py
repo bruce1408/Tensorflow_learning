@@ -49,12 +49,12 @@ WIDTHSIZE = 128
 
 
 def get_files(file_dir):
-    '''
+    """
     Args:
         file_dir: file directory
     Returns:
         list of images and labels
-    '''
+    """
     cats = []
     label_cats = []
     dogs = []

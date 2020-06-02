@@ -21,7 +21,7 @@ def conv_net(x, n_classes, dropout, reuse, is_training):
     # Define a scope for reusing the variables
     with tf.variable_scope('ConvNet', reuse=reuse):
         # Convolution Layer with 32 filters and a kernel size of 3
-        x = tf.reshape(x, shape=[-1, IMG_HEIGHT, IMG_WIDTH, 1])
+        x = tf.reshape(x, shape=[-1, IMG_HEIGHT, IMG_WIDTH, 3])
         # Convolution Layer with 32 filters and a kernel size of 3
         conv1 = tf.layers.conv2d(x, 64, 3, activation=tf.nn.relu)
         conv1_1 = tf.layers.conv2d(conv1, 64, 3, activation=tf.nn.relu)
