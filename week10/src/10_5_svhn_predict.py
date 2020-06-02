@@ -86,7 +86,7 @@ with tf.Session() as sess:
             # 获取预测结果
             label0, label1, label2, label3, label4 = sess.run(
                 [correct_prediction0, correct_prediction1,
-                 correct_prediction2, correct_prediction3, correct_prediction4], feed_dict={image: image_})
+                 correct_prediction2, correct_prediction3], feed_dict={image: image_})
 
             # 获取此标签的概率
             labelList.append(label0[0])
