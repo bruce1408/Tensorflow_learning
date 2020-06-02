@@ -35,6 +35,7 @@ def generate_dataset(X, y):
     # 新数据集对应的label，最终的shape为（5,  X_len，11）
     y_gen = [np.zeros((X_len, n_class), dtype=np.uint8) for i in range(n_len)]
 
+    # print('y gen shape is:', len(y_gen))
     for i in range(X_len):
         # 随机确定数字长度
         rand_len = random.randint(1, 5)
@@ -148,3 +149,68 @@ def showmulti():
 # plt.axis('off')
 # plt.savefig('./evalmnist.jpg')
 # plt.show()
+inputs = Input(shape=(28, 140, 1))
+
+conv_11 = Conv2D(filters=32, kernel_size=(5, 5), padding='Same', activation='relu')(inputs)
+max_pool_11 = MaxPool2D(pool_size=(2, 2))(conv_11)
+conv_12 = Conv2D(filters=10, kernel_size=(3, 3), padding='Same', activation='relu')(max_pool_11)
+max_pool_12 = MaxPool2D(pool_size=(2, 2), strides=(2, 2))(conv_12)
+flatten11 = Flatten()(max_pool_12)
+
+hidden11 = Dense(15, activation='relu')(flatten11)
+prediction1 = Dense(11, activation='softmax')(hidden11)
+
+hidden21 = Dense(15, activation='relu')(flatten11)
+prediction2 = Dense(11, activation='softmax')(hidden21)
+
+hidden31 = Dense(15, activation='relu')(flatten11)
+prediction3 = Dense(11, activation='softmax')(hidden31)
+
+hidden41 = Dense(15, activation='relu')(flatten11)
+prediction4 = Dense(11, activation='softmax')(hidden41)
+
+hidden51 = Dense(15, activation='relu')(flatten11)
+prediction5 = Dense(11, activation='softmax')(hidden51)
+
+model = Model(inputs=inputs, outputs=[prediction1, prediction2, prediction3, prediction4, prediction5])
+
+model.compile(optimizer='rmsprop', loss='categorical_crossentropy', metrics=['accuracy'])
+
+learnrate_reduce_1 = ReduceLROnPlateau(monitor='val_dense_2_acc', patience=2, verbose=1, factor=0.8, min_lr=0.00001)
+learnrate_reduce_2 = ReduceLROnPlateau(monitor='val_dense_4_acc', patience=2, verbose=1, factor=0.8, min_lr=0.00001)
+learnrate_reduce_3 = ReduceLROnPlateau(monitor='val_dense_6_acc', patience=2, verbose=1, factor=0.8, min_lr=0.00001)
+learnrate_reduce_4 = ReduceLROnPlateau(monitor='val_dense_8_acc', patience=2, verbose=1, factor=0.8, min_lr=0.00001)
+learnrate_reduce_5 = ReduceLROnPlateau(monitor='val_dense_10_acc', patience=2, verbose=1, factor=0.8, min_lr=0.00001)
+
+model.fit(X_train, y_train, epochs=20, batch_size=128,
+          validation_data=(X_valid, y_valid),
+          callbacks=[learnrate_reduce_1, learnrate_reduce_2, learnrate_reduce_3, learnrate_reduce_4, learnrate_reduce_5])
+
+
+def evaluate(model):
+    # TODO: 按照错一个就算错的规则计算准确率.
+    result = model.evaluate(np.array(X_test).reshape(len(X_test), 28, 140, 1),
+                            [y_test[0], y_test[1], y_test[2], y_test[3],
+                             y_test[4]], batch_size=32)
+    return result[6] * result[7] * result[8] * result[9] * result[10]
+
+
+evaluate(model)
+
+
+def get_result(result):
+    # 将 one_hot 编码解码
+    resultstr = ''
+    for i in range(n_len):
+        resultstr += str(np.argmax(result[i])) + ','
+    return resultstr
+
+
+index = random.randint(0, n_test - 1)
+y_pred = model.predict(X_test[index].reshape(1, 28, 140, 1))
+
+plt.title('real: %s\npred:%s' % (get_result([y_test[x][index] for x in range(n_len)]), get_result(y_pred)))
+plt.imshow(X_test[index, :, :, 0], cmap='gray')
+plt.axis('off')
+plt.savefig('./evalmnist.jpg')
+plt.show()
