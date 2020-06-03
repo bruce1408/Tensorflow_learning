@@ -17,7 +17,7 @@ from natsort import natsorted
 
 
 image = tf.placeholder(tf.float32, [None, 224, 224, 3])
-test_logit0, test_logit1, test_logit2, test_logit3, test_logit4 = svhn_inference.conv_net(image,
+test_logit0, test_logit1, test_logit2, test_logit3 = svhn_inference.conv_net(image,
                                                                                           11,
                                                                                           0.2,
                                                                                           reuse=False,
@@ -89,7 +89,7 @@ with tf.Session() as sess:
             # image = np.array(image.convert('L'))  # 转成灰度图即可 尺寸变成 224*224*1
 
             # 获取预测结果
-            label0, label1, label2, label3, label4 = sess.run(
+            label0, label1, label2, label3 = sess.run(
                 [correct_prediction0, correct_prediction1,
                  correct_prediction2, correct_prediction3], feed_dict={image: image_})
 
@@ -103,13 +103,12 @@ with tf.Session() as sess:
             imageList.append(img)
             sorted(data.keys())
             tempLabel = ""
-            for i in range(label4[0]):
+            for i in range(4):
                 tempLabel += str(labelList[i])
             data[im] = tempLabel
 
             print("After %s training step(s), validation label0 = %d, label1 = %d, label2 = %d, label3 = %d, "
-                  "label4 = %d the img path is %s" % (global_step, label0[0], label1[0], label2[0], label3[0],
-                                                      label4[0], imgpath))
+                  "the img path is %s" % (global_step, label0[0], label1[0], label2[0], label3[0], imgpath))
         # print('the result is:', data)
             sys.stdout.write('\r>> Creating image %d/%d' % (cnt + 1, num))
             sys.stdout.flush()
