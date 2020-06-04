@@ -68,19 +68,22 @@ with tf.gfile.FastGFile('inception_model/classify_image_graph_def.pb',  'rb') as
 
 with tf.Session() as sess:
     softmax_tensor = sess.graph.get_tensor_by_name('softmax:0')
+    predlabel = tf.argmax(softmax_tensor, 1)
     # 遍历目录
     for root, dirs, files in os.walk('images/'):
         for file in files:
             # 载入图片
             image_data = tf.gfile.FastGFile(os.path.join(root, file),  'rb').read()
-            predictions = sess.run(softmax_tensor, {'DecodeJpeg/contents:0': image_data})  # 图片格式是jpg格式
+            # 图片格式是jpg格式
+            predlabel_, predictions = sess.run([predlabel, softmax_tensor], {'DecodeJpeg/contents:0': image_data})
+            print('predictions: ', predlabel_)
             predictions = np.squeeze(predictions)  # 把结果转为1维数据
 
             # 打印图片路径及名称
             image_path = os.path.join(root, file)
             print(image_path)
             # 显示图片
-            img=Image.open(image_path)
+            img = Image.open(image_path)
             plt.imshow(img)
             plt.axis('off')
             plt.show()

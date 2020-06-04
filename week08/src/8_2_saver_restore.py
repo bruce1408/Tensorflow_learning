@@ -7,6 +7,10 @@ os.environ['CUDA_VISIBLE_DEVICES']='0'
 # 载入数据集
 mnist = input_data.read_data_sets("/raid/bruce/MNIST_data", one_hot=True)
 
+"""
+模型加载方法 1，使用saver.restore(sess, MODELNAME.ckpt)重新构建网络结构来加载模型
+模型加载方法 2，使用加载网络图的模式，先加载网络图结构，然后开始加载网络结构op名称。
+"""
 # # 每个批次100张照片
 # batch_size = 100
 # # 计算一共有多少个批次
@@ -38,15 +42,27 @@ mnist = input_data.read_data_sets("/raid/bruce/MNIST_data", one_hot=True)
 # saver = tf.train.Saver()
 #
 # with tf.Session() as sess:
+"""
+方法 1，重写网络图结构，然后开始加载网络模型，使用restore方法。
+"""
 #     sess.run(init)
 #     print(sess.run(accuracy, feed_dict={x: mnist.test.images, y: mnist.test.labels}))
 #     saver.restore(sess, 'net/my_net.ckpt')
 #     print(sess.run(accuracy, feed_dict={x: mnist.test.images, y: mnist.test.labels}))
 
+"""
+方法 2，使用加载网络图结构，然后开始做inference
+关键语句：
+saver = tf.train.import_meta_graph(./modelpath/MODELNAME.meta) 不再是tf.train.Saver()
+saver.restore()
+graph = tf.get_default_graph()
+a = graph.get_tensor_by_name("input_img:0")
+"""
 print(mnist.test.images.shape)
 x = np.random.random((32, 784))
 y = np.random.randint(10, size=(32, 10))
 saver = tf.train.import_meta_graph('./net/myModel_10001.meta')
+path = ""
 with tf.Session() as sess:
     ckpt = tf.train.get_checkpoint_state('./net')
     if ckpt is None:

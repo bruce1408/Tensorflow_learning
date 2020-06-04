@@ -7,35 +7,29 @@ os.environ['CUDA_VISIBLE_DEVICES'] = '0'
 mnist = input_data.read_data_sets("/raid/bruce/MNIST_data", one_hot=True)
 # 每个批次100张照片
 batch_size = 100
-# 计算一共有多少个批次
 n_batch = mnist.train.num_examples // batch_size
 
-# 定义两个placeholder
 x = tf.placeholder(tf.float32, [None, 784], name='input_img')
 y = tf.placeholder(tf.float32, [None, 10], name='input_label')
-
-# 创建一个简单的神经网络，输入层784个神经元，输出层10个神经元
 W = tf.Variable(tf.zeros([784, 10]))
 b = tf.Variable(tf.zeros([10]))
 prediction = tf.nn.softmax(tf.matmul(x, W)+b, name='prediction')
 
-# 二次代价函数
 #  loss = tf.reduce_mean(tf.square(y-prediction))
 loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(labels=y, logits=prediction))
-# 使用梯度下降法
 train_step = tf.train.GradientDescentOptimizer(0.2).minimize(loss)
-
-# 初始化变量
 init = tf.global_variables_initializer()
-
-# 结果存放在一个布尔型列表中
 correct_prediction = tf.equal(tf.argmax(y, 1), tf.argmax(prediction, 1))  # argmax返回一维张量中最大的值所在的位置
-# 求准确率
 accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
-
-# 保存模型！
+"""
+定义一个小的网络结构，保存模型的时候使用Saver这个类
+保存模型的时候
 saver = tf.train.Saver()
+saver.save(sess, ./path/MODELNAME.ckpt)
 
+然后加载的话，使用saver.restore(sess, 'MODELNAME.ckpt')即可
+"""
+saver = tf.train.Saver()
 with tf.Session() as sess:
     sess.run(init)
     for epoch in range(11):

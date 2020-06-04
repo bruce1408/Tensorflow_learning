@@ -9,6 +9,7 @@ learning_rate = 0.001
 batch_size = 100
 display_step = 10
 model_path = "./8_6/model.ckpt"
+trainEpoch = 500000
 
 # Network Parameters
 n_hidden_1 = 256  # 1st layer number of features
@@ -72,7 +73,7 @@ with tf.Session() as sess:
     sess.run(init)
 
     step = 0
-    while step * batch_size < 1000:
+    while step * batch_size < trainEpoch:
         batch_xs, batch_ys = mnist.train.next_batch(batch_size)
         loss, _, acc = sess.run([cost, optimizer, accuracy], feed_dict={x: batch_xs, y: batch_ys})
         if step % display_step == 0:
