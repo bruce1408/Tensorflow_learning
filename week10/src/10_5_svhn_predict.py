@@ -7,7 +7,6 @@ import matplotlib.pyplot as plt
 import pandas as pd
 
 os.environ['CUDA_VISIBLE_DEVICES'] = '1'
-MODEL_SAVE_PATH = "model_svhn3/"
 MODEL_SAVE_PATH = "model_svhn5/"
 MODEL_NAME = "model10000.ckpt.data-00000-of-00001"
 # imgPath = "/raid/bruce/tmp/tmp/tensorflow_learning_remote/pred/"
