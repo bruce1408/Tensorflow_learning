@@ -5,8 +5,8 @@ import numpy as np
 from tensorflow.examples.tutorials.mnist import input_data
 os.environ['CUDA_VISIBLE_DEVICES']='0'
 # 载入数据集
-# mnist = input_data.read_data_sets("/raid/bruce/MNIST_data", one_hot=True)
-#
+mnist = input_data.read_data_sets("/raid/bruce/MNIST_data", one_hot=True)
+
 # # 每个批次100张照片
 # batch_size = 100
 # # 计算一共有多少个批次
@@ -43,13 +43,18 @@ os.environ['CUDA_VISIBLE_DEVICES']='0'
 #     saver.restore(sess, 'net/my_net.ckpt')
 #     print(sess.run(accuracy, feed_dict={x: mnist.test.images, y: mnist.test.labels}))
 
+print(mnist.test.images.shape)
 x = np.random.random((32, 784))
 y = np.random.randint(10, size=(32, 10))
-print(x)
-print(y)
-saver = tf.train.import_meta_graph('./net/my_net1.ckpt.meta')
+saver = tf.train.import_meta_graph('./net/myModel_10001.meta')
 with tf.Session() as sess:
-    saver.restore(sess, 'net/my_net1.ckpt')
+    ckpt = tf.train.get_checkpoint_state('./net')
+    if ckpt is None:
+        print('Model not found, please train your model first')
+    else:
+        path = ckpt.model_checkpoint_path
+        print(path)
+    saver.restore(sess, path)
     graph = tf.get_default_graph()
     a = graph.get_tensor_by_name("input_img:0")
     b = graph.get_tensor_by_name("input_label:0")
@@ -61,3 +66,5 @@ with tf.Session() as sess:
     result = tf.argmax(add_op, 1)
     _, result_ = sess.run([add_op, result], feed_dict=feed_dict)
     print(result_)
+
+

@@ -46,7 +46,18 @@ with tf.Session() as sess:
         acc = sess.run(accuracy, feed_dict={x: mnist.test.images, y: mnist.test.labels})
         print("Iter " + str(epoch) + ", Testing Accuracy " + str(acc))
     # 保存模型
-    saver.save(sess, 'net/my_net1.ckpt')
+    ckpt = tf.train.get_checkpoint_state('./net')
+    if ckpt is None:
+        print('Model not found, please train your model first')
+        saver.save(sess, './net/myModel_10001')
+
+    else:
+        path = ckpt.model_checkpoint_path
+        saver.save(sess, './net/myModel_10001')
+
+
+
+
 
 
 
