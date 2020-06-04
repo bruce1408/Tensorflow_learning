@@ -7,6 +7,7 @@ checkpoint 保存的是checkpoint文件的目录，记录了保存的最新的ch
 meta表示保存图结构，而ckpt.data变量的值
 这里默认保存的是所有的变量
 """
+
 w1 = tf.Variable(tf.constant(2.0, shape=[1]), name='w1')
 w2 = tf.Variable(tf.constant(3.0, shape=[1]), name='w2')
 

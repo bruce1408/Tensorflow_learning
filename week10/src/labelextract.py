@@ -18,9 +18,6 @@ val data info:
 4th is: 118
 3th is: 1569
 2th is: 6393
-
-
-
 """
 os.environ['CUDA_VISIBLE_DEVICES'] = '1'
 trainImg = "/raid/bruce/datasets/svhn/mchar_train"
@@ -145,9 +142,6 @@ def read_and_decode(tfrecords_file, batch_size):
     label3 = tf.cast(img_features['label3'], tf.int32)
     # label4 = tf.cast(img_features['label4'], tf.int32)
 
-    image_batch, length_batch, label_batch0, label_batch1, label_batch2, label_batch3 = \
-        tf.train.batch([image, length, label0, label1, label2, label3],
-
     image_batch, length_batch, label_batch0, label_batch1, label_batch2, label_batch3, label_batch4 = \
         tf.train.batch([image, label0, label1, label2, label3],
                                               batch_size=batch_size,
@@ -161,7 +155,7 @@ def read_and_decode(tfrecords_file, batch_size):
     # label_batch4 = tf.reshape(label_batch4, [batch_size])
 
     print("Read tfrecord doc done!")
-    return image_batch, length_batch, label_batch0, label_batch1, label_batch2, label_batch3
+    # return image_batch, length_batch, label_batch0, label_batch1, label_batch2, label_batch3
     return image_batch, label_batch0, label_batch1, label_batch2, label_batch3
 
 
@@ -179,7 +173,7 @@ def plot_images(images, label0, label1, label2, label3):
 
 # 验证图片生成的tfrecord文件是否正确
 # def valTfrecord(tfrecordName):
-image_batch, length_batch, label_batch0, label_batch1, label_batch2, label_batch3 = \
+image_batch, label_batch0, label_batch1, label_batch2, label_batch3 = \
     read_and_decode("trainData_4_len_3channles.tfrecord", batch_size=BATCH_SIZE)
 x = image_batch
 in_channels = x.get_shape()[-1]
