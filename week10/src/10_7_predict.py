@@ -1,6 +1,8 @@
+# example
 import tensorflow as tf
 from alexnet_inference import conv_net
-import os, sys
+import os
+import sys
 import numpy as np
 from PIL import Image
 import matplotlib.pyplot as plt
@@ -8,14 +10,13 @@ import pandas as pd
 from natsort import natsorted
 BATCH_SIZE = 1
 os.environ['CUDA_VISIBLE_DEVICES'] = '1'
-MODEL_SAVE_PATH = "model_svhn7/"
+MODEL_SAVE_PATH = "model_svhn9/"
 # imgPath = "/raid/bruce/tmp/tmp/tensorflow_learning_remote/pred/"
 # imgPath = "../../week03/src/images/dogs"
-# imgPath = "/raid/bruce/datasets/svhn/mchar_test_a"
+imgPath = "/raid/bruce/datasets/svhn/mchar_test_a"
 
 
 x = tf.placeholder(tf.float32, [None, 224, 224])
-
 
 # def read_and_decode(tfrecords_file, batch_size):
 #     """
@@ -58,6 +59,7 @@ x = tf.placeholder(tf.float32, [None, 224, 224])
 #     print("Read tfrecord doc done!")
 #     return image_batch, label_batch0, label_batch1, label_batch2, label_batch3
 
+
 def read_and_decode(filename):
     # 根据文件名生成一个队列
     filename_queue = tf.train.string_input_producer([filename])
@@ -66,14 +68,14 @@ def read_and_decode(filename):
     _, serialized_example = reader.read(filename_queue)
     features = tf.parse_single_example(serialized_example,
                                        features={
-                                           'image': tf.FixedLenFeature([], tf.string),
+                                           'img_raw': tf.FixedLenFeature([], tf.string),
                                            'label0': tf.FixedLenFeature([], tf.int64),
                                            'label1': tf.FixedLenFeature([], tf.int64),
                                            'label2': tf.FixedLenFeature([], tf.int64),
                                            'label3': tf.FixedLenFeature([], tf.int64),
                                        })
     # 获取图片数据
-    image = tf.decode_raw(features['image'], tf.uint8)
+    image = tf.decode_raw(features['img_raw'], tf.uint8)
     # 没有经过预处理的灰度图
     image_raw = tf.reshape(image, [224, 224])
     # tf.train.shuffle_batch必须确定shape
@@ -91,7 +93,7 @@ def read_and_decode(filename):
     return image, image_raw, label0, label1, label2, label3
 
 
-image, image_raw, label0, label1, label2, label3 = read_and_decode("./captcha/test.tfrecords")
+image, image_raw, label0, label1, label2, label3 = read_and_decode("valData_4_digit_nolen.tfrecord")
 
 # 使用shuffle_batch可以随机打乱
 image_batch, image_raw_batch, label_batch0, label_batch1, label_batch2, label_batch3 = tf.train.shuffle_batch(
@@ -115,25 +117,25 @@ with tf.Session() as sess:
     # inputs: a tensor of size [batch_size, height, width, channels]
     X = tf.reshape(x, [BATCH_SIZE, 224, 224, 1])
     # 数据输入网络得到输出值
-    logits0, logits1, logits2, logits3 = conv_net(X, 10, 0.2, reuse=False, is_training=False)
+    logits0, logits1, logits2, logits3 = conv_net(X, 11, 0.2, reuse=False, is_training=False)
 
     # 预测值
-    # predict0 = tf.reshape(logits0, [-1, 10])
-    # predict0 = tf.argmax(predict0, 1)
-    #
-    # predict1 = tf.reshape(logits1, [-1, 10])
-    # predict1 = tf.argmax(predict1, 1)
-    #
-    # predict2 = tf.reshape(logits2, [-1, 10])
-    # predict2 = tf.argmax(predict2, 1)
-    #
-    # predict3 = tf.reshape(logits3, [-1, 10])
-    # predict3 = tf.argmax(predict3, 1)
+    predict0 = tf.reshape(logits0, [-1, 11])
+    correct_prediction0 = tf.argmax(predict0, 1)
 
-    correct_prediction0 = tf.argmax(logits0, 1)
-    correct_prediction1 = tf.argmax(logits1, 1)
-    correct_prediction2 = tf.argmax(logits2, 1)
-    correct_prediction3 = tf.argmax(logits3, 1)
+    predict1 = tf.reshape(logits1, [-1, 11])
+    correct_prediction1 = tf.argmax(predict1, 1)
+
+    predict2 = tf.reshape(logits2, [-1, 11])
+    correct_prediction2 = tf.argmax(predict2, 1)
+
+    predict3 = tf.reshape(logits3, [-1, 11])
+    correct_prediction3 = tf.argmax(predict3, 1)
+
+    # correct_prediction0 = tf.argmax(logits0, 1)
+    # correct_prediction1 = tf.argmax(logits1, 1)
+    # correct_prediction2 = tf.argmax(logits2, 1)
+    # correct_prediction3 = tf.argmax(logits3, 1)
 
     # 初始化
     sess.run(tf.global_variables_initializer())
@@ -149,7 +151,7 @@ with tf.Session() as sess:
     # 启动QueueRunner, 此时文件名队列已经进队
     threads = tf.train.start_queue_runners(sess=sess, coord=coord)
 
-    for i in range(10):
+    for i in range(20):
         # 获取一个批次的数据和标签
         b_image, b_image_raw, b_label0, b_label1, b_label2, b_label3 = sess.run([image_batch,
                                                                                  image_raw_batch,
