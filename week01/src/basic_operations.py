@@ -9,8 +9,6 @@ from __future__ import print_function
 
 import numpy as np
 import tensorflow as tf
-import tensorflow.contrib.eager as tfe
-tfe.enable_eager_execution()
 
 
 # Basic constant operations
@@ -39,8 +37,6 @@ b = tf.constant(3)
 #     print("Addition with variables: %i" % sess.run(add, feed_dict={a: 2, b: 3}))
 #     print("Multiplication with variables: %i" % sess.run(mul, feed_dict={a: 2, b: 3}))
 
-
-# ----------------
 # More in details:
 # Matrix Multiplication from TensorFlow official tutorial
 
@@ -64,7 +60,13 @@ matrix2 = tf.constant([[2.], [2.]])
 #     print(result)
 #     # ==> [[ 12.]]
 
-x = np.arange(0, 100).reshape(2, 5, 5, 2)
-y = tf.convert_to_tensor(x)
-y = tf.squeeze(y, [2])
-print(y.shape)
+# tf.squeeze 只能对维数是1的维度进行压缩
+x = np.arange(0, 25).reshape(1, 5, 5, 1)
+x = tf.convert_to_tensor(x)
+z = tf.squeeze(x, [0, 3])
+with tf.Session() as sess:
+    sess.run(tf.global_variables_initializer())
+    value = sess.run(z)
+    print(x.shape)
+    print(z.shape)
+    print("z[0][1]: ", value[0][1])

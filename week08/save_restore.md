@@ -46,4 +46,4 @@ saver = tf.train.Saver(max_to_keep=4, keep_checkpoint_every_n_hours=2)
 ```
 
 ### 参考文献
--  tensorflow保存和恢复模型的两种方法介绍[]
+-  [tensorflow保存和恢复模型的两种方法介绍](https://zhuanlan.zhihu.com/p/31417693)
