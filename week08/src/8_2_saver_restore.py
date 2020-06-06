@@ -68,8 +68,8 @@ with tf.Session() as sess:
     if ckpt is None:
         print('Model not found, please train your model first')
     else:
+        print("loading the model...", path)
         path = ckpt.model_checkpoint_path
-        print(path)
     saver.restore(sess, path)
     graph = tf.get_default_graph()
     a = graph.get_tensor_by_name("input_img:0")
