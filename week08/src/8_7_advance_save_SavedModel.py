@@ -22,7 +22,10 @@ os.environ['CUDA_VISIBLE_DEVICES'] = '0'
     强制这些输入输出的命名都一致即可。如果是不同的开发者，要在创建模型阶段就强制tensor的命名一致就比较困难了。
     这样就不得不再维护一个配置文件，将需要获取的tensor名称写入，然后从配置文件中读取该参数。
     
-    使用SavedModel保存模型可以解决上面的问题。
+    使用SavedModel保存模型可以解决上面的问题。代码参考 8_7， 8_8， 8_9
+    补充，官方给的关于mnist的样例代码地址如下：
+    https://github.com/tensorflow/serving/blob/master/tensorflow_serving/example/mnist_saved_model.py#L102-L114
+    https://github.com/tensorflow/serving/blob/master/tensorflow_serving/g3doc/signature_defs.md
 
 """
 mnist = input_data.read_data_sets("/raid/bruce/MNIST_data", one_hot=True)
