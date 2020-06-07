@@ -6,7 +6,24 @@ from tensorflow.examples.tutorials.mnist import input_data
 os.environ['CUDA_VISIBLE_DEVICES'] = '0'
 
 """
-如果
+
+1.  saved_model模块主要用于TensorFlow Serving。TF Serving是一个将训练好的模型部署至生产环境的系统，
+    主要的优点在于可以保持Server端与API不变的情况下，部署新的算法或进行试验，同时还有很高的性能。
+2.  保持Server端与API不变有什么好处呢？有很多好处，我只从我体会的一个方面举例子说明一下，比如我们需要部署一个文本分类模型，
+    那么输入和输出是可以确定的，输入文本，输出各类别的概率或类别标签。为了得到较好的效果，我们可能想尝试很多不同的模型，
+    CNN，RNN，RCNN等，这些模型训练好保存下来以后，在inference阶段需要重新载入这些模型，我们希望的是inference的代码有一份就好，
+    也就是使用新模型的时候不需要针对新模型来修改inference的代码。
+
+1.  仅用Saver来保存/载入变量。这个方法显然不行，仅保存变量就必须在inference的时候重新定义Graph(定义模型)，
+    这样不同的模型代码肯定要修改。即使同一种模型，参数变化了，也需要在代码中有所体现，至少需要一个配置文件来同步，这样就很繁琐了。
+2.  使用tf.train.import_meta_graph导入graph信息并创建Saver， 再使用Saver restore变量。相比第一种，不需要重新定义模型，
+    但是为了从graph中找到输入输出的tensor，还是得用graph.get_tensor_by_name()来获取，
+    也就是还需要知道在定义模型阶段所赋予这些tensor的名字。如果创建各模型的代码都是同一个人完成的，还相对好控制，
+    强制这些输入输出的命名都一致即可。如果是不同的开发者，要在创建模型阶段就强制tensor的命名一致就比较困难了。
+    这样就不得不再维护一个配置文件，将需要获取的tensor名称写入，然后从配置文件中读取该参数。
+    
+    使用SavedModel保存模型可以解决上面的问题。
+
 """
 mnist = input_data.read_data_sets("/raid/bruce/MNIST_data", one_hot=True)
 

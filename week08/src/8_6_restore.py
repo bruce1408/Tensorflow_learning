@@ -50,7 +50,7 @@ os.environ['CUDA_VISIBLE_DEVICES']='1'
 #     print(sess.run("w2:0"))
 
 """
-不再重新构建图来做神经网络，同时加载运算
+不再重新构建图，同时加载运算
 """
 saver = tf.train.import_meta_graph('./8_5basic/model.ckpt.meta')
 with tf.Session() as sess:
