@@ -14,7 +14,8 @@ import tensorflow as tf
 
 # Import MNIST data
 from tensorflow.examples.tutorials.mnist import input_data
-mnist = input_data.read_data_sets("/tmp/data/", one_hot=True)
+
+mnist = input_data.read_data_sets("../../MNIST_data/", one_hot=True)
 
 # Training Parameters
 learning_rate = 0.001
@@ -23,14 +24,14 @@ batch_size = 128
 display_step = 10
 
 # Network Parameters
-num_input = 784 # MNIST data input (img shape: 28*28)
-num_classes = 10 # MNIST total classes (0-9 digits)
-dropout = 0.75 # Dropout, probability to keep units
+num_input = 784  # MNIST data input (img shape: 28*28)
+num_classes = 10  # MNIST total classes (0-9 digits)
+dropout = 0.75  # Dropout, probability to keep units
 
 # tf Graph input
 X = tf.placeholder(tf.float32, [None, num_input])
 Y = tf.placeholder(tf.float32, [None, num_classes])
-keep_prob = tf.placeholder(tf.float32) # dropout (keep probability)
+keep_prob = tf.placeholder(tf.float32)  # dropout (keep probability)
 
 
 # Create some wrappers for simplicity
@@ -76,6 +77,7 @@ def conv_net(x, weights, biases, dropout):
     out = tf.add(tf.matmul(fc1, weights['out']), biases['out'])
     return out
 
+
 # Store layers weight & bias
 weights = {
     # 5x5 conv, 1 input, 32 outputs
@@ -83,7 +85,7 @@ weights = {
     # 5x5 conv, 32 inputs, 64 outputs
     'wc2': tf.Variable(tf.random_normal([5, 5, 32, 64])),
     # fully connected, 7*7*64 inputs, 1024 outputs
-    'wd1': tf.Variable(tf.random_normal([7*7*64, 1024])),
+    'wd1': tf.Variable(tf.random_normal([7 * 7 * 64, 1024])),
     # 1024 inputs, 10 outputs (class prediction)
     'out': tf.Variable(tf.random_normal([1024, num_classes]))
 }
@@ -105,7 +107,6 @@ loss_op = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(
 optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate)
 train_op = optimizer.minimize(loss_op)
 
-
 # Evaluate model
 correct_pred = tf.equal(tf.argmax(prediction, 1), tf.argmax(Y, 1))
 accuracy = tf.reduce_mean(tf.cast(correct_pred, tf.float32))
@@ -115,11 +116,10 @@ init = tf.global_variables_initializer()
 
 # Start training
 with tf.Session() as sess:
-
     # Run the initializer
     sess.run(init)
 
-    for step in range(1, num_steps+1):
+    for step in range(1, num_steps + 1):
         batch_x, batch_y = mnist.train.next_batch(batch_size)
         # Run optimization op (backprop)
         sess.run(train_op, feed_dict={X: batch_x, Y: batch_y, keep_prob: 0.8})
