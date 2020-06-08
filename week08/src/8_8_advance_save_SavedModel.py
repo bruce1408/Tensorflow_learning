@@ -2,7 +2,8 @@ from tensorflow.examples.tutorials.mnist import input_data
 import tensorflow as tf
 from tensorflow.saved_model.signature_def_utils import predict_signature_def
 from tensorflow.saved_model import tag_constants
-
+import os
+os.environ['CUDA_VISIBLE_DEVICES'] = '0'
 mnist = input_data.read_data_sets("/raid/bruce/MNIST_data", one_hot=True)
 
 sess = tf.InteractiveSession()
@@ -28,10 +29,14 @@ accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
 print("val data acc is:", accuracy.eval({x: mnist.test.images, y_: mnist.test.labels}))
 
 # 将模型保存到文件
-# 简单方法：
-tf.saved_model.simple_save(sess, "./advanceSaverAPI_model_simple", inputs={"Input": x}, outputs={"Output": y})
-# 复杂方法
-builder = tf.saved_model.builder.SavedModelBuilder("./advanceSaverAPI_model_complex")
-signature = predict_signature_def(inputs={'Input': x}, outputs={'Output': y})
-builder.add_meta_graph_and_variables(sess=sess, tags=[tag_constants.SERVING], signature_def_map={'predict': signature})
-builder.save()
+
+if not os.path.exists("./advanceSaverAPI_model_complex"):
+    # 简单方法：
+    tf.saved_model.simple_save(sess, "./advanceSaverAPI_model_simple", inputs={"Input": x}, outputs={"Output": y})
+    # 复杂方法
+    builder = tf.saved_model.builder.SavedModelBuilder("./advanceSaverAPI_model_complex")
+    signature = predict_signature_def(inputs={'Input': x}, outputs={'Output': y})
+    builder.add_meta_graph_and_variables(sess=sess, tags=[tag_constants.SERVING], signature_def_map={'predict': signature})
+    builder.save()
+else:
+    print('the model has been existed!')
