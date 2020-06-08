@@ -22,9 +22,7 @@ simple_model.add(Dense(1, activation='sigmoid'))
 # 编译模型,训练模型之前需要编译模型
 # 编译模型的三个参数：优化器、损失函数、指标列表
 simple_model.compile(optimizer='sgd', loss='mean_squared_error', metrics=['accuracy'])
- 
- 
- 
+
 # 训练网络 2000次
 # Keras以Numpy数组作为输入数据和标签的数据类型。训练模型一般使用fit函数
 simple_model.fit(x, y, epochs=2000000)

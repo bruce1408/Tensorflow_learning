@@ -24,7 +24,7 @@ tfe = tf.contrib.eager
 # Import MNIST data
 from tensorflow.contrib.learn.python.learn.datasets.mnist import read_data_sets
 # from tensorflow.examples.tutorials.mnist import input_data
-mnist = read_data_sets("MNIST_data", one_hot=False)
+mnist = read_data_sets("../../MNIST_data", one_hot=False)
 
 # Parameters
 learning_rate = 0.001

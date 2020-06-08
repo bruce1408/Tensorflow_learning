@@ -14,10 +14,10 @@ Project: https://github.com/aymericdamien/TensorFlow-Examples/
 from __future__ import print_function
 
 # Import MNIST data
-from tensorflow.examples.tutorials.mnist import input_data
-mnist = input_data.read_data_sets("MNIST_data", one_hot=True)
-
 import tensorflow as tf
+from tensorflow.examples.tutorials.mnist import input_data
+
+mnist = input_data.read_data_sets("../../MNIST_data", one_hot=True)
 
 # Parameters
 learning_rate = 0.1
@@ -26,10 +26,10 @@ batch_size = 128
 display_step = 100
 
 # Network Parameters
-n_hidden_1 = 256 # 1st layer number of neurons
-n_hidden_2 = 256 # 2nd layer number of neurons
-num_input = 784 # MNIST data input (img shape: 28*28)
-num_classes = 10 # MNIST total classes (0-9 digits)
+n_hidden_1 = 256  # 1st layer number of neurons
+n_hidden_2 = 256  # 2nd layer number of neurons
+num_input = 784  # MNIST data input (img shape: 28*28)
+num_classes = 10  # MNIST total classes (0-9 digits)
 
 # tf Graph input
 X = tf.placeholder("float", [None, num_input])
@@ -58,6 +58,7 @@ def neural_net(x):
     out_layer = tf.matmul(layer_2, weights['out']) + biases['out']
     return out_layer
 
+
 # Construct model
 logits = neural_net(X)
 prediction = tf.nn.softmax(logits)
@@ -80,11 +81,10 @@ config = tf.ConfigProto()
 config.gpu_options.allocator_type = "BFC"
 config.gpu_options.allow_growth = True
 with tf.Session(config=config) as sess:
-
     # Run the initializer
     sess.run(init)
 
-    for step in range(1, num_steps+1):
+    for step in range(1, num_steps + 1):
         batch_x, batch_y = mnist.train.next_batch(batch_size)
         # Run optimization op (backprop)
         sess.run(train_op, feed_dict={X: batch_x, Y: batch_y})
@@ -100,4 +100,4 @@ with tf.Session(config=config) as sess:
 
     # Calculate accuracy for MNIST test images
     print("Testing Accuracy:", sess.run(accuracy, feed_dict={X: mnist.test.images,
-                                      Y: mnist.test.labels}))
+                                                             Y: mnist.test.labels}))
