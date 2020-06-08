@@ -1,12 +1,29 @@
+# -*- coding: utf-8 -*-
+
 import os
+import cv2
 import numpy as np
 from PIL import Image
 import tensorflow as tf
+from tensorflow.contrib.slim import nets
 from tensorflow.contrib.slim.nets import vgg
+slim = tf.contrib.slim
+
 os.environ['CUDA_VISIBLE_DEVICES'] = '0'
+"""
+查看恢复的模型参数
+f.trainable_variables()查看的是所有可训练的变量；
+tf.global_variables()获得的与tf.trainable_variables()类似，只是多了一些非trainable的变量，
+比如定义时指定为trainable=False的变量；
+sess.graph.get_operations()则可以获得几乎所有的operations相关的tensor
+"""
 
 
 def getLabel():
+    """
+    获取iamgenet图像类别标签对应的数字
+    :return:
+    """
     labelDict = dict()
     with open('./label1000.txt', 'r') as f:
         for eachline in f:
@@ -14,22 +31,35 @@ def getLabel():
             labelDict[eachline.split(' ')[0].strip(":")] = eachline.split(' ')[1:]
     return labelDict
 
+
+def tensorName():
+    var = tf.global_variables()
+    # name = [tensor.name for tensor in tf.get_default_graph().as_graph_def().node] # 包含所有的节点
+    var_to_restore = [val for val in var if 'fc8' not in val.name]  # 保留变量名中不含有fc8的变量
+    print(var_to_restore)
+    for val in var:
+        print('the global variable: ', val.name)
+    tra = tf.trainable_variables()
+    for t in tra:
+        print('the trainable variable is:', t.name)
+    # 列出图里所有的tensor名，以便决定获取哪层作为特征
+    train_layers = ['fc8', 'fc7', 'fc6']
+    var_list = [v for v in tf.trainable_variables() if v.name.split('/')[1] in train_layers]
+    for i in var_list:
+        print('the name is: ', i.name)
+
 # 读取图片方式
 # img = Image.open("./images/lion.jpg")
 # img = img.resize((224, 224))
 # img = np.array(img)
 # img = np.expand_dims(img, 0)
 # img = img.astype(np.float32)
-# labelDict = dict()
-# with open('./label1000.txt', 'r') as f:
-#     for eachline in f:
-#         eachline = eachline.strip()
-#         labelDict[eachline.split(' ')[0].strip(":")] = eachline.split(' ')[1:]
-#
+
+
 # result, endpoint = vgg.vgg_16(img)
 # arg_scope = vgg.vgg_arg_scope()
 # label = tf.argmax(result, 1)
-#
+
 # with tf.Session() as sess:
 #     restorer = tf.train.Saver()
 #     print("model restore")
@@ -38,47 +68,25 @@ def getLabel():
 #     print(labelDict[str(numlabel[0])])
 #     print(endpoint)
 
-import tensorflow as tf
-from tensorflow.contrib.slim import nets
-import cv2
-import numpy as np
 
-slim = tf.contrib.slim
 # 定义网络变量，net为一个tensor变量，endpoints为一个词典，记录了网络的各层组成
 X = tf.placeholder(dtype=tf.float32, shape=[None, 224, 224, 3], name='X')
 net, endpoints = nets.vgg.vgg_16(inputs=X, is_training=False)  # FIXME：修改网络结构
 
-# 列出图里所有的tensor名，以便决定获取哪层作为特征
-tvars = tf.trainable_variables()  # 获取所有可以更新的变量
-for v in tvars:
-    print(v.name.split('/')[0])
-print('all para ,', tvars)
-
-train_layers = ['fc8', 'fc7', 'fc6']
-
-var_list = [v for v in tf.trainable_variables() if v.name.split('/')[0] in train_layers]
-for i in var_list:
-    print(i.name)
-name = [tensor.name for tensor in tf.get_default_graph().as_graph_def().node]
-print(name)
 feat = tf.get_default_graph().get_tensor_by_name('vgg_16/fc8/squeezed:0')
 label = tf.argmax(feat, 1)
 # 读取真实图片
 
-img = Image.open("./images/lion.jpg")  # FIXME：修改图片路径
+img = Image.open("./images/panda.jpg")  # FIXME：修改图片路径
 img = img.resize((224, 224))
 img = np.array(img)
 img = np.expand_dims(img, 0)
 img = img.astype(np.float32)
-# 1
 labels = getLabel()
 
 # 开始提取特征！
 with tf.Session() as sess:
-    # 初始化图
     sess.run(tf.global_variables_initializer())
-
-    # 加载模型参数
     checkpoint_path = './vgg_16.ckpt'  # FIXME：修改checkpoint路径
     restorer = tf.train.Saver()
     restorer.restore(sess, checkpoint_path)
@@ -89,8 +97,6 @@ with tf.Session() as sess:
     print(labels[str(feat_[0])])
 
 
-
-# # -*- coding: utf-8 -*-
 # """
 # Created on Wed Jun  6 11:56:58 2018
 #
