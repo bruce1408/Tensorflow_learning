@@ -45,6 +45,8 @@ def tensorName():
         print('the trainable variable is:', t.name)
     # 列出图里所有的tensor名，以便决定获取哪层作为特征
     train_layers = ['fc8', 'fc7', 'fc6']
+    # var_list = [v for v in tf.trainable_variables() if v.name.split('/')[0] in train_layers]
+
     var_list = [v for v in tf.trainable_variables() if v.name.split('/')[1] in train_layers]
     for i in var_list:
         print('the name is: ', i.name)

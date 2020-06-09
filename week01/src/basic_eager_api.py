@@ -23,9 +23,9 @@ import numpy as np
 import tensorflow as tf
 import tensorflow.contrib.eager as tfe
 import tensorflow.python.framework.dtypes
+
 # os.environ["CUDA_VISIBLE_DEVICES"] = '1'
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
-
 
 # Set Eager API
 print("Setting Eager mode...")
@@ -44,7 +44,6 @@ c = a + b
 print("a + b = %i" % c)
 d = a * b
 print("a * b = %i" % d)
-
 
 # Full compatibility with Numpy
 print("Mixing operations with Tensors and Numpy Arrays")
@@ -69,7 +68,6 @@ for i in range(a.shape[0]):
     for j in range(a.shape[1]):
         print(a[i][j])
 
-
-x = ['1','2','3','4','5','<e>','0','0','0']
+x = ['1', '2', '3', '4', '5', '<e>', '0', '0', '0']
 y = tf.convert_to_tensor(x)
 print(y)

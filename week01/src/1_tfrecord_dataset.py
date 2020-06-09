@@ -5,7 +5,6 @@ from PIL import Image
 import tensorflow as tf
 import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
-
 np.set_printoptions(suppress=True, threshold=np.inf)
 
 """
