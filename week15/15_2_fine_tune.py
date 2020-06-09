@@ -29,8 +29,8 @@ print(net, end_points)  # net是网络的输出；end_points是所有变量的�
 # add more operations to the graph
 y = tf.nn.softmax(net)  # 输出0-1之间的概率
 cross_entropy = tf.reduce_mean(-tf.reduce_sum(y_ * tf.log(y), reduction_indices=[1]))
-output_vars = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES,
-                                scope='vgg_16/fc8')  # 注意这里的scope是定义graph时 name_scope的名字，不要加:0
+# 注意这里的scope是定义graph时 name_scope的名字，不要加:0
+output_vars = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, scope='vgg_16/fc8')
 print(output_vars)
 
 # loss只作用在var_list列表中的变量，也就是说只训练var_list中的变量，其余变量保持不变。若不指定var_list，则默认重新训练所有变量

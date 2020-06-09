@@ -7,6 +7,7 @@ from PIL import Image
 import tensorflow as tf
 from tensorflow.contrib.slim import nets
 from tensorflow.contrib.slim.nets import vgg
+
 slim = tf.contrib.slim
 
 os.environ['CUDA_VISIBLE_DEVICES'] = '0'
@@ -48,6 +49,7 @@ def tensorName():
     for i in var_list:
         print('the name is: ', i.name)
 
+
 # 读取图片方式
 # img = Image.open("./images/lion.jpg")
 # img = img.resize((224, 224))
@@ -72,7 +74,6 @@ def tensorName():
 # 定义网络变量，net为一个tensor变量，endpoints为一个词典，记录了网络的各层组成
 X = tf.placeholder(dtype=tf.float32, shape=[None, 224, 224, 3], name='X')
 net, endpoints = nets.vgg.vgg_16(inputs=X, is_training=False)  # FIXME：修改网络结构
-
 feat = tf.get_default_graph().get_tensor_by_name('vgg_16/fc8/squeezed:0')
 label = tf.argmax(feat, 1)
 # 读取真实图片
@@ -95,7 +96,6 @@ with tf.Session() as sess:
     feat_ = sess.run(label, feed_dict={X: img})
     print('feature:', feat_)  # 输出一个(1,1000)的numpy特征
     print(labels[str(feat_[0])])
-
 
 # """
 # Created on Wed Jun  6 11:56:58 2018
@@ -167,6 +167,14 @@ with tf.Session() as sess:
 #
 #     # 获取模型参数的命名空间
 #     arg_scope = vgg.vgg_arg_scope()
+
+# {'<function convolution2d at 0x7f0dec6faf28>': {'activation_fn': <function relu at 0x7f0e1962c048>,
+# 'weights_regularizer': <function l2_regularizer.<locals>.l2 at 0x7f0e936876a8>, 'biases_initializer':
+# <tensorflow.python.ops.init_ops.Zeros object at 0x7f0e745c0400>, 'padding': 'SAME'},
+# '<function fully_connected at 0x7f0dec6fcea0>': {'activation_fn': <function relu at 0x7f0e1962c048>,
+# 'weights_regularizer': <function l2_regularizer.<locals>.l2 at 0x7f0e936876a8>, 'biases_initializer':
+# <tensorflow.python.ops.init_ops.Zeros object at 0x7f0e745c0400>}}
+
 #
 #     # 创建网络
 #     with slim.arg_scope(arg_scope):
