@@ -16,6 +16,7 @@ with tf.Session() as sess:
        sess.graph.get_operations()则可以获得几乎所有的operations相关的tensor
        """
     tvs = [v for v in tf.trainable_variables()]
+
     print('获得所有可训练变量的权重:')
     for v in tvs:
         print(v.name)
