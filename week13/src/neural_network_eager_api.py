@@ -39,9 +39,7 @@ num_input = 784  # MNIST data input (img shape: 28*28)
 num_classes = 10  # MNIST total classes (0-9 digits)
 
 # Using TF Dataset to split data into batches
-dataset = tf.data.Dataset.from_tensor_slices((mnist.train.images, mnist.train.labels)).batch(batch_size)
-dataset = tf.data.Dataset.from_tensor_slices(
-    (mnist.train.images, mnist.train.labels))
+dataset = tf.data.Dataset.from_tensor_slices((mnist.train.images, mnist.train.labels))
 dataset = dataset.repeat().batch(batch_size).prefetch(batch_size)
 dataset_iter = tfe.Iterator(dataset)
 
