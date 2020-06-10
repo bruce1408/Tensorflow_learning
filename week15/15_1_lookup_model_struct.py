@@ -14,7 +14,7 @@ with tf.Session() as sess:
        tf.trainable_variables()查看的是所有可训练的变量；
        tf.global_variables()获得的与tf.trainable_variables()类似，只是多了一些非trainable的变量，比如定义时指定为trainable=False的变量；
        sess.graph.get_operations()则可以获得几乎所有的operations相关的tensor
-       """
+    """
     tvs = [v for v in tf.trainable_variables()]
 
     print('获得所有可训练变量的权重:')
