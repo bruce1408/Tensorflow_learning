@@ -1,7 +1,7 @@
 import tensorflow as tf
 import os
 import tensorflow.contrib.slim as slim
-os.environ['CUDA_VISIBLE_DEVICES']='0'
+os.environ['CUDA_VISIBLE_DEVICES'] = '0'
 from tensorflow.contrib.slim import nets
 
 inputs = tf.placeholder(dtype=tf.float32, shape=[None, 224, 224, 3], name='inputs')
@@ -35,4 +35,4 @@ with tf.Session() as sess:
     print('slim: ')
     for var in slim.get_model_variables():
         print(var.op.name)
-        print(var.op.name.startwith('fc7'))
+        # print(var.op.name.startwith('fc7'))

@@ -63,15 +63,5 @@ with tf.Session() as sess:
         print(w_, b_)
 
 
-import tensorflow as tf
-x = tf.Variable(0)
-y = tf.assign(x, 1)
-z = x.assign(2)
-with tf.Session() as sess:
-    sess.run(tf.global_variables_initializer())
-    print(sess.run(x))
-    print(sess.run(y))
-    print(sess.run(x))
-    print(sess.run(z))
-    print(sess.run(x))
+
 

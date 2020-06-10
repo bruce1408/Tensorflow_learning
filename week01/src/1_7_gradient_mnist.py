@@ -54,21 +54,6 @@
 #     accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
 #     print("Accuracy:", accuracy.eval({x: mnist.test.images[:3000], y: mnist.test.labels[:3000]}))
 
-#### Output
-
-# Epoch: 0001 cost= 1.184285608
-# Epoch: 0002 cost= 0.665428013
-# Epoch: 0003 cost= 0.552858426
-# Epoch: 0004 cost= 0.498728328
-# Epoch: 0005 cost= 0.465593693
-# Epoch: 0006 cost= 0.442609185
-# Epoch: 0007 cost= 0.425552949
-# Epoch: 0008 cost= 0.412188290
-# Epoch: 0009 cost= 0.401390140
-# Epoch: 0010 cost= 0.392354651
-# Optimization Finished!
-# Accuracy: 0.873333复制代码
-
 
 import tensorflow as tf
 import os

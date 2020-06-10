@@ -41,14 +41,14 @@ var = tf.global_variables()  # 获取所有变量
 print(var)
 # var_to_restore = [val for val in var if 'conv1' in val.name or 'conv2' in val.name]#保留变量中含有conv1、conv2的变量
 var_to_restore = [val for val in var if 'fc8' not in val.name]  # 保留变量名中不含有fc8的变量
-print(var_to_restore)
+print('var to restore is: ', var_to_restore)
 
 saver = tf.train.Saver(var_to_restore)  # 恢复var_to_restore列表中的变量（最后一层变量fc8不恢复）
 
 with tf.Session() as sess:
     # restore恢复变量值也是变量初始化的一种方式，对于没有restore的变量需要单独初始化
     # 注意如果使用全局初始化，则应在全局初始化后再调用saver.restore()。相当于先通过全局初始化赋值，再通过restore重新赋值。
-    saver.restore(sess, './vgg_16.ckpt')  # 权重保存为.ckpt则需要加上后缀
+    saver.restore(sess, '../slimPretrainedModels/vgg_16.ckpt')  # 权重保存为.ckpt则需要加上后缀
 
     var_to_init = [val for val in var if 'fc8' in val.name]  # 保留变量名中含有fc8的变量
 

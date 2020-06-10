@@ -320,7 +320,8 @@ with tf.Session(config=config) as sess:
             loss, acc = sess.run([loss_op, accuracy])
             # avg_acc += acc[0]
             print("="*58)
-            print("Step " + str(step) + ', Minibatch Loss= ' + "{:.4f}".format(loss) + ", Test Accuracy= " + "{:.3f}".format(acc))
+            print("Step " + str(step) + ', Minibatch Loss= ' + "{:.4f}".format(loss) + ", Test Accuracy= " +
+                  "{:.3f}".format(acc))
             print("="*58)
 
 
