@@ -98,11 +98,19 @@ def _parse_function(record):
     return image, label
 
 
+# train data pipline
 traindata = tf.data.TFRecordDataset("./train_dog_cat.tfrecord").\
-    map(_parse_function).repeat().batch(BATCHSIZE).prefetch(BATCHSIZE)
+    map(_parse_function).\
+    repeat().\
+    batch(BATCHSIZE).\
+    prefetch(BATCHSIZE)
 
+# val data pipline
 valdata = tf.data.TFRecordDataset("./test_dog_cat.tfrecord").\
-    map(_parse_function).repeat().batch(BATCHSIZE).prefetch(BATCHSIZE)
+    map(_parse_function).\
+    repeat().\
+    batch(BATCHSIZE).\
+    prefetch(BATCHSIZE)
 # Create an iterator over the dataset
 
 iterator = tf.data.Iterator.from_structure(traindata.output_types, traindata.output_shapes)

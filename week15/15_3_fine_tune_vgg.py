@@ -89,12 +89,7 @@ traindata_init = iterator.make_initializer(traindata)
 valdata_init = iterator.make_initializer(valdata)
 
 
-def inception_arg_scope(weight_decay=1e-4, is_training=True, batch_norm_decay=0.95, batch_norm_epsilon=0.001):
-    batch_norm_params = {
-        'epsilon': batch_norm_epsilon,
-        'updates_collections': tf.GraphKeys.UPDATE_OPS,
-        'is_training': is_training,
-    }
+def inception_arg_scope(weight_decay=1e-4, is_training=True):
 
     # Set weight_decay for weights in Conv and FC layers. 给卷积和全连接设置默认参数, 卷积函数再单独设置激活函数
     with slim.arg_scope([slim.conv2d, slim.fully_connected], weights_regularizer=slim.l2_regularizer(weight_decay)):
@@ -131,25 +126,7 @@ correct_prection = tf.equal(prediction, Y)
 accuracy = tf.reduce_mean(tf.cast(correct_prection, tf.float32))
 best_val_acc = tf.Variable(0.0, trainable=False)
 
-# # Create a graph for training
-# logits_train = conv_net(X, N_CLASSES, dropout, reuse=False, is_training=True)
-# # Create another graph for testing that reuse the same weights
-# logits_test = conv_net(X, N_CLASSES, dropout, reuse=True, is_training=False)
-#
-# # Define loss and optimizer (with train logits, for dropout to take effect)
-# loss_op = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(logits=logits_train, labels=Y))
-# optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate)
-# train_op = optimizer.minimize(loss_op)
-#
-# # Evaluate model (with test logits, for dropout to be disabled)
-# correct_pred = tf.equal(tf.argmax(logits_test, 1), tf.cast(Y, tf.int64))
-# accuracy = tf.reduce_mean(tf.cast(correct_pred, tf.float32))
-#
-# # Initialize the variables (i.e. assign their default value)
 init = tf.global_variables_initializer()
-#
-# # Start training
-# # Initialize the iterator
 with tf.Session() as sess:
     # sess.run(iterator.initializer)
     sess.run(init)
@@ -182,9 +159,6 @@ with tf.Session() as sess:
                 best_accuracy = curr_val_acc
                 print("saved models !")
                 # sess.run(tf.assign(best_val_accuracy, best_accuracy))
-
-
-
 
     # sess.run(traindata_init)
     # sess.run(valdata_init)

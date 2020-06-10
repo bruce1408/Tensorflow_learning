@@ -1,7 +1,7 @@
 import tensorflow as tf
 import inference
 import os
-
+os.environ['CUDA_VISIBLE_DEVICES'] = '1'
 image_size = 128  # 输入层图片大小
 from PIL import Image
 
