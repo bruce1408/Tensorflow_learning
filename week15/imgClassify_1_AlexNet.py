@@ -101,7 +101,6 @@ with tf.Session() as sess:
 
 # """
 # Created on Wed Jun  6 11:56:58 2018
-#
 # @author: zy
 # """
 #

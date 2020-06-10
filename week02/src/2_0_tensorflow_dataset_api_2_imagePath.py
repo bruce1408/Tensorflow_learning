@@ -18,10 +18,10 @@ os.environ['CUDA_VISIBLE_DEVICES'] = '2'
 # Reading the dataset
 # 2 modes: 'file' or 'folder'
 def get_files_path(file_dir):
-    cats = []
-    dogs = []
-    label_cats = []
-    label_dogs = []
+    cats = list()
+    dogs = list()
+    label_cats = list()
+    label_dogs = list()
     for file in os.listdir(file_dir):
         name = file.split(sep='.')
         if name[0] == 'cat':

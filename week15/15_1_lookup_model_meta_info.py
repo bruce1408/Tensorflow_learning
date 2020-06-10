@@ -1,5 +1,6 @@
 import tensorflow as tf
 import os
+import tensorflow.contrib.slim as slim
 os.environ['CUDA_VISIBLE_DEVICES']='0'
 from tensorflow.contrib.slim import nets
 
@@ -31,3 +32,7 @@ with tf.Session() as sess:
     print('获得所有operations相关的tensor:')
     for o in ops:
         print(o.name)
+    print('slim: ')
+    for var in slim.get_model_variables():
+        print(var.op.name)
+        print(var.op.name.startwith('fc7'))
