@@ -17,7 +17,7 @@ TRAIN_CHECK_POINT = 'check_point/train_model.ckpt'
 VALIDATION_LOG_DIR = 'Log/validation/'
 VGG_19_MODEL_DIR = '/raid/bruce/dog_cat/vgg_19.ckpt'
 BATCHSIZE = 32
-EPOCH = 3
+EPOCH = 10
 IMG_HEIGHT = 224
 IMG_WIDTH = 224
 
