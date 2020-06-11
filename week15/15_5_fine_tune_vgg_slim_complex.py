@@ -59,13 +59,10 @@ def get_accuracy(logits, labels):
     accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
     return accuracy
 
-
-# with tf.Graph().as_default():
-# images = tf.placeholder(tf.float32, [BATCHSIZE, 224, 224, 3])
-# labels = tf.placeholder(tf.float32, [BATCHSIZE, len(data_processing.IMG_CLASSES)])
+# define model
 keep_prob = tf.placeholder(tf.float32)
 is_training = tf.placeholder(tf.bool)
-with slim.arg_scope(nets.vgg.vgg_arg_scope()):
+with slim.arg_scope(nets.vgg.vgg_arg_scope()):  # 定义网络结果的默认参数
     logits, _ = nets.vgg.vgg_19(inputs=X, num_classes=2, dropout_keep_prob=keep_prob, is_training=is_training)
 # logits = tf.squeeze(logits, [1, 2])
 variables_to_restore = slim.get_variables_to_restore(exclude=['vgg_19/fc8'])
@@ -73,15 +70,17 @@ restorer = tf.train.Saver(variables_to_restore)
 
 with tf.name_scope('cross_entropy'):
     loss = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(logits=logits, labels=Y))
-# tf.summary.scalar('cross_entropy', loss)
+tf.summary.scalar('cross_entropy', loss)
 learning_rate = 1e-4
 optimizer = tf.train.AdamOptimizer(learning_rate).minimize(loss)
 with tf.name_scope('accuracy'):
     accuracy = get_accuracy(logits, Y)
-# tf.summary.scalar('accuracy', accuracy)
-#
-# merged = tf.summary.merge_all()
+tf.summary.scalar('accuracy', accuracy)
+
+
+merged = tf.summary.merge_all()
 saver = tf.train.Saver()
+
 
 config = tf.ConfigProto()
 config.gpu_options.allow_growth = True
