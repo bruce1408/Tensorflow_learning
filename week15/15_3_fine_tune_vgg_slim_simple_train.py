@@ -10,6 +10,7 @@ import tensorflow.contrib.slim.nets as nets
 import os
 import os.path
 import time
+
 os.environ['CUDA_VISIBLE_DEVICES'] = '0'
 TRAIN_LOG_DIR = os.path.join('Log/train/', time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time())))
 TRAIN_CHECK_POINT = 'check_point/train_model.ckpt'
@@ -25,6 +26,8 @@ if not tf.gfile.Exists(TRAIN_LOG_DIR):
 
 if not tf.gfile.Exists(VALIDATION_LOG_DIR):
     tf.gfile.MakeDirs(VALIDATION_LOG_DIR)
+
+
 def _parse_function(record):
     keys_to_features = {
         'img_raw': tf.FixedLenFeature((), tf.string),
@@ -40,10 +43,12 @@ def _parse_function(record):
 
 is_training = tf.placeholder(tf.bool)
 
-traindata = tf.data.TFRecordDataset("/raid/bruce/tmp/tmp/tensorflow_learning_remote/week02/src/train_dog_cat_224.tfrecord"). \
+traindata = tf.data.TFRecordDataset(
+    "/raid/bruce/tmp/tmp/tensorflow_learning_remote/week02/src/train_dog_cat_224.tfrecord"). \
     map(_parse_function).repeat().batch(BATCHSIZE).prefetch(BATCHSIZE)
 
-valdata = tf.data.TFRecordDataset("/raid/bruce/tmp/tmp/tensorflow_learning_remote/week02/src/test_dog_cat_224.tfrecord"). \
+valdata = tf.data.TFRecordDataset(
+    "/raid/bruce/tmp/tmp/tensorflow_learning_remote/week02/src/test_dog_cat_224.tfrecord"). \
     map(_parse_function).repeat().batch(BATCHSIZE).prefetch(BATCHSIZE)
 # Create an iterator over the dataset
 
@@ -59,10 +64,13 @@ def get_accuracy(logits, labels):
     accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
     return accuracy
 
-# define model
+
+# with tf.Graph().as_default():
+# images = tf.placeholder(tf.float32, [BATCHSIZE, 224, 224, 3])
+# labels = tf.placeholder(tf.float32, [BATCHSIZE, len(data_processing.IMG_CLASSES)])
 keep_prob = tf.placeholder(tf.float32)
 is_training = tf.placeholder(tf.bool)
-with slim.arg_scope(nets.vgg.vgg_arg_scope()):  # 定义网络结果的默认参数
+with slim.arg_scope(nets.vgg.vgg_arg_scope()):
     logits, _ = nets.vgg.vgg_19(inputs=X, num_classes=2, dropout_keep_prob=keep_prob, is_training=is_training)
 # logits = tf.squeeze(logits, [1, 2])
 variables_to_restore = slim.get_variables_to_restore(exclude=['vgg_19/fc8'])
@@ -70,17 +78,15 @@ restorer = tf.train.Saver(variables_to_restore)
 
 with tf.name_scope('cross_entropy'):
     loss = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(logits=logits, labels=Y))
-tf.summary.scalar('cross_entropy', loss)
+# tf.summary.scalar('cross_entropy', loss)
 learning_rate = 1e-4
 optimizer = tf.train.AdamOptimizer(learning_rate).minimize(loss)
 with tf.name_scope('accuracy'):
     accuracy = get_accuracy(logits, Y)
-tf.summary.scalar('accuracy', accuracy)
-
-
-merged = tf.summary.merge_all()
+# tf.summary.scalar('accuracy', accuracy)
+#
+# merged = tf.summary.merge_all()
 saver = tf.train.Saver()
-
 
 config = tf.ConfigProto()
 config.gpu_options.allow_growth = True
@@ -106,7 +112,7 @@ with tf.Session(config=config) as sess:
                 print(
                     "Epoch %d: Batch %d accuracy is %.2f; Batch loss is %.5f" % (ep + 1, i, accuracy_out, loss_out))
 
-        print("Epoch %d: Train accuracy is %.2f; Train loss is %.5f" % (ep + 1, all_accuracy/(200), all_loss/(200)))
+        print("Epoch %d: Train accuracy is %.2f; Train loss is %.5f" % (ep + 1, all_accuracy / (200), all_loss / (200)))
 
         all_accuracy = 0
         all_loss = 0
@@ -117,6 +123,6 @@ with tf.Session(config=config) as sess:
             all_loss += loss_out
 
         print("Epoch %d: Validation accuracy is %.2f; Validation loss is %.5f" %
-              (ep + 1, all_accuracy/(400), all_loss / (400)))
+              (ep + 1, all_accuracy / (400), all_loss / (400)))
 
         saver.save(sess, TRAIN_CHECK_POINT, global_step=ep)

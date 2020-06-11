@@ -67,13 +67,9 @@ with tf.Session() as sess:
             probabilities_, label = sess.run([probabilities, correct_prediction], feed_dict={image: image_})
 
             # 获取此标签的概率
-            # print(probabilities_)
-            # print(label)
             probability = probabilities_[0][label[0]]
             labelList.append(label[0])
             imageList.append(img)
-            # probability = probability.clip(min=0.005, max=0.995)
-            # data[i.split('.')[0]] = probability[0]
             data[i.split('.')[0]] = label[0].clip(min=0.05, max=0.995)
             # print(data)
 
