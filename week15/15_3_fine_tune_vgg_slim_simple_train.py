@@ -44,12 +44,16 @@ def _parse_function(record):
 is_training = tf.placeholder(tf.bool)
 
 traindata = tf.data.TFRecordDataset(
-    "/raid/bruce/tmp/tmp/tensorflow_learning_remote/week02/src/train_dog_cat_224.tfrecord"). \
-    map(_parse_function).repeat().batch(BATCHSIZE).prefetch(BATCHSIZE)
+    "../week02/src/train_dog_cat_224.tfrecord"). \
+    map(_parse_function).\
+    repeat().batch(BATCHSIZE).\
+    prefetch(BATCHSIZE)
 
 valdata = tf.data.TFRecordDataset(
-    "/raid/bruce/tmp/tmp/tensorflow_learning_remote/week02/src/test_dog_cat_224.tfrecord"). \
-    map(_parse_function).repeat().batch(BATCHSIZE).prefetch(BATCHSIZE)
+    "../week02/src/test_dog_cat_224.tfrecord"). \
+    map(_parse_function).\
+    repeat().batch(BATCHSIZE).\
+    prefetch(BATCHSIZE)
 # Create an iterator over the dataset
 
 iterator = tf.data.Iterator.from_structure(traindata.output_types, traindata.output_shapes)
@@ -65,9 +69,6 @@ def get_accuracy(logits, labels):
     return accuracy
 
 
-# with tf.Graph().as_default():
-# images = tf.placeholder(tf.float32, [BATCHSIZE, 224, 224, 3])
-# labels = tf.placeholder(tf.float32, [BATCHSIZE, len(data_processing.IMG_CLASSES)])
 keep_prob = tf.placeholder(tf.float32)
 is_training = tf.placeholder(tf.bool)
 with slim.arg_scope(nets.vgg.vgg_arg_scope()):
