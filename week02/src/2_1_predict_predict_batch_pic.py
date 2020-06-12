@@ -1,6 +1,7 @@
 import tensorflow as tf
 import inference
 import os
+import sys
 import numpy as np
 from PIL import Image
 import matplotlib.pyplot as plt
@@ -8,7 +9,7 @@ import pandas as pd
 
 os.environ['CUDA_VISIBLE_DEVICES'] = '0'
 MODEL_SAVE_PATH = "model1/"
-MODEL_NAME = "model1000.ckpt.data-00000-of-00001"
+# MODEL_NAME = "model1000.ckpt.data-00000-of-00001"
 imgPath = "/raid/bruce/dog_cat/test1"
 from natsort import natsorted
 
@@ -34,7 +35,6 @@ def plot_images(images, labels, num, reallabel):
         plt.imshow(images[i])
     plt.show()
 
-
 cnt = 0
 predict_val = list()
 data = dict()
@@ -50,7 +50,7 @@ with tf.Session() as sess:
 
         # 通过文件名得到模型保存时迭代的轮数.格式：model.ckpt-6000.data-00000-of-00001
         global_step = ckpt.model_checkpoint_path.split('/')[-1].split('-')[-1]
-
+        num = len(os.listdir(imgPath))
         for i in natsorted(os.listdir(imgPath)):
             cnt += 1
             imgpath = os.path.join(imgPath, i)
@@ -64,19 +64,25 @@ with tf.Session() as sess:
             probabilities_, label = sess.run([probabilities, correct_prediction], feed_dict={image: image_})
 
             # 获取此标签的概率
-            probability = probabilities_[0][label]
+            probability = probabilities_[0][label[0]]
             labelList.append(label[0])
             imageList.append(img)
-            probability = probability.clip(min=0.005, max=0.995)
-            data[i.split('.')[0]] = probability[0]
-            sorted(data.keys())
+            data[i.split('.')[0]] = label[0].clip(min=0.05, max=0.995)
 
-            print("After %s training step(s),validation label = %d, has %g probability, the img path is %s" %
-                  (global_step, label, probability, imgpath))
-        print('the result is:', data)
+            sys.stdout.write('\r>> Creating image %d/%d' % (cnt + 1, num))
+            sys.stdout.flush()
+        sys.stdout.write('\n')
+        sys.stdout.flush()
+            # print(data)
+            # print("After %s training step(s),validation label = %d, has %g probability, the img path is %s" %
+            #       (global_step, label, probability, imgpath))
+        # print('the result is:', data)
+
+
+        sorted(data.keys())
         result = pd.DataFrame.from_dict(data, orient='index', columns=['label'])
         result = result.reset_index().rename(columns={'index': 'id'})
-        result.to_csv('/raid/bruce/dog_cat/result.csv', index=False)
+        result.to_csv('/raid/bruce/dog_cat/result_612.csv', index=False)
         print("predict is done!")
 
         plot_images(imageList, labelList, cnt, labels)

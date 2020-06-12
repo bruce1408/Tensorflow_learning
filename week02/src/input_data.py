@@ -44,8 +44,8 @@ from sklearn.model_selection import train_test_split
 
 # you need to change this to your data directory
 train_dir = '/raid/bruce/dog_cat/train/'
-HIGHTSIZE = 224
-WIDTHSIZE = 224
+HIGHTSIZE = 128
+WIDTHSIZE = 128
 
 
 def get_files(file_dir):
@@ -135,8 +135,8 @@ def convert_to_tfrecord(images, labels, filename):
 image_train, image_test, label_train, label_test = train_test_split(imagepaths, labels, test_size=0.2, random_state=0)
 print(image_train.__len__(), label_train.__len__())
 print(image_test.__len__(), label_test.__len__())
-convert_to_tfrecord(image_train, label_train, 'train_dog_cat_224.tfrecord')
-convert_to_tfrecord(image_test, label_test, 'test_dog_cat_224.tfrecord')
+convert_to_tfrecord(image_train, label_train, 'train_dog_cat.tfrecord')
+convert_to_tfrecord(image_test, label_test, 'test_dog_cat.tfrecord')
 
 
 def get_batch(image, label, image_W, image_H, batch_size, capacity):

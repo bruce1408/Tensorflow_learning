@@ -10,11 +10,12 @@ IMG_WIDTH = 128  # CHANGE HERE, the image width to be resized to
 CHANNELS = 3  # The 3 color channels, change to 1 if grayscale
 n_classes = N_CLASSES  # MNIST total classes (0-9 digits)
 dropout = 0.25
-num_steps = 1000
+num_steps = 10000
 train_display = 100
 val_display = 300
 learning_rate = 0.0001
 BATCHSIZE = 32
+save_check = 1000
 
 
 # Reading the dataset
@@ -119,7 +120,24 @@ X, Y = iterator.get_next()
 traindata_init = iterator.make_initializer(traindata)
 valdata_init = iterator.make_initializer(valdata)
 
-print(X.shape)
+
+def check_accuracy(sess, correct_prediction, is_training, dataset_init_op, batches_to_check):
+    # Initialize the validation dataset
+    sess.run(dataset_init_op)
+    num_correct, num_samples = 0, 0
+
+    for i in range(batches_to_check):
+
+        try:
+            correct_pred = sess.run(correct_prediction)
+            num_correct += correct_pred.sum()
+            num_samples += correct_pred.shape[0]
+        except tf.errors.OutOfRangeError:
+            break
+
+    # Return the fraction of datapoints that were correctly classified
+    acc = float(num_correct) / num_samples
+    return acc
 
 
 def conv_net(x, n_classes, dropout, reuse, is_training):
@@ -211,9 +229,10 @@ with tf.Session() as sess:
             print("Step " + str(step) + ", Minibatch Loss= " + "{:.4f}".format(loss) + ", Training Accuracy= " +
                   "{:.3f}".format(acc))
 
-        if step % val_display == 0:
+        if step % val_display == 0 and step is not 0:
             avg_acc = 0
-            loss, acc = sess.run([loss_op, accuracy])
+            acc = check_accuracy(sess, correct_pred, False, valdata_init, 999)
+            loss = sess.run([loss_op])
             print("\033[1;36m=\033[0m"*60)
             print("\033[1;36mStep %d, Minibatch Loss= %.4f, Test Accuracy= %.4f\033[0m" % (step, loss, acc))
             print("\033[1;36m=\033[0m"*60)
