@@ -68,10 +68,12 @@ with tf.Session() as sess:
 
             # 获取此标签的概率
             probability = probabilities_[0][label[0]]
+            # print('prob is：', probability)
             labelList.append(label[0])
             imageList.append(img)
+            # print('label is: ', label[0])
             data[i.split('.')[0]] = label[0].clip(min=0.05, max=0.995)
-            # print(data)
+            # print('data is: ', data)
 
             sys.stdout.write('\r>> Creating image %d/%d' % (cnt + 1, num))
             sys.stdout.flush()

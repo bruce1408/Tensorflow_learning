@@ -12,20 +12,12 @@ import os.path
 import time
 
 os.environ['CUDA_VISIBLE_DEVICES'] = '0'
-TRAIN_LOG_DIR = os.path.join('Log/train/', time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time())))
 TRAIN_CHECK_POINT = 'check_point/train_model.ckpt'
-VALIDATION_LOG_DIR = 'Log/validation/'
 VGG_19_MODEL_DIR = '/raid/bruce/dog_cat/vgg_19.ckpt'
 BATCHSIZE = 32
 EPOCH = 30
 IMG_HEIGHT = 224
 IMG_WIDTH = 224
-
-if not tf.gfile.Exists(TRAIN_LOG_DIR):
-    tf.gfile.MakeDirs(TRAIN_LOG_DIR)
-
-if not tf.gfile.Exists(VALIDATION_LOG_DIR):
-    tf.gfile.MakeDirs(VALIDATION_LOG_DIR)
 
 
 def _parse_function(record):
@@ -92,12 +84,11 @@ saver = tf.train.Saver()
 config = tf.ConfigProto()
 config.gpu_options.allow_growth = True
 with tf.Session(config=config) as sess:
-    train_writer = tf.summary.FileWriter(TRAIN_LOG_DIR)
-    # train_writer.add_summary(sess.graph)
     sess.run(tf.global_variables_initializer())
-    sess.run(tf.local_variables_initializer())
+    # sess.run(tf.local_variables_initializer())
     restorer.restore(sess, VGG_19_MODEL_DIR)
     step = 0
+    best_acc = 0.0
     for ep in range(EPOCH):
         all_accuracy = 0
         all_loss = 0
@@ -110,20 +101,20 @@ with tf.Session(config=config) as sess:
             all_accuracy += accuracy_out
             all_loss += loss_out
             if i % 10 == 0:
-                print(
-                    "Epoch %d: Batch %d accuracy is %.2f; Batch loss is %.5f" % (ep + 1, i, accuracy_out, loss_out))
-
-        print("Epoch %d: Train accuracy is %.2f; Train loss is %.5f" % (ep + 1, all_accuracy / (200), all_loss / (200)))
+                print("Epoch %d: Batch %d accuracy is %.2f; Batch loss is %.5f" % (ep + 1, i, accuracy_out, loss_out))
+        print("Epoch %d: Train accuracy is %.2f; Train loss is %.5f" % (ep + 1, all_accuracy / 200, all_loss / 200))
 
         all_accuracy = 0
         all_loss = 0
-        for i in range(400):
+        for i in range(600):
             sess.run(valdata_init)
             accuracy_out, loss_out = sess.run([accuracy, loss], feed_dict={keep_prob: 1.0, is_training: False})
             all_accuracy += accuracy_out
             all_loss += loss_out
 
         print("Epoch %d: Validation accuracy is %.2f; Validation loss is %.5f" %
-              (ep + 1, all_accuracy / (400), all_loss / (400)))
-
-        saver.save(sess, TRAIN_CHECK_POINT, global_step=ep)
+              (ep + 1, all_accuracy / 600, all_loss / 600))
+        tempAcc = all_accuracy / 600.0
+        if best_acc < tempAcc:
+            best_acc = tempAcc
+            saver.save(sess, TRAIN_CHECK_POINT)

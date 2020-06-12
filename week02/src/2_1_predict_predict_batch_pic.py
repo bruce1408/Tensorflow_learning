@@ -8,7 +8,6 @@ import pandas as pd
 
 os.environ['CUDA_VISIBLE_DEVICES'] = '0'
 MODEL_SAVE_PATH = "model1/"
-MODEL_NAME = "model1000.ckpt.data-00000-of-00001"
 imgPath = "/raid/bruce/dog_cat/test1"
 from natsort import natsorted
 

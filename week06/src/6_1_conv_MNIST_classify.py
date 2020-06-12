@@ -202,21 +202,21 @@ with tf.Session() as sess:
         acc = sess.run(accuracy, feed_dict={x: mnist.test.images, y: mnist.test.labels, keep_prob: 1.0})
         print("Iter " + str(epoch) + ", Testing Accuracy= " + str(acc) + " loss = " + str(loss_result))
 
-# with tf.Session() as sess:
-#     sess.run(tf.global_variables_initializer())
-#     for epoch in range(21):
-#         for batch in range(n_batch):
-#             data = next_batch(batch_size, x_train, y_train, batch)
-#             batch_xs, batch_ys = next(data)
-#             y_onehot = tf.one_hot(indices=batch_ys, depth=10)
-#             # batch_ys = batch_ys.tolist()
-#             # print(batch_ys.shape)
-#             # y_onehot = tf.one_hot(batch_ys, 10, dtype=tf.float32)
-#             ys = sess.run(y_onehot)
-#             loss_result, _ = sess.run([cross_entropy, train_step], feed_dict={x: batch_xs, y: ys, keep_prob: 0.7})
-#             print("loss is : ", loss_result)
-#         y_ = tf.one_hot(indices=y_test, depth=10)
-#         label = sess.run(y_)
-#         acc = sess.run(accuracy, feed_dict={x: x_test, y: label, keep_prob: 1.0})
-#         print("Iter " + str(epoch) + ", Testing Accuracy= " + str(acc)+" loss = "+str(loss_result))
+with tf.Session() as sess:
+    sess.run(tf.global_variables_initializer())
+    for epoch in range(49):
+        for batch in range(n_batch):
+            data = next_batch(batch_size, x_train, y_train, batch)
+            batch_xs, batch_ys = next(data)
+            y_onehot = tf.one_hot(indices=batch_ys, depth=10)
+            # batch_ys = batch_ys.tolist()
+            # print(batch_ys.shape)
+            # y_onehot = tf.one_hot(batch_ys, 10, dtype=tf.float32)
+            ys = sess.run(y_onehot)
+            loss_result, _ = sess.run([cross_entropy, train_step], feed_dict={x: batch_xs, y: ys, keep_prob: 0.7})
+            print("loss is : ", loss_result)
+        y_ = tf.one_hot(indices=y_test, depth=10)
+        label = sess.run(y_)
+        acc = sess.run(accuracy, feed_dict={x: x_test, y: label, keep_prob: 1.0})
+        print("Iter " + str(epoch) + ", Testing Accuracy= " + str(acc)+" loss = "+str(loss_result))
 

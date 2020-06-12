@@ -4,7 +4,7 @@ import numpy as np
 import tensorflow.contrib.slim as slim
 from tensorflow.contrib.slim import nets
 
-os.environ['CUDA_VISIBLE_DEVICES'] = '0'
+os.environ['CUDA_VISIBLE_DEVICES'] = '2'
 
 # Image Parameters
 N_CLASSES = 2  # CHANGE HERE, total number of classes
@@ -18,7 +18,7 @@ train_display = 100
 val_display = 300
 learning_rate = 0.0001
 BATCHSIZE = 32
-epochNum = 16
+epochNum = 20
 
 
 # Reading the dataset
@@ -75,10 +75,10 @@ def _parse_function(record):
 
 is_training = tf.placeholder(tf.bool)
 
-traindata = tf.data.TFRecordDataset("/raid/bruce/tmp/tmp/tensorflow_learning_remote/week02/src/train_dog_cat_224.tfrecord"). \
+traindata = tf.data.TFRecordDataset("../week02/src/train_dog_cat_224.tfrecord"). \
     map(_parse_function).repeat().batch(BATCHSIZE).prefetch(BATCHSIZE)
 
-valdata = tf.data.TFRecordDataset("/raid/bruce/tmp/tmp/tensorflow_learning_remote/week02/src/test_dog_cat_224.tfrecord"). \
+valdata = tf.data.TFRecordDataset("../week02/src/test_dog_cat_224.tfrecord"). \
     map(_parse_function).repeat().batch(BATCHSIZE).prefetch(BATCHSIZE)
 # Create an iterator over the dataset
 
@@ -89,7 +89,7 @@ traindata_init = iterator.make_initializer(traindata)
 valdata_init = iterator.make_initializer(valdata)
 
 
-def inception_arg_scope(weight_decay=1e-4, is_training=True):
+def inception_arg_scope(weight_decay=1e-4, is_training=is_training):
 
     # Set weight_decay for weights in Conv and FC layers. 给卷积和全连接设置默认参数, 卷积函数再单独设置激活函数
     with slim.arg_scope([slim.conv2d, slim.fully_connected], weights_regularizer=slim.l2_regularizer(weight_decay)):
