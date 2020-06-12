@@ -3,18 +3,22 @@ import tensorflow as tf
 import numpy as np
 os.environ['CUDA_VISIBLE_DEVICES'] = '1'
 
+"""
+train the dataset from scratch
+"""
 # Image Parameters
 N_CLASSES = 2  # CHANGE HERE, total number of classes
 IMG_HEIGHT = 128  # CHANGE HERE, the image height to be resized to
 IMG_WIDTH = 128  # CHANGE HERE, the image width to be resized to
 CHANNELS = 3  # The 3 color channels, change to 1 if grayscale
 n_classes = N_CLASSES  # MNIST total classes (0-9 digits)
-dropout = 0.25
-num_steps = 1000
+dropout = 0.5
+num_steps = 10000
 train_display = 100
-val_display = 300
+val_display = 1000
 learning_rate = 0.0001
-BATCHSIZE = 32
+BATCHSIZE = 64
+save_check = 1000
 
 
 # Reading the dataset
@@ -94,22 +98,27 @@ def _parse_function(record):
     image = tf.decode_raw(parsed['img_raw'], tf.uint8)
     image = tf.reshape(image, [IMG_HEIGHT, IMG_WIDTH, 3])
     image = tf.cast(image, tf.float32)
+    image = image/225.0
+    image = image - 0.5
+    image = image * 2.0
     label = tf.cast(parsed['label'], tf.int32)
     return image, label
 
 
 # train data pipline
+# repeat -> shuffle 和 shuffle -> repeat不一样
 traindata = tf.data.TFRecordDataset("./train_dog_cat.tfrecord").\
     map(_parse_function).\
-    repeat().\
+    shuffle(buffer_size=2000, reshuffle_each_iteration=True).\
     batch(BATCHSIZE).\
+    repeat().\
     prefetch(BATCHSIZE)
 
 # val data pipline
 valdata = tf.data.TFRecordDataset("./test_dog_cat.tfrecord").\
     map(_parse_function).\
-    repeat().\
     batch(BATCHSIZE).\
+    repeat().\
     prefetch(BATCHSIZE)
 # Create an iterator over the dataset
 
@@ -119,9 +128,25 @@ X, Y = iterator.get_next()
 traindata_init = iterator.make_initializer(traindata)
 valdata_init = iterator.make_initializer(valdata)
 
-print(X.shape)
+
+def check_accuracy(sess, correct_prediction, is_training, dataset_init_op, batches_to_check):
+    # Initialize the validation dataset
+    sess.run(dataset_init_op)
+    num_correct, num_samples = 0, 0
+    for i in range(batches_to_check):
+        try:
+            correct_pred = sess.run(correct_prediction)
+            num_correct += correct_pred.sum()
+            num_samples += correct_pred.shape[0]
+        except tf.errors.OutOfRangeError:
+            break
+
+    # Return the fraction of datapoints that were correctly classified
+    acc = float(num_correct) / num_samples
+    return acc
 
 
+# Define the newwork
 def conv_net(x, n_classes, dropout, reuse, is_training):
     # Define a scope for reusing the variables
     with tf.variable_scope('ConvNet', reuse=reuse):
@@ -172,8 +197,8 @@ def conv_net(x, n_classes, dropout, reuse, is_training):
 
 # Create a graph for training
 logits_train = conv_net(X, N_CLASSES, dropout, reuse=False, is_training=True)
-# Create another graph for testing that reuse the same weights
-logits_test = conv_net(X, N_CLASSES, dropout, reuse=True, is_training=False)
+# Create another graph for testing that reuse the same weights, 注意测试的时候不丢弃网络
+logits_test = conv_net(X, N_CLASSES, dropout=0.0, reuse=True, is_training=False)
 
 # Define loss and optimizer (with train logits, for dropout to take effect)
 loss_op = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(logits=logits_train, labels=Y))
@@ -195,7 +220,7 @@ with tf.Session() as sess:
     sess.run(traindata_init)
     sess.run(valdata_init)
     saver = tf.train.Saver(max_to_keep=3)
-    ckpt = tf.train.get_checkpoint_state('./model1')
+    ckpt = tf.train.get_checkpoint_state('./model2_0')
     if ckpt is None:
         print("Model not found, please train your model first...")
     else:
@@ -211,15 +236,16 @@ with tf.Session() as sess:
             print("Step " + str(step) + ", Minibatch Loss= " + "{:.4f}".format(loss) + ", Training Accuracy= " +
                   "{:.3f}".format(acc))
 
-        if step % val_display == 0:
+        if step % val_display == 0 and step is not 0:
             avg_acc = 0
-            loss, acc = sess.run([loss_op, accuracy])
+            acc = check_accuracy(sess, correct_pred, False, valdata_init, 5000)
+            loss = sess.run(loss_op)
             print("\033[1;36m=\033[0m"*60)
             print("\033[1;36mStep %d, Minibatch Loss= %.4f, Test Accuracy= %.4f\033[0m" % (step, loss, acc))
             print("\033[1;36m=\033[0m"*60)
 
-        if step % 500 == 0:
-            path_name = "./model1/model" + str(step) + ".ckpt"
+        if step % 1000 == 0:
+            path_name = "./model2_0/model" + str(step) + ".ckpt"
             print(path_name)
             saver.save(sess, path_name)
             print("model has been saved")

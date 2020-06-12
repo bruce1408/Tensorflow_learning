@@ -20,10 +20,9 @@ import os
 import random
 import urllib.request
 import zipfile
-
 import numpy as np
 import tensorflow as tf
-
+os.environ['CUDA_VISIBLE_DEVICES']='1'
 # Training Parameters
 learning_rate = 0.1
 batch_size = 128
@@ -94,7 +93,7 @@ def next_batch(batch_size, num_skips, skip_window):
     global data_index
     assert batch_size % num_skips == 0
     assert num_skips <= 2 * skip_window
-    batch = np.ndarray(shape=(batch_size), dtype=np.int32)
+    batch = np.ndarray(shape=batch_size, dtype=np.int32)
     labels = np.ndarray(shape=(batch_size, 1), dtype=np.int32)
     # get window size (words left and right + current one)
     span = 2 * skip_window + 1
