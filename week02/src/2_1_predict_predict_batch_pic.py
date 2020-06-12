@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 
 os.environ['CUDA_VISIBLE_DEVICES'] = '0'
-MODEL_SAVE_PATH = "model1/"
+MODEL_SAVE_PATH = "model2_0/"
 # MODEL_NAME = "model1000.ckpt.data-00000-of-00001"
 imgPath = "/raid/bruce/dog_cat/test1"
 from natsort import natsorted
@@ -59,6 +59,10 @@ with tf.Session() as sess:
             img = img.resize((128, 128))
             image_ = np.array(img)
             image_ = image_.reshape([1, 128, 128, 3])
+            # normalization and convert [0-1] to [-1, 1]
+            image_ = image_ / 225.0
+            image_ = image_ - 0.5
+            image_ = image_ * 2.0
 
             # 获取预测结果
             probabilities_, label = sess.run([probabilities, correct_prediction], feed_dict={image: image_})
@@ -82,7 +86,7 @@ with tf.Session() as sess:
         sorted(data.keys())
         result = pd.DataFrame.from_dict(data, orient='index', columns=['label'])
         result = result.reset_index().rename(columns={'index': 'id'})
-        result.to_csv('/raid/bruce/dog_cat/result_612.csv', index=False)
+        result.to_csv('/raid/bruce/dog_cat/result_612_norm.csv', index=False)
         print("predict is done!")
 
         plot_images(imageList, labelList, cnt, labels)

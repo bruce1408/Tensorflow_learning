@@ -117,10 +117,8 @@ print('output is: ', output.eval())
 # ------------------------------------------#
 # our NN's output
 logits = tf.constant([[1.0, 2.0, 3.0], [1.0, 2.0, 3.0], [1.0, 2.0, 3.0]])
-# step1:do softmax
 y = tf.nn.softmax(logits)  # y shape is 3x3
 print('y is:\n', y.eval())
-# true label
 y_ = tf.constant([[0.0, 0.0, 1.0], [0.0, 0.0, 1.0], [0.0, 0.0, 1.0]])  # one-hot 编码的label
 # step2:do cross_entropy
 cross_entropy = tf.reduce_sum(-tf.reduce_sum(y_ * tf.log(y)))
@@ -215,16 +213,16 @@ with tf.Session() as sess:
 """
 1.0.6 tf.assign 函数赋值使用
 """
-x = tf.Variable(0)
-y = tf.assign(x, 1)  # 给x赋值为1, 同时给y赋值为1;
-z = x.assign(2)  # 给x赋值为2,同时给z赋值也是x
-with tf.Session() as sess:
-    sess.run(tf.global_variables_initializer())
-    print('the origin x is: ', sess.run(x))
-    print('the y is:', sess.run(y))
-    print('the x is: ', sess.run(x))
-    print('the y is:', sess.run(z))
-    print('the z is:', sess.run(x))
+# x = tf.Variable(0)
+# y = tf.assign(x, 1)  # 给x赋值为1, 同时给y赋值为1;
+# z = x.assign(2)  # 给x赋值为2,同时给z赋值也是x
+# with tf.Session() as sess:
+#     sess.run(tf.global_variables_initializer())
+#     print('the origin x is: ', sess.run(x))
+#     print('the y is:', sess.run(y))
+#     print('the x is: ', sess.run(x))
+#     print('the y is:', sess.run(z))
+#     print('the z is:', sess.run(x))
 
 """
 tf.random_crop函数表示图片裁剪成给定的尺寸,裁剪位置是随机的,不是按照从中心裁剪而是任意裁剪;
@@ -264,21 +262,35 @@ tf.image.random_flip_left_right,表示把图片从左到右翻转,每次翻转�
 tf.control_dependencies 使用,保证其辖域中的操作必须是该函数传递的参数中
 的操作完成后再进行.
 """
-import tensorflow as tf
-a_1 = tf.Variable(1)
-b_1 = tf.Variable(2)
-update_op = tf.assign(a_1, 10)
-add = tf.add(a_1, b_1)
+# import tensorflow as tf
+# a_1 = tf.Variable(1)
+# b_1 = tf.Variable(2)
+# update_op = tf.assign(a_1, 10)
+# add = tf.add(a_1, b_1)
+#
+# a_2 = tf.Variable(1)
+# b_2 = tf.Variable(2)
+# update_op = tf.assign(a_2, 10)
+# with tf.control_dependencies([update_op]):
+#     add_with_dependencies = tf.add(a_2, b_2)
+#
+# with tf.Session() as sess:
+#     sess.run(tf.global_variables_initializer())
+#     ans_1, ans_2 = sess.run([add, add_with_dependencies])
+#     print("Add: ", ans_1)
+#     print("Add_with_dependency: ", ans_2)
 
-a_2 = tf.Variable(1)
-b_2 = tf.Variable(2)
-update_op = tf.assign(a_2, 10)
-with tf.control_dependencies([update_op]):
-    add_with_dependencies = tf.add(a_2, b_2)
+"""
+tf.data.Dataset shuffle, batch, repeat 顺序问题
+参考文章如下:
+https://www.cnblogs.com/marsggbo/p/9603789.html
+"""
+import tensorflow as tf
+dataset = tf.data.Dataset.range(10).shuffle(10).batch(6).repeat()
+iterator = dataset.make_one_shot_iterator()
+next_element = iterator.get_next()
 
 with tf.Session() as sess:
-    sess.run(tf.global_variables_initializer())
-    ans_1, ans_2 = sess.run([add, add_with_dependencies])
-    print("Add: ", ans_1)
-    print("Add_with_dependency: ", ans_2)
-
+    for i in range(5):
+        value = sess.run(next_element)
+        print(value)

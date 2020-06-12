@@ -6,7 +6,7 @@ from tensorflow.contrib.slim import nets
 
 os.environ['CUDA_VISIBLE_DEVICES'] = '0'
 
-# Image Parameters
+# Parameters
 N_CLASSES = 2  # CHANGE HERE, total number of classes
 IMG_HEIGHT = 224  # CHANGE HERE, the image height to be resized to
 IMG_WIDTH = 224  # CHANGE HERE, the image width to be resized to
@@ -18,7 +18,7 @@ train_display = 100
 val_display = 300
 learning_rate = 0.0001
 BATCHSIZE = 32
-epochNum = 16
+epochNum = 40
 
 
 # Reading the dataset
@@ -75,10 +75,10 @@ def _parse_function(record):
 
 is_training = tf.placeholder(tf.bool)
 
-traindata = tf.data.TFRecordDataset("/raid/bruce/tmp/tmp/tensorflow_learning_remote/week02/src/train_dog_cat_224.tfrecord"). \
+traindata = tf.data.TFRecordDataset("/raid/bruced/dog_cat/train_dog_cat_224.tfrecord"). \
     map(_parse_function).repeat().batch(BATCHSIZE).prefetch(BATCHSIZE)
 
-valdata = tf.data.TFRecordDataset("/raid/bruce/tmp/tmp/tensorflow_learning_remote/week02/src/test_dog_cat_224.tfrecord"). \
+valdata = tf.data.TFRecordDataset("/raid/bruce/dog_cat/test_dog_cat_224.tfrecord"). \
     map(_parse_function).repeat().batch(BATCHSIZE).prefetch(BATCHSIZE)
 # Create an iterator over the dataset
 
