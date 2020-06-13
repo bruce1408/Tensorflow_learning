@@ -60,7 +60,7 @@ with tf.Session() as sess:
             img = img.resize((128, 128))
             image_ = np.array(img)
             image_ = image_.reshape([1, 128, 128, 3])
-            # normalization and convert [0-1] to [-1, 1]
+            # normalization and convert [0, 1] to [-1, 1]
             image_ = image_ / 225.0
             image_ = image_ - 0.5
             image_ = image_ * 2.0
@@ -74,15 +74,13 @@ with tf.Session() as sess:
             imageList.append(img)
             data[i.split('.')[0]] = label[0].clip(min=0.05, max=0.995)
 
+            # print("After %s training step(s),validation label = %d, has %g probability, the img path is %s" %
+            #       (global_step, label, probability, imgpath))
+
             sys.stdout.write('\r>> Creating image %d/%d' % (cnt + 1, num))
             sys.stdout.flush()
         sys.stdout.write('\n')
         sys.stdout.flush()
-            # print(data)
-            # print("After %s training step(s),validation label = %d, has %g probability, the img path is %s" %
-            #       (global_step, label, probability, imgpath))
-        # print('the result is:', data)
-
 
         sorted(data.keys())
         result = pd.DataFrame.from_dict(data, orient='index', columns=['label'])
