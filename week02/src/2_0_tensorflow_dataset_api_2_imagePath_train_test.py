@@ -199,13 +199,6 @@ X, Y = iterator.get_next()
 traindata_init = iterator.make_initializer(traindata)
 valdata_init = iterator.make_initializer(valdata)
 
-# Create an iterator over the dataset
-# iterator = dataset.make_initializable_iterator()
-# Initialize the iterator
-# sess.run(iterator.initializer)
-
-# Neural Net Input (images, labels)
-
 
 def conv_net(x, n_classes, dropout, reuse, is_training):
     """

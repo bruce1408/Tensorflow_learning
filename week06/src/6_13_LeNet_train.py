@@ -28,13 +28,17 @@ X = tf.placeholder(tf.float32, [None, 784], name="x-input")
 Y = tf.placeholder(tf.float32, [None, 10], name="y-input")
 X_ = tf.reshape(X, [-1, 28, 28, 1])
 
+
 # -----------------------------------------------
 # LENET NETWORK
 # -----------------------------------------------
 def conv_net(x, n_classes, reuse, is_training):
     """
-    Create model padding有两种类型，一种是valid，还有一种是same，valid表示不够卷积核大小就丢弃，same表示不够的话就补0
+    Create model padding有两种类型，一种是valid，还有一种是same:
+    valid表示不够卷积核大小就丢弃，
+    same表示不够的话就补0
     max_pooling2d 默认的padding是valid，就是说不够的话丢弃，否则same补充0；
+
     LeNet 网络结构实现:
     输入为32*32单通单图片,
     卷积层: filter 大小是 5 * 5 步长为1, 输出通道是 6
@@ -44,12 +48,13 @@ def conv_net(x, n_classes, reuse, is_training):
     全连接层: 120 个神经元
     全连接层: 84 个神经元
     全连接层: 2个神经元
-    :param x:
-    :param n_classes:
-    :param dropout:
-    :param reuse:
-    :param is_training:
-    :return:
+    总共是 5 个卷积层(含全连接3个)
+
+    :param x: input size = [batch_size, heght, width, channels]
+    :param n_classes: the num of class
+    :param reuse: resure the conver weights
+    :param is_training: training or validation
+    :return: the prob of the multiclass task
     """
     # Define a scope for reusing the variables
     with tf.variable_scope('LeNet', reuse=reuse):
@@ -113,7 +118,7 @@ with tf.Session(config=config) as sess:
         for j in range(batch_count):
             x_train, y_train = mnist.train.next_batch(batch_size)
             loss_train, _, acc = sess.run([loss_op, train_op, accuracy], feed_dict={X: x_train, Y: y_train})
-            if j % 200 == 0:
+            if j % 200 == 0:  # print out the train result every j times
                 print("MiniBatch Loss is: %f, the Training acc is: %f" % (loss_train, acc))
 
         acc, loss_val = sess.run([accuracy, loss_op], feed_dict={X: mnist.test.images, Y: mnist.test.labels})
