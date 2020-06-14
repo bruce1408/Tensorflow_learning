@@ -6,6 +6,9 @@
     但是大多数时候我们是希望一些变量重用的，所以就用到了get_variable()。它会去搜索变量名，然后没有就新建，有就直接用。
     在name_scope下，如果get_variable命名相同，而且你没有共享，那么报错,但是Variable没有这个问题。
 """
+import os
+
+os.environ['CUDA_VISIBLE_DEVICES'] = '0'
 # import tensorflow as tf
 # import numpy as np
 # import matplotlib.pyplot as plt
@@ -52,6 +55,7 @@ tf.argmax 函数来创建一个label矩阵才行,也就是说这里的tf.nn.spar
 """
 import tensorflow as tf
 import numpy as np
+
 label2 = tf.convert_to_tensor([[0, 0, 1, 0]], dtype=tf.int64)
 logit2 = tf.convert_to_tensor([[-2.6, -1.7, 3.2, 0.1]], dtype=tf.float32)
 # y3 = tf.argmax(y2, 1)
@@ -211,7 +215,7 @@ with tf.Session() as sess:
 #     print(sess.run(z))
 
 """
-1.0.6 tf.assign 函数赋值使用
+1.0.7 tf.assign 函数赋值使用
 """
 # x = tf.Variable(0)
 # y = tf.assign(x, 1)  # 给x赋值为1, 同时给y赋值为1;
@@ -225,7 +229,7 @@ with tf.Session() as sess:
 #     print('the z is:', sess.run(x))
 
 """
-tf.random_crop函数表示图片裁剪成给定的尺寸,裁剪位置是随机的,不是按照从中心裁剪而是任意裁剪;
+1.0.8 tf.random_crop函数表示图片裁剪成给定的尺寸,裁剪位置是随机的,不是按照从中心裁剪而是任意裁剪;
 tf.image.random_flip_left_right,表示把图片从左到右翻转,每次翻转的时候都会随机对图像进行
 放大,缩小,中心点位置随机
 """
@@ -259,7 +263,7 @@ tf.image.random_flip_left_right,表示把图片从左到右翻转,每次翻转�
 # plt.show()
 
 """
-tf.control_dependencies 使用,保证其辖域中的操作必须是该函数传递的参数中
+1.0.9 tf.control_dependencies 使用,保证其辖域中的操作必须是该函数传递的参数中
 的操作完成后再进行.
 """
 # import tensorflow as tf
@@ -281,16 +285,44 @@ tf.control_dependencies 使用,保证其辖域中的操作必须是该函数传�
 #     print("Add_with_dependency: ", ans_2)
 
 """
-tf.data.Dataset shuffle, batch, repeat 顺序问题
+1.10.0 tf.data.Dataset shuffle, batch, repeat 顺序问题
 参考文章如下:
 https://www.cnblogs.com/marsggbo/p/9603789.html
 """
+# import tensorflow as tf
+# dataset = tf.data.Dataset.range(10).shuffle(10).batch(6).repeat()
+# iterator = dataset.make_one_shot_iterator()
+# next_element = iterator.get_next()
+#
+# with tf.Session() as sess:
+#     for i in range(5):
+#         value = sess.run(next_element)
+#         print(value)
+
+"""
+1.10.1 使用tf.get_variable(name='a1', shape=[1]), 使用variable_scope()函数来给变量命名，主要是重用一些变量的情况下使用
+"""
 import tensorflow as tf
-dataset = tf.data.Dataset.range(10).shuffle(10).batch(6).repeat()
-iterator = dataset.make_one_shot_iterator()
-next_element = iterator.get_next()
+
+with tf.variable_scope('V1'):
+    a1 = tf.get_variable(name='a1', shape=[1], initializer=tf.constant_initializer(1))
+
+with tf.variable_scope('V1', reuse=True):
+    a3 = tf.get_variable('a1')
 
 with tf.Session() as sess:
-    for i in range(5):
-        value = sess.run(next_element)
-        print(value)
+    sess.run(tf.global_variables_initializer())
+    print(a1.name)
+    print(sess.run(a1))
+    print(a3.name)
+    print(sess.run(a3))
+
+"""
+1.10.2 tf.pad
+"""
+t = tf.constant([[1, 2, 3], [4, 5, 6]])  # shape(2，3)
+paddings = tf.constant([[1, 1], [2, 2]])  # shape(2，2)
+c = tf.pad(t, paddings, "CONSTANT")  # shape(4, 7)
+with tf.Session() as sess:
+    a = sess.run(c)
+    print(a.shape)

@@ -10,6 +10,7 @@ import tensorflow as tf
 tf.set_random_seed(0)
 np.random.seed(0)
 
+
 def sequence_loss_by_example(logits, targets, weights, average_across_timesteps=True, softmax_loss_function=None,
                              name=None):
     """Weighted cross-entropy loss for a sequence of logits (per example).

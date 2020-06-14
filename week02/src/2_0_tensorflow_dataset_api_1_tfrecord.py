@@ -106,16 +106,7 @@ def _parse_function(record):
     return image, label
 
 
-# convert to tensor
-# imagespaths, labels = read_images(DATASET_PATH)
-# print(labels)
-# print(imagespaths)
-# imagespaths = tf.convert_to_tensor(imagespaths, dtype=tf.string)
-# labels = tf.convert_to_tensor(labels, dtype=tf.int32)
-
 # dataset pipeline
-# dataset = tf.data.Dataset.from_tensor_slices((imagespaths, labels))
-# dataset = tf.data.TFRecordDataset("/home/bruce/PycharmProjects/tensorflow-learning/week09/src/slim/train_1.tfrecord")
 dataset = tf.data.TFRecordDataset("./train_dog_cat.tfrecord")
 dataset = dataset.map(_parse_function)
 dataset = dataset.repeat()

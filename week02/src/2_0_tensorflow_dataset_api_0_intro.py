@@ -38,15 +38,13 @@ dataset = dataset.repeat()
 dataset = dataset.batch(batch_size)
 # Prefetch data for faster consumption
 dataset = dataset.prefetch(batch_size)
-
 # Create an iterator over the dataset
 iterator = dataset.make_initializable_iterator()
 # Initialize the iterator
 sess.run(iterator.initializer)
-
 # Neural Net Input (images, labels)
 X, Y = iterator.get_next()
-print(X.shape)
+
 
 # -----------------------------------------------
 # THIS IS A CLASSIC CNN (see examples, section 3)

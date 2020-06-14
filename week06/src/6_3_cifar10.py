@@ -3,7 +3,7 @@
 __author__ = 'Bruce Cui'
 import os, sys, math
 
-sys.path.append('/home/bruce/bigVolumn/Datasets/cifar10')
+# sys.path.append('/home/bruce/bigVolumn/Datasets/cifar10')
 import numpy as np
 import cifar10 as cf
 import cifar10_input as cf_input

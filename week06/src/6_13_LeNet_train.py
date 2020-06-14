@@ -13,7 +13,7 @@ IMG_WIDTH = 32  # CHANGE HERE, the image width to be resized to
 CHANNELS = 1  # The 3 color channels, change to 1 if grayscale
 
 
-# Parameters
+# Network Parameters
 epoch = 5
 learning_rate = 0.0001
 num_steps = 10000
@@ -128,3 +128,4 @@ with tf.Session(config=config) as sess:
         saver.save(sess, "./model_lenet/model.ckpt")
 
 print("Optimization Finished!")
+

@@ -87,7 +87,7 @@ with tf.Session() as sess:
             count += 1
             batch_x, batch_y = mnist_data.train.next_batch(batch_size)
             acctrain, _ = sess.run([accuracy, train_step], feed_dict={x: batch_x, y: batch_y, keep_prob: 0.7})
-            if i % 100 == 0:
+            if i % 200 == 0:
                 print("Step " + str(int(count/100)) + ", training Accuracy= " + str(acctrain))
         acc = sess.run(accuracy, feed_dict={x: mnist_data.test.images, y: mnist_data.test.labels, keep_prob: 1.0})
         print("Epoch " + str(eachEpoch) + ", Testing Accuracy= " + str(acc))

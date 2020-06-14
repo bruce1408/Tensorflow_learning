@@ -195,8 +195,6 @@ with tf.Session() as sess:
         for batch in range(n_batch):
             if batch % 200 == 0:
                 batch_xs, batch_ys = mnist.train.next_batch(batch_size)
-                # print(batch_xs.shape, batch_ys.shape)
-                # print(batch_xs)
                 loss_result, _, acc = sess.run([cross_entropy, train_step, accuracy], feed_dict={x: batch_xs, y: batch_ys, keep_prob: 0.7})
                 print("MiniBatch Loss is: %f, the Training acc is: %f" % (loss_result, acc))
         acc = sess.run(accuracy, feed_dict={x: mnist.test.images, y: mnist.test.labels, keep_prob: 1.0})
@@ -209,9 +207,6 @@ with tf.Session() as sess:
             data = next_batch(batch_size, x_train, y_train, batch)
             batch_xs, batch_ys = next(data)
             y_onehot = tf.one_hot(indices=batch_ys, depth=10)
-            # batch_ys = batch_ys.tolist()
-            # print(batch_ys.shape)
-            # y_onehot = tf.one_hot(batch_ys, 10, dtype=tf.float32)
             ys = sess.run(y_onehot)
             loss_result, _ = sess.run([cross_entropy, train_step], feed_dict={x: batch_xs, y: ys, keep_prob: 0.7})
             print("loss is : ", loss_result)
