@@ -2,6 +2,9 @@ import tensorflow as tf
 from resnets_utils import *
 import numpy as np
 
+"""
+resnet 有 5个stage,第一个stage是卷积,其他都是block building块,每一个building 有3层
+"""
 TRAINING = tf.Variable(initial_value=True, dtype=tf.bool, trainable=False)
 
 
