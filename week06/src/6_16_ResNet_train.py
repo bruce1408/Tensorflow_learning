@@ -13,7 +13,7 @@ BATCHSIZE = 64
 num_steps = 30000
 train_display = 100
 val_display = 5000
-learning_rate = 0.01
+learning_rate = 0.001
 training_id = tf.placeholder(tf.bool)
 
 
@@ -245,7 +245,10 @@ def main():
     # loss_op = tf.reduce_mean(tf.losses.softmax_cross_entropy(onehot_labels=Y, logits=logits))
     loss_op = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(labels=Y, logits=logits))
 
-    optimizer = tf.train.GradientDescentOptimizer(learning_rate=learning_rate)
+    learning_rate = tf.Variable(0.1, trainable=False)
+    optimizer = tf.train.MomentumOptimizer(learning_rate, 0.9, use_nesterov=True)
+    # optimizer = tf.train.AdadeltaOptimizer(learning_rate=learning_rate)
+    # optimizer = tf.train.GradientDescentOptimizer(learning_rate=learning_rate)
     # optimizer = tf.train.MomentumOptimizer(learning_rate=learning_rate, momentum=0.9, use_nesterov=True)
     # these lines are needed to update the batchnorma moving averages
     update_ops = tf.get_collection(tf.GraphKeys.UPDATE_OPS)
@@ -274,9 +277,10 @@ def main():
             sess.run(train_op, {training_id: True})
             if step % train_display == 0 or step == 1:
                 # Run optimization and calculate batch loss and accuracy
-                loss, acc = sess.run([loss_op, accuracy], {training_id: True})
-                print("Step " + str(step) + ", Minibatch Loss= " + "{:.4f}".format(loss) + ", train acc = " + "{:.2f}".format(acc))
-
+                loss, acc, lr = sess.run([loss_op, accuracy, learning_rate], {training_id: True})
+                sess.run(tf.assign(learning_rate, lr * 0.1))
+                print("Step " + str(step) + ", Minibatch Loss= " + "{:.4f}".format(loss) +
+                      ", train acc = " + "{:.2f}".format(acc) + ", lr=" + "{:.4f}".format(lr))
                 if step % val_display == 0 and step is not 0:
                     avg_acc = 0
                     acc = check_accuracy(sess, correct_prediction, training_id, valdata_init, val_display)
