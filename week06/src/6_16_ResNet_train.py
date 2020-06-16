@@ -32,14 +32,12 @@ def identity_block(X_input, kernel_size, filters, stage, block):
         X_shortcut = X_input
 
         # First component of main path
-        x = tf.layers.conv2d(X_input, filter1,
-                             kernel_size=(1, 1), strides=(1, 1), name=conv_name_base + '2a')
+        x = tf.layers.conv2d(X_input, filter1, kernel_size=(1, 1), strides=(1, 1), name=conv_name_base + '2a')
         x = tf.layers.batch_normalization(x, axis=3, name=bn_name_base + '2a', training=TRAINING)
         x = tf.nn.relu(x)
 
         # Second component of main path
-        x = tf.layers.conv2d(x, filter2, (kernel_size, kernel_size),
-                             padding='same', name=conv_name_base + '2b')
+        x = tf.layers.conv2d(x, filter2, (kernel_size, kernel_size),  padding='same', name=conv_name_base + '2b')
         # batch_norm2 = tf.layers.batch_normalization(conv2, axis=3, name=bn_name_base+'2b', training=TRAINING)
         x = tf.nn.relu(x)
 
