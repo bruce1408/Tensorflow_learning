@@ -1,11 +1,11 @@
 import tensorflow as tf
-from resnets_utils import *
+# from resnets_utils import *
 import numpy as np
 
 """
 resnet 有 5个stage,第一个stage是卷积,其他都是block building块,每一个building 有3层
 """
-TRAINING = tf.Variable(initial_value=True, dtype=tf.bool, trainable=False)
+TRAINING = tf.Variable(initial_value=True, dtype=tf.bool, trainable=False)  # trainable=False在变量更新中不会取更新它的数值
 
 
 def identity_block(X_input, kernel_size, filters, stage, block):
@@ -127,7 +127,7 @@ def ResNet50_reference(X, classes=6):
     # input shape is (batch, 230, 230, channles)
     x = tf.pad(X, tf.constant([[0, 0], [3, 3, ], [3, 3], [0, 0]]), "CONSTANT")
 
-    assert (x.shape == (x.shape[0], 70, 70, 3))
+    assert (x.shape == (x.shape[0], 70, 70, 3))  # 把原来的 64 * 64 变成 70 * 70
 
     # stage 1
     x = tf.layers.conv2d(x, filters=64, kernel_size=(7, 7), strides=(2, 2), name='conv1')
@@ -141,8 +141,7 @@ def ResNet50_reference(X, classes=6):
     x = identity_block(x, 3, [64, 64, 256], stage=2, block='c')
 
     # stage 3
-    x = convolutional_block(x, kernel_size=3, filters=[128, 128, 512],
-                            stage=3, block='a', stride=2)
+    x = convolutional_block(x, kernel_size=3, filters=[128, 128, 512], stage=3, block='a', stride=2)
     x = identity_block(x, 3, [128, 128, 512], stage=3, block='b')
     x = identity_block(x, 3, [128, 128, 512], stage=3, block='c')
     x = identity_block(x, 3, [128, 128, 512], stage=3, block='d')

@@ -329,77 +329,64 @@ https://www.cnblogs.com/marsggbo/p/9603789.html
 
 """
 1.10.3  tf.assign()函数,赋值的时候需要复制被完成才可以成功赋值, 也就是需要对齐进行sess.run()这个运算符才可以
-成功赋值;比如
+成功赋值;参考Tensorflow：tf.assign()函数的使用方法及易错点https://blog.csdn.net/Invokar/article/details/89041501
 """
+# import tensorflow as tf
+# sess = tf.InteractiveSession()
+
 # 例子1, 赋值没有完成
-import tensorflow as tf
-sess = tf.InteractiveSession()
-ref_a = tf.Variable(tf.constant(1))
-ref_b = tf.Variable(tf.constant(2))
-update = tf.assign(ref_a, 10)
-ref_sum = tf.add(ref_a, ref_b)
-
-
-sess.run(tf.global_variables_initializer())
-print(sess.run(ref_sum))  # 结果是3
+# ref_a = tf.Variable(tf.constant(1))
+# ref_b = tf.Variable(tf.constant(2))
+# update = tf.assign(ref_a, 10)
+# ref_sum = tf.add(ref_a, ref_b)
+# sess.run(tf.global_variables_initializer())
+# print(sess.run(ref_sum))  # 结果是3
 
 # 例子2, 赋值完成
-ref_a = tf.Variable(tf.constant(1))
-ref_b = tf.Variable(tf.constant(2))
-update = tf.assign(ref_a, 10)
-ref_sum = tf.add(ref_a, ref_b)
-sess.run(tf.global_variables_initializer())
-sess.run(update)  # 唯一修改的地方
-print(sess.run(ref_sum))  # 结果是12
+# ref_a = tf.Variable(tf.constant(1))
+# ref_b = tf.Variable(tf.constant(2))
+# update = tf.assign(ref_a, 10)
+# ref_sum = tf.add(ref_a, ref_b)
+# sess.run(tf.global_variables_initializer())
+# sess.run(update)  # 唯一修改的地方
+# print(sess.run(ref_sum))  # 结果是12
 
 # 例子3, 另外可以通过参数直接赋值更新
-ref_a = tf.Variable(tf.constant(1))
-ref_b = tf.Variable(tf.constant(2))
-ref_a = tf.assign(ref_a, 10)
-ref_sum = tf.add(ref_a, ref_b)
-
-sess.run(tf.global_variables_initializer())
-print(sess.run(ref_sum))
+# ref_a = tf.Variable(tf.constant(1))
+# ref_b = tf.Variable(tf.constant(2))
+# ref_a = tf.assign(ref_a, 10)
+# ref_sum = tf.add(ref_a, ref_b)
+#
+# sess.run(tf.global_variables_initializer())
+# print(sess.run(ref_sum))
 
 
 # 例子4, 使用tf.control_dependencies()
-ref_a = tf.Variable(tf.constant(1))
-ref_b = tf.Variable(tf.constant(2))
-update = tf.assign(ref_a, 10)
+# ref_a = tf.Variable(tf.constant(1))
+# ref_b = tf.Variable(tf.constant(2))
+# update = tf.assign(ref_a, 10)
 
-# 这句话的意思就是必须先执行control_dependencies函数来更新其参数 update操作完成之后再进行,所以实际运行的时候,先update然后相加
-with tf.control_dependencies([update]):
-    ref_sum = tf.add(ref_a, ref_b)
+# 这句话的意思就是必须先执行control_dependencies函数来更新其参数 update 操作完成之后再进行, 所以实际运行的时候,先update然后相加
+# with tf.control_dependencies([update]):
+#     ref_sum = tf.add(ref_a, ref_b)
+#
+# sess.run(tf.global_variables_initializer())
+# print(sess.run(ref_sum))
+# sess.close()
 
-sess.run(tf.global_variables_initializer())
-print(sess.run(ref_sum))
-sess.close()
-# import tensorflow as tf
-#
-# a_1 = tf.Variable(1)
-# b_1 = tf.Variable(2)
-# update_op = tf.assign(a_1, 10)
-# add = tf.add(a_1, b_1)
-#
-# # a_2 = tf.Variable(1)
-# # b_2 = tf.Variable(2)
-# # update_op = tf.assign(a_2, 10)
-# # with tf.control_dependencies([update_op]):
-# #     add_with_dependencies = tf.add(a_2, b_2)
-#
-# with tf.Session() as sess:
-#     sess.run(tf.global_variables_initializer())
-#     ans_1, a2 = sess.run([add, update_op])
-#     print("Add: ", ans_1)
-#     print(a2)
-#     # print("Add_with_dependency: ", ans_2)
-#
-# import tensorflow as tf
-#
-# aa = tf.Variable([0])
-# bb = tf.assign(aa, [1])
-# cc = tf.assign(aa, [2])
-# init = tf.global_variables_initializer()
-# with tf.Session() as sess:
-#     sess.run(init)
-#     print(sess.run([aa, cc, bb]))
+"""
+1.10.4 关于tf.GraphKeys.UPDATE_OPS关于tf.GraphKeys.UPDATE_OPS，这是一个tensorflow的计算图中内置的一个集合，其中会保存一些需要在训练操作之前完成的操作，并配合tf.control_dependencies函数使用。
+关于在batch_norm中，即为更新mean和variance的操作,参考链接: https://blog.csdn.net/huitailangyz/article/details/85015611
+"""
+
+"""
+1.10.5 使用tensorflow tf.layers.max_pooling2d这个函数padding='same'和'valid'来尝试
+"""
+import tensorflow as tf
+
+x = tf.Variable(tf.random_normal([10, 28, 27, 3]))  # [batch_szie,height,weight,channel]
+
+max_pool = tf.layers.max_pooling2d(x, pool_size=[2, 2], strides=[2, 2], padding='same')
+print(max_pool)
+max_pool = tf.layers.max_pooling2d(x, pool_size=[2, 2], strides=[2, 2], padding='valid')
+print(max_pool)
