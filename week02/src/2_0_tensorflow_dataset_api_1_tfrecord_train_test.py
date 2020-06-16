@@ -31,35 +31,6 @@ def read_images(dataset_path):
     :param batch_size:
     :return:
     """
-    # imagepaths, labels = list(), list()
-    # if mode == 'file':
-    #     # Read dataset file
-    #     with open(dataset_path) as f:
-    #         data = f.read().splitlines()
-    #     for d in data:
-    #         imagepaths.append(d.split(' ')[0])
-    #         labels.append(int(d.split(' ')[1]))
-    # elif mode == 'folder':
-    #     # An ID will be affected to each sub-folders by alphabetical order
-    #     label = 0
-    #     # List the directory
-    #
-    #     classes = sorted(os.walk(dataset_path).__next__()[1])
-    #     # List each sub-directory (the classes)
-    #     for c in classes:
-    #         c_dir = os.path.join(dataset_path, c)
-    #         # print("the c_dir is: ", c_dir)
-    #         walk = os.walk(c_dir).__next__()
-    #         # print("the walk is: ", walk)
-    #         # Add each image to the training set
-    #         for sample in walk[2]:
-    #             # Only keeps jpeg images
-    #             if sample.endswith('.jpg') or sample.endswith('.jpeg'):
-    #                 imagepaths.append(os.path.join(c_dir, sample))
-    #                 labels.append(label)
-    #         label += 1
-    # else:
-    #     raise Exception("Unknown mode.")
     path = os.getcwd()
     dirPath = os.path.join(path, dataset_path)
     imagePaths = list()
