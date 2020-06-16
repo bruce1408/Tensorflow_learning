@@ -2,7 +2,7 @@ import tensorflow as tf
 # from resnets_utils import *
 import numpy as np
 import os
-os.environ['CUDA_VISIBLE_DEVICES'] = '0,1'
+os.environ['CUDA_VISIBLE_DEVICES'] = '1'
 """
 resnet 有 5个stage,第一个stage是卷积,其他都是block building块,每一个building 有3层
 """
@@ -12,8 +12,8 @@ IMG_WIDTH = 224
 BATCHSIZE = 64
 num_steps = 30000
 train_display = 100
-val_display = 1000
-learning_rate = 1e-5
+val_display = 5000
+learning_rate = 0.01
 training_id = tf.placeholder(tf.bool)
 
 
@@ -230,33 +230,35 @@ def main():
     """
     number of training examples = 1080
     number of test examples = 120
-    X_train shape: (32, 224, 224, 3)
-    Y_train shape: (32, 2)
-    X_test shape: (32, 224, 224, 3)
-    Y_test shape: (32, 2)
+    X_train shape: (64, 224, 224, 3)
+    Y_train shape: (64,)
+    X_test shape: (64, 224, 224, 3)
+    Y_test shape: (64,)
     """
 
     m, H_size, W_size, C_size = X.shape
     classes = 2
     assert ((H_size, W_size, C_size) == (IMG_HEIGHT, IMG_WIDTH, 3))
 
-    Y = tf.one_hot(Y, 2)
+    # Y = tf.one_hot(Y, 2)
     logits = ResNet50_reference(X, training_id, classes)
-    loss_op = tf.reduce_mean(tf.losses.softmax_cross_entropy(onehot_labels=Y, logits=logits))
+    # loss_op = tf.reduce_mean(tf.losses.softmax_cross_entropy(onehot_labels=Y, logits=logits))
+    loss_op = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(labels=Y, logits=logits))
 
     optimizer = tf.train.GradientDescentOptimizer(learning_rate=learning_rate)
+    # optimizer = tf.train.MomentumOptimizer(learning_rate=learning_rate, momentum=0.9, use_nesterov=True)
     # these lines are needed to update the batchnorma moving averages
     update_ops = tf.get_collection(tf.GraphKeys.UPDATE_OPS)
     with tf.control_dependencies(update_ops):
         train_op = optimizer.minimize(loss_op)
 
-    correct_prediction = tf.equal(tf.argmax(logits, axis=1), tf.argmax(Y, axis=1))
+    correct_prediction = tf.equal(tf.argmax(logits, axis=1), tf.cast(Y, tf.int64))
     accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
 
     with tf.Session() as sess:
         sess.run(tf.global_variables_initializer())
         assert (X.shape == (X.shape[0], IMG_HEIGHT, IMG_WIDTH, 3))
-        assert (Y.shape[1] == classes)
+        # assert (Y.shape[1] == classes)
 
         sess.run(traindata_init)
         saver = tf.train.Saver(max_to_keep=3)
@@ -283,7 +285,7 @@ def main():
                     print("\033[1;36mStep %d, Minibatch Loss= %.4f, Test Accuracy= %.4f\033[0m" % (step, loss, acc))
                     print("\033[1;36m=\033[0m" * 60)
 
-            if step % 1000 == 0:
+            if step % val_display == 0:
                 path_name = "./model_resnet/model" + str(step) + ".ckpt"
                 print(path_name)
                 saver.save(sess, path_name)
