@@ -13,8 +13,9 @@ BATCHSIZE = 64
 num_steps = 30000
 train_display = 100
 val_display = 1000
-learning_rate = 1e-5
-training_id = tf.placeholder(tf.bool)
+learning_rate = 0.0001
+# training_id = tf.placeholder(tf.bool)
+training_id = tf.placeholder_with_default(True, shape=(), name='training')
 
 
 def check_accuracy(sess, correct_prediction, training_id, dataset_init_op, batches_to_check):
@@ -244,7 +245,7 @@ def main():
     logits = ResNet50_reference(X, training_id, classes)
     loss_op = tf.reduce_mean(tf.losses.softmax_cross_entropy(onehot_labels=Y, logits=logits))
 
-    optimizer = tf.train.GradientDescentOptimizer(learning_rate=learning_rate)
+    optimizer = tf.train.AdadeltaOptimizer(learning_rate=learning_rate)
     # these lines are needed to update the batchnorma moving averages
     update_ops = tf.get_collection(tf.GraphKeys.UPDATE_OPS)
     with tf.control_dependencies(update_ops):
@@ -266,17 +267,16 @@ def main():
         else:
             path = ckpt.model_checkpoint_path
             print('loading pre-trained model from %s.....' % path)
-            saver.restore(sess, path)
+            saver.restore(sess, 'model_resnet/model10000.ckpt')
 
         for step in range(1, num_steps + 1):
             sess.run(train_op, {training_id: True})
             if step % train_display == 0 or step == 1:
                 # Run optimization and calculate batch loss and accuracy
-                loss, acc = sess.run([loss_op, accuracy], {training_id: True})
+                loss, acc = sess.run([loss_op, accuracy], {training_id: False})
                 print("Step " + str(step) + ", Minibatch Loss= " + "{:.4f}".format(loss) + ", train acc = " + "{:.2f}".format(acc))
 
                 if step % val_display == 0 and step is not 0:
-                    avg_acc = 0
                     acc = check_accuracy(sess, correct_prediction, training_id, valdata_init, val_display)
                     loss = sess.run(loss_op, {training_id: False})
                     print("\033[1;36m=\033[0m" * 60)

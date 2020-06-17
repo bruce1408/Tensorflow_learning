@@ -1,7 +1,7 @@
 import os
 import tensorflow as tf
 import numpy as np
-os.environ['CUDA_VISIBLE_DEVICES'] = '1'
+os.environ['CUDA_VISIBLE_DEVICES'] = '2'
 
 """
 train the dataset from scratch
@@ -12,7 +12,7 @@ IMG_HEIGHT = 128  # CHANGE HERE, the image height to be resized to
 IMG_WIDTH = 128  # CHANGE HERE, the image width to be resized to
 CHANNELS = 3  # The 3 color channels, change to 1 if grayscale
 n_classes = N_CLASSES  # MNIST total classes (0-9 digits)
-dropout = 0.5
+# dropout = 0.5
 num_steps = 10000
 train_display = 100
 val_display = 1000
@@ -106,7 +106,7 @@ def check_accuracy(sess, correct_prediction, is_training, dataset_init_op, batch
     num_correct, num_samples = 0, 0
     for i in range(batches_to_check):
         try:
-            correct_pred = sess.run(correct_prediction)
+            correct_pred = sess.run(correct_prediction, {is_training: False, dropout: 0.0})
             num_correct += correct_pred.sum()
             num_samples += correct_pred.shape[0]
         except tf.errors.OutOfRangeError:
@@ -166,18 +166,20 @@ def conv_net(x, n_classes, dropout, reuse, is_training):
     return out
 
 
+is_training = tf.placeholder(tf.bool)
+dropout = tf.placeholder(tf.float32)
 # Create a graph for training
-logits_train = conv_net(X, N_CLASSES, dropout, reuse=False, is_training=True)
+logits = conv_net(X, N_CLASSES, dropout, reuse=False, is_training=True)
 # Create another graph for testing that reuse the same weights, 注意测试的时候不丢弃网络
-logits_test = conv_net(X, N_CLASSES, dropout=0.0, reuse=True, is_training=False)
+# logits_test = conv_net(X, N_CLASSES, dropout=0.0, reuse=True, is_training=False)
 
 # Define loss and optimizer (with train logits, for dropout to take effect)
-loss_op = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(logits=logits_train, labels=Y))
+loss_op = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(logits=logits, labels=Y))
 optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate)
 train_op = optimizer.minimize(loss_op)
 
 # Evaluate model (with test logits, for dropout to be disabled)
-correct_pred = tf.equal(tf.argmax(logits_test, 1), tf.cast(Y, tf.int64))
+correct_pred = tf.equal(tf.argmax(logits, 1), tf.cast(Y, tf.int64))
 accuracy = tf.reduce_mean(tf.cast(correct_pred, tf.float32))
 
 # Initialize the variables (i.e. assign their default value)
@@ -200,17 +202,17 @@ with tf.Session() as sess:
         saver.restore(sess, path)
     # Training cycle
     for step in range(1, num_steps + 1):
-        sess.run(train_op)
+        sess.run(train_op, {is_training: True, dropout: 0.5})
         if step % train_display == 0 or step == 1:
             # Run optimization and calculate batch loss and accuracy
-            loss, acc = sess.run([loss_op, accuracy])
+            loss, acc = sess.run([loss_op, accuracy], {is_training: False, dropout: 0.0})
             print("Step " + str(step) + ", Minibatch Loss= " + "{:.4f}".format(loss) + ", Training Accuracy= " +
                   "{:.3f}".format(acc))
 
         if step % val_display == 0 and step is not 0:
             avg_acc = 0
-            acc = check_accuracy(sess, correct_pred, False, valdata_init, 5000)
-            loss = sess.run(loss_op)
+            acc = check_accuracy(sess, correct_pred, is_training, valdata_init, 5000)
+            loss = sess.run(loss_op, {is_training: False, dropout: 0.0})
             print("\033[1;36m=\033[0m"*60)
             print("\033[1;36mStep %d, Minibatch Loss= %.4f, Test Accuracy= %.4f\033[0m" % (step, loss, acc))
             print("\033[1;36m=\033[0m"*60)
