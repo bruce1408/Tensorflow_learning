@@ -2,7 +2,7 @@ import tensorflow as tf
 # from resnets_utils import *
 import numpy as np
 import os
-os.environ['CUDA_VISIBLE_DEVICES'] = '1'
+os.environ['CUDA_VISIBLE_DEVICES'] = '2'
 """
 resnet 有 5个stage,第一个stage是卷积,其他都是block building块,每一个building 有3层
 """
@@ -11,9 +11,12 @@ IMG_HEIGHT = 224
 IMG_WIDTH = 224
 BATCHSIZE = 64
 num_steps = 30000
-train_display = 100
-val_display = 5000
+train_display = 10
+save_check = 2000
+val_display = 500
 learning_rate = 0.001
+
+
 training_id = tf.placeholder(tf.bool)
 
 
@@ -261,10 +264,9 @@ def main():
     with tf.Session() as sess:
         sess.run(tf.global_variables_initializer())
         assert (X.shape == (X.shape[0], IMG_HEIGHT, IMG_WIDTH, 3))
-        # assert (Y.shape[1] == classes)
 
         sess.run(traindata_init)
-        saver = tf.train.Saver(max_to_keep=3)
+        saver = tf.train.Saver(var_list=tf.global_variables(), max_to_keep=3)
         ckpt = tf.train.get_checkpoint_state('./model_resnet')
         if ckpt is None:
             print("Model not found, please train your model first...")
@@ -277,18 +279,17 @@ def main():
             sess.run(train_op, {training_id: True})
             if step % train_display == 0 or step == 1:
                 # Run optimization and calculate batch loss and accuracy
-                loss, acc = sess.run([loss_op, accuracy], {training_id: True})
+                acc, loss = sess.run([accuracy, loss_op], {training_id: False})
                 print("Step " + str(step) + ", Minibatch Loss= " + "{:.4f}".format(loss) +
                       ", train acc = " + "{:.2f}".format(acc))
                 if step % val_display == 0 and step is not 0:
-                    avg_acc = 0
                     acc = check_accuracy(sess, correct_prediction, training_id, valdata_init, val_display)
                     loss = sess.run(loss_op, {training_id: False})
                     print("\033[1;36m=\033[0m" * 60)
                     print("\033[1;36mStep %d, Minibatch Loss= %.4f, Test Accuracy= %.4f\033[0m" % (step, loss, acc))
                     print("\033[1;36m=\033[0m" * 60)
 
-            if step % val_display == 0:
+            if step % save_check == 0:
                 path_name = "./model_resnet/model" + str(step) + ".ckpt"
                 print(path_name)
                 saver.save(sess, path_name)

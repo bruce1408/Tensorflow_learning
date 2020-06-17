@@ -1,206 +1,235 @@
-import os
+# -*- coding:utf-8 -*-
+
 import tensorflow as tf
-"""
-batch normalization (BN) 就是以batch为单位进行操作，
-减去 batch 内样本均值，除以 batch 内样本的标准差，(normalize)
-最后进行平移和缩放，其中缩放参数 r 和平移参数 beta 都是可学习的参数 (scale and shift)
-"""
 import os
 import numpy as np
-import pandas as pd
-import tqdm
-import matplotlib.pyplot as plt
-from tensorflow.examples.tutorials.mnist import input_data
-mnist = input_data.read_data_sets("../../MNIST_data", one_hot=True)
-os.environ['CUDA_VISIBLE_DEVICES'] = '0'
+import pickle
+os.environ['CUDA_VISIBLE_DEVICES'] = '2'
+# 文件存放目录
+CIFAR_DIR = "./cifar-10-batches-py"
 
 
-class NeuralNetWork():
-    def __init__(self, initial_weights, activation_fn, use_batch_norm):
-        """
-        初始化网络对象
-        :param initial_weights: 权重初始化值，是一个list，list中每一个元素是一个权重矩阵
-        :param activation_fn: 隐层激活函数
-        :param user_batch_norm: 是否使用batch normalization
-        """
-        self.use_batch_norm = use_batch_norm
-        self.name = "With Batch Norm" if use_batch_norm else "Without Batch Norm"
-
-        self.is_training = tf.placeholder(tf.bool, name='is_training')
-
-        # 存储训练准确率
-        self.training_accuracies = []
-
-        self.build_network(initial_weights, activation_fn)
-
-    def build_network(self, initial_weights, activation_fn):
-        """
-        构建网络图
-        :param initial_weights: 权重初始化，是一个list
-        :param activation_fn: 隐层激活函数
-        """
-        self.input_layer = tf.placeholder(tf.float32, [None, initial_weights[0].shape[0]])
-        layer_in = self.input_layer
-
-        # 前向计算（不计算最后输出层）
-        for layer_weights in initial_weights[:-1]:
-            layer_in = self.fully_connected(layer_in, layer_weights, activation_fn)
-
-        # 输出层
-        self.output_layer = self.fully_connected(layer_in, initial_weights[-1])
-
-    def fully_connected(self, layer_in, layer_weights, activation_fn=None):
-        """
-        抽象出的全连接层计算
-        """
-        # 如果使用BN与激活函数
-        if self.use_batch_norm and activation_fn:
-            weights = tf.Variable(layer_weights)
-            linear_output = tf.matmul(layer_in, weights)
-
-            # 调用BN接口
-            batch_normalized_output = tf.layers.batch_normalization(linear_output, training=self.is_training)
-
-            return activation_fn(batch_normalized_output)
-        # 如果不使用BN或激活函数（即普通隐层）
-        else:
-            weights = tf.Variable(layer_weights)
-            bias = tf.Variable(tf.zeros([layer_weights.shape[-1]]))
-            linear_output = tf.add(tf.matmul(layer_in, weights), bias)
-
-            return activation_fn(linear_output) if activation_fn else linear_output
-
-    def train(self, sess, learning_rate, training_batches, batches_per_validate_data, save_model=None):
-        """
-        训练模型
-        :param sess: TensorFlow Session
-        :param learning_rate: 学习率
-        :param training_batches: 用于训练的batch数
-        :param batches_per_validate_data: 训练多少个batch对validation数据进行一次验证
-        :param save_model: 存储模型
-        """
-
-        # 定义输出label
-        labels = tf.placeholder(tf.float32, [None, 10])
-
-        # 定义损失函数
-        cross_entropy = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits_v2(labels=labels,
-                                                                                  logits=self.output_layer))
-
-        # 准确率
-        correct_prediction = tf.equal(tf.argmax(self.output_layer, 1), tf.argmax(labels, 1))
-        accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
-
-        #
-        if self.use_batch_norm:
-            with tf.control_dependencies(tf.get_collection(tf.GraphKeys.UPDATE_OPS)):
-                train_step = tf.train.GradientDescentOptimizer(learning_rate).minimize(cross_entropy)
-
-        else:
-            train_step = tf.train.GradientDescentOptimizer(learning_rate).minimize(cross_entropy)
-
-        # 显示进度条
-        for i in tqdm.tqdm(range(training_batches)):
-            batch_x, batch_y = mnist.train.next_batch(60)
-            sess.run(train_step, feed_dict={self.input_layer: batch_x,
-                                            labels: batch_y,
-                                            self.is_training: True})
-            if i % batches_per_validate_data == 0:
-                val_accuracy = sess.run(accuracy, feed_dict={self.input_layer: mnist.validation.images,
-                                                             labels: mnist.validation.labels,
-                                                             self.is_training: False})
-                self.training_accuracies.append(val_accuracy)
-        print("{}: The final accuracy on validation data is {}".format(self.name, val_accuracy))
-
-        # 存储模型
-        if save_model:
-            tf.train.Saver().save(sess, save_model)
-
-    def test(self, sess, test_training_accuracy=False, restore=None):
-        # 定义label
-        labels = tf.placeholder(tf.float32, [None, 10])
-
-        # 准确率
-        correct_prediction = tf.equal(tf.argmax(self.output_layer, 1), tf.argmax(labels, 1))
-        accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
-
-        # 是否加载模型
-        if restore:
-            tf.train.Saver().restore(sess, restore)
-
-        test_accuracy = sess.run(accuracy, feed_dict={self.input_layer: mnist.test.images,
-                                                      labels: mnist.test.labels,
-                                                      self.is_training: False})
-
-        print("{}: The final accuracy on test data is {}".format(self.name, test_accuracy))
+def load_data(filename):
+    """read data from data file"""
+    with open(filename, 'rb') as f:
+        data = pickle.load(f, encoding='bytes')  # python3 需要添加上encoding='bytes'
+        return data[b'data'], data[b'labels']  # 并且 在 key 前需要加上 b
 
 
-def plot_training_accuracies(*args, batches_per_validate_data):
+class CifarData:
+    def __init__(self, filenames, need_shuffle):
+        """参数1:文件夹 参数2:是否需要随机打乱"""
+        all_data = []
+        all_labels = []
+
+        for filename in filenames:
+            # 将所有的数据,标签分别存放在两个list中
+            data, labels = load_data(filename)
+            all_data.append(data)
+            all_labels.append(labels)
+
+        # 将列表 组成 一个numpy类型的矩阵!!!!
+        self._data = np.vstack(all_data)
+        # 对数据进行归一化, 尺度固定在 [-1, 1] 之间
+        self._data = self._data / 127.5 - 1
+        # 将列表,变成一个 numpy 数组
+        self._labels = np.hstack(all_labels)
+        # 记录当前的样本 数量
+        self._num_examples = self._data.shape[0]
+        # 保存是否需要随机打乱
+        self._need_shuffle = need_shuffle
+        # 样本的起始点
+        self._indicator = 0
+        # 判断是否需要打乱
+        if self._need_shuffle:
+            self._shffle_data()
+
+    def _shffle_data(self):
+        # np.random.permutation() 从 0 到 参数,随机打乱
+        p = np.random.permutation(self._num_examples)
+        # 保存 已经打乱 顺序的数据
+        self._data = self._data[p]
+        self._labels = self._labels[p]
+
+    def next_batch(self, batch_size):
+        """return batch_size example as a batch"""
+        # 开始点 + 数量 = 结束点
+        end_indictor = self._indicator + batch_size
+        # 如果结束点大于样本数量
+        if end_indictor > self._num_examples:
+            if self._need_shuffle:
+                # 重新打乱
+                self._shffle_data()
+                # 开始点归零,从头再来
+                self._indicator = 0
+                # 重新指定 结束点. 和上面的那一句,说白了就是重新开始
+                end_indictor = batch_size  # 其实就是 0 + batch_size, 把 0 省略了
+            else:
+                raise Exception("have no more examples")
+        # 再次查看是否 超出边界了
+        if end_indictor > self._num_examples:
+            raise Exception("batch size is larger than all example")
+
+        # 把 batch 区间 的data和label保存,并最后return
+        batch_data = self._data[self._indicator:end_indictor]
+        batch_labels = self._labels[self._indicator:end_indictor]
+        self._indicator = end_indictor
+        return batch_data, batch_labels
+
+
+# 拿到所有文件名称
+train_filename = [os.path.join(CIFAR_DIR, 'data_batch_%d' % i) for i in range(1, 6)]
+# 拿到标签
+test_filename = [os.path.join(CIFAR_DIR, 'test_batch')]
+
+# 拿到训练数据和测试数据
+train_data = CifarData(train_filename, True)
+test_data = CifarData(test_filename, False)
+
+
+def inception_block(x, output_channel_for_each_path, name):
     """
-    绘制模型在训练过程中的准确率曲线
-
-    :param args: 一个或多个NeuralNetWork对象
-    :param batches_per_validate_data: 训练多少个batch进行一次数据验证
+    inception结构函数
+    :param x: tensor
+    :param output_channel_for_each_path: 每一个组输出通道数 结构: eg: [10, 20, 5]
+    :param name: 防止重命名
+    :return: 已经合并好的tensor
     """
-    fig, ax = plt.subplots()
+    with tf.variable_scope(name):
+        conv1_1 = tf.layers.conv2d(x, output_channel_for_each_path[0],
+                                   kernel_size=1,
+                                   strides=1,
+                                   padding='same',
+                                   activation=tf.nn.relu, name='conv1_1')
+        conv3_3 = tf.layers.conv2d(x, output_channel_for_each_path[1],
+                                   kernel_size=3,
+                                   strides=1,
+                                   padding='same',
+                                   activation=tf.nn.relu, name='conv3_3')
+        conv5_5 = tf.layers.conv2d(x, output_channel_for_each_path[2],
+                                   kernel_size=5,
+                                   strides=1,
+                                   padding='same',
+                                   activation=tf.nn.relu, name='conv5_5')
+        max_pooling = tf.layers.max_pooling2d(x, pool_size=2, strides=2, name='max_pooling')
 
-    for nn in args:
-        ax.plot(range(0, len(nn.training_accuracies) * batches_per_validate_data, batches_per_validate_data),
-                nn.training_accuracies, label=nn.name)
-    ax.set_xlabel('Training steps')
-    ax.set_ylabel('Accuracy')
-    ax.set_title('Validation Accuracy During Training')
-    ax.legend(loc=4)
-    ax.set_ylim([0, 1])
-    plt.yticks(np.arange(0, 1.1, 0.1))
-    plt.grid(True)
-    plt.show()
+    # 因为池化层之后,宽高都变成了之前的一半,所以需要 tf.pad 进行补齐
+    max_pooling_shape = max_pooling.get_shape().as_list()[1:]
+    input_shape = x.get_shape().as_list()[1:]
 
+    width_padding = (input_shape[0] - max_pooling_shape[0]) // 2
+    height_padding = (input_shape[0] - max_pooling_shape[0]) // 2
 
-def train_and_test(use_larger_weights, learning_rate, activation_fn, training_batches=50000,
-                   batches_per_validate_data=500):
-    """
-    使用相同的权重初始化生成两个网络对象，其中一个使用BN，另一个不使用BN
+    padding_pooling = tf.pad(max_pooling, [[0, 0],
+                                           [width_padding, width_padding],
+                                           [height_padding, height_padding],
+                                           [0, 0]])
+    # 接下来需要将 三个 卷积层 和 一个 池化层 拼接在一起,axis 是指定按照第几维合并
+    # 本实验其实就是把第四维进行合并
+    concat_layer = tf.concat([conv1_1, conv3_3, conv5_5, padding_pooling], axis=3)
+    # axis = 3 第四个维度上合并,也就是在通道上合并
 
-    :param use_larger_weights: 是否使用更大的权重
-    :param learning_rate: 学习率
-    :param activation_fn: 激活函数
-    :param training_batches: 训练阶段使用的batch数（默认为50000）
-    :param batches_per_validate_data: 训练多少个batch后在validation数据上进行测试
-    """
-    if use_larger_weights:
-        weights = [np.random.normal(size=(784, 128), scale=10.0).astype(np.float32),
-                   np.random.normal(size=(128, 128), scale=10.0).astype(np.float32),
-                   np.random.normal(size=(128, 128), scale=10.0).astype(np.float32),
-                   np.random.normal(size=(128, 10), scale=10.0).astype(np.float32)
-                   ]
-    else:
-        weights = [np.random.normal(size=(784, 128), scale=0.05).astype(np.float32),
-                   np.random.normal(size=(128, 128), scale=0.05).astype(np.float32),
-                   np.random.normal(size=(128, 128), scale=0.05).astype(np.float32),
-                   np.random.normal(size=(128, 10), scale=0.05).astype(np.float32)
-                   ]
-
-    tf.reset_default_graph()
-
-    nn = NeuralNetWork(weights, activation_fn, use_batch_norm=False)  # Without BN
-    bn = NeuralNetWork(weights, activation_fn, use_batch_norm=True)  # With BN
-
-    with tf.Session() as sess:
-        tf.global_variables_initializer().run()
-
-        print("【Training Result:】\n")
-
-        nn.train(sess, learning_rate, training_batches, batches_per_validate_data)
-        bn.train(sess, learning_rate, training_batches, batches_per_validate_data)
-
-        print("\n【Testing Result:】\n")
-        nn.test(sess)
-        bn.test(sess)
-
-    plot_training_accuracies(nn, bn, batches_per_validate_data=batches_per_validate_data)
+    return concat_layer
 
 
-# train_and_test(use_larger_weights=False, learning_rate=0.01, activation_fn=tf.nn.relu)
+# 设计计算图
+# 形状 [None, 3072] 3072 是 样本的维数, None 代表位置的样本数量
+x = tf.placeholder(tf.float32, [None, 3072])
+# 形状 [None] y的数量和x的样本数是对应的
+y = tf.placeholder(tf.int64, [None])
 
-train_and_test(use_larger_weights=False, learning_rate=0.01, activation_fn=tf.nn.relu, training_batches=3000, batches_per_validate_data=50)
+# [None, ], eg: [0, 5, 6, 3]
+x_image = tf.reshape(x, [-1, 3, 32, 32])
+# 将最开始的向量式的图片,转为真实的图片类型
+x_image = tf.transpose(x_image, perm=[0, 2, 3, 1])
+
+# conv1:神经元 feature_map 输出图像  图像大小: 32 * 32
+conv1 = tf.layers.conv2d(x_image,
+                         kernel_size=32,
+                         strides=3,
+                         padding='same',
+                         activation=tf.nn.relu,
+                         name='conv1')
+# 池化层 图像输出为: 16 * 16
+pooling1 = tf.layers.max_pooling2d(conv1,
+                                   kernel_size=2,  # 核大小 变为原来的 1/2
+                                   strides=2,  # 步长
+                                   name='pool1')
+
+inception_2a = inception_block(pooling1, [16, 16, 16], name='inception_2a')
+inception_2b = inception_block(inception_2a, [16, 16, 16], name='inception_2b')
+
+pooling2 = tf.layers.max_pooling2d(inception_2b,
+                                   (2, 2),  # 核大小 变为原来的 1/2
+                                   (2, 2),  # 步长
+                                   name='pool2')
+
+inception_3a = inception_block(pooling2,
+                               [16, 16, 16],
+                               name='inception_3a')
+inception_3b = inception_block(inception_3a,
+                               [16, 16, 16],
+                               name='inception_3b')
+
+pooling3 = tf.layers.max_pooling2d(inception_3b,
+                                   pool_size=2,
+                                   strides=2,
+                                   name='pool3')
+
+flatten = tf.contrib.layers.flatten(pooling3)
+y_ = tf.layers.dense(flatten, 10)
+
+# 使用交叉熵 设置损失函数
+loss = tf.losses.sparse_softmax_cross_entropy(labels=y, logits=y_)
+# 该api,做了三件事儿 1. y_ -> softmax 2. y -> one_hot 3. loss = ylogy
+
+# 预测值 获得的是 每一行上 最大值的 索引.注意:tf.argmax()的用法,其实和 np.argmax() 一样的
+predict = tf.argmax(y_, 1)
+# 将布尔值转化为int类型,也就是 0 或者 1, 然后再和真实值进行比较. tf.equal() 返回值是布尔类型
+correct_prediction = tf.equal(predict, y)
+# 比如说第一行最大值索引是6,说明是第六个分类.而y正好也是6,说明预测正确
+
+
+# 将上句的布尔类型 转化为 浮点类型,然后进行求平均值,实际上就是求出了准确率
+accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float64))
+
+with tf.name_scope('train_op'):  # tf.name_scope() 这个方法的作用不太明白(有点迷糊!)
+    train_op = tf.train.AdamOptimizer(1e-3).minimize(loss)  # 将 损失函数 降到 最低
+
+# 初始化变量
+init = tf.global_variables_initializer()
+
+batch_size = 20
+train_steps = 100000
+test_steps = 100
+with tf.Session() as sess:
+    sess.run(init)  # 注意: 这一步必须要有!!
+    # 开始训练
+    for i in range(train_steps):
+        # 得到batch
+        batch_data, batch_labels = train_data.next_batch(batch_size)
+        # 获得 损失值, 准确率
+        loss_val, acc_val, _ = sess.run([loss, accuracy, train_op], feed_dict={x: batch_data, y: batch_labels})
+        # 每 500 次 输出一条信息
+        if (i + 1) % 500 == 0:
+            print('[Train] Step: %d, loss: %4.5f, acc: %4.5f' % (i + 1, loss_val, acc_val))
+        # 每 5000 次 进行一次 测试
+        if (i + 1) % 5000 == 0:
+            # 获取数据集,但不随机
+            test_data = CifarData(test_filename, False)
+            all_test_acc_val = []
+            for j in range(test_steps):
+                test_batch_data, test_batch_labels = test_data.next_batch(batch_size)
+                test_acc_val = sess.run([accuracy], feed_dict={x: test_batch_data, y: test_batch_labels})
+                all_test_acc_val.append(test_acc_val)
+            test_acc = np.mean(all_test_acc_val)
+
+            print('[Test ] Step: %d, acc: %4.5f' % ((i + 1), test_acc))
+
+'''
+训练一万次的最终结果:
+=====================================================
+[Train] Step: 10000, loss: 0.79420, acc: 0.75000
+[Test ] Step: 10000, acc: 0.74150
+=====================================================
+'''
