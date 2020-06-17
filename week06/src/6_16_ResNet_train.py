@@ -2,7 +2,7 @@ import tensorflow as tf
 # from resnets_utils import *
 import numpy as np
 import os
-os.environ['CUDA_VISIBLE_DEVICES'] = '0,1'
+os.environ['CUDA_VISIBLE_DEVICES'] = '1'
 """
 resnet 有 5个stage,第一个stage是卷积,其他都是block building块,每一个building 有3层
 """
@@ -13,7 +13,7 @@ BATCHSIZE = 64
 num_steps = 30000
 train_display = 100
 val_display = 1000
-learning_rate = 0.0001
+learning_rate = 0.01
 # training_id = tf.placeholder(tf.bool)
 training_id = tf.placeholder_with_default(True, shape=(), name='training')
 
@@ -267,7 +267,7 @@ def main():
         else:
             path = ckpt.model_checkpoint_path
             print('loading pre-trained model from %s.....' % path)
-            saver.restore(sess, 'model_resnet/model10000.ckpt')
+            saver.restore(sess, path)
 
         for step in range(1, num_steps + 1):
             sess.run(train_op, {training_id: True})
