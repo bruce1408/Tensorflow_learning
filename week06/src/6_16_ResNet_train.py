@@ -15,7 +15,7 @@ train_display = 100
 val_display = 1000
 learning_rate = 0.01
 # training_id = tf.placeholder(tf.bool)
-training_id = tf.placeholder_with_default(True, shape=(), name='training')
+training_id = tf.placeholder_with_default(False, shape=(), name='training')
 
 
 def check_accuracy(sess, correct_prediction, training_id, dataset_init_op, batches_to_check):
