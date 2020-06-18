@@ -19,6 +19,7 @@ val_display = 500
 learning_rate = 0.1
 decay_rate = 0.96
 decay_step = 1000
+check_acc = 10000
 log_path = './resnet_train'
 # learning_rate = 0.0001
 
@@ -330,21 +331,9 @@ def main():
                 saver.save(sess, path_name)
                 print("model has been saved in %s" % path_name)
 
+        acc = check_accuracy(sess, correct_prediction, training_id, valdata_init, check_acc)
+        print('the val acc is: ', acc)
         print("Optimization Finished!")
-
-        # for i in range(10000):
-        #     X_mini_batch, Y_mini_batch = mini_batches[np.random.randint(0, len(mini_batches))]
-        #     _, cost_sess = sess.run([train_op, loss], feed_dict={X: X_mini_batch, Y: Y_mini_batch})
-        #
-        #     if i % 50 == 0:
-        #         print(i, cost_sess)
-        #
-        # sess.run(tf.assign(TRAINING, False))
-        #
-        # training_acur = sess.run(accuracy, feed_dict={X: X_train, Y: Y_train})
-        # testing_acur = sess.run(accuracy, feed_dict={X: X_test, Y: Y_test})
-        # print("traing acurracy: ", training_acur)
-        # print("testing acurracy: ", testing_acur)
 
 
 if __name__ == '__main__':
