@@ -2,9 +2,10 @@ import tensorflow as tf
 # from resnets_utils import *
 import numpy as np
 import os
+
 os.environ['CUDA_VISIBLE_DEVICES'] = '1'
 """
-resnet 有 5个stage,第一个stage是卷积,其他都是block building块,每一个building 有3层
+ResNet 有 5个stage,第一个stage是卷积,其他都是block building块,每一个building 有3层
 """
 # parameter 网络参数
 IMG_HEIGHT = 224
@@ -14,10 +15,10 @@ num_steps = 30000
 train_display = 10
 save_check = 2000
 val_display = 500
-learning_rate = 0.001
+# learning_rate = 0.0001
 
-
-training_id = tf.placeholder(tf.bool)
+global_step = tf.Variable(tf.constant(0), name='global_step', trainable=False)
+training_id = tf.placeholder_with_default(False, shape=(), name='training')
 
 
 def check_accuracy(sess, correct_prediction, training_id, dataset_init_op, batches_to_check):
@@ -46,7 +47,7 @@ def _parse_function(record):
     image = tf.decode_raw(parsed['img_raw'], tf.uint8)
     image = tf.reshape(image, [IMG_HEIGHT, IMG_WIDTH, 3])
     image = tf.cast(image, tf.float32)
-    image = image/225.0
+    image = image / 225.0
     image = image - 0.5
     image = image * 2.0
     label = tf.cast(parsed['label'], tf.int32)
@@ -80,10 +81,10 @@ def identity_block(X_input, kernel_size, filters, stage, block, TRAINING):
         X_shortcut = X_input
 
         # First component of main path
-        x = tf.layers.conv2d(X_input, filter1, kernel_size=(1, 1), strides=(1, 1), padding='same', name=conv_name_base + '2a')
+        x = tf.layers.conv2d(X_input, filter1, kernel_size=(1, 1), strides=(1, 1), padding='same',
+                             name=conv_name_base + '2a')
         x = tf.layers.batch_normalization(x, axis=3, name=bn_name_base + '2a', training=TRAINING)
         x = tf.nn.relu(x)
-
         # Second component of main path
         x = tf.layers.conv2d(x, filter2, (kernel_size, kernel_size), padding='same', name=conv_name_base + '2b')
         # batch_norm2 = tf.layers.batch_normalization(conv2, axis=3, name=bn_name_base+'2b', training=TRAINING)
@@ -165,26 +166,31 @@ def ResNet50_reference(X, training, classes=2):
     """
 
     # input shape is (batch, 230, 230, channles)
-    x = tf.pad(X, tf.constant([[0, 0], [3, 3, ], [3, 3], [0, 0]]), "CONSTANT")
+    # x = tf.pad(X, tf.constant([[0, 0], [3, 3, ], [3, 3], [0, 0]]), "CONSTANT")
 
-    assert (x.shape == (x.shape[0], 230, 230, 3))  # 把原来的 224 * 224 变成 230 * 230
+    # assert (x.shape == (x.shape[0], 230, 230, 3))  # 把原来的 224 * 224 变成 230 * 230
 
     # stage 1
-    x = tf.layers.conv2d(x, filters=64, kernel_size=(7, 7), strides=(2, 2), name='conv1')  # 加上padding也可以
+    x = tf.layers.conv2d(X, filters=64, kernel_size=(7, 7), strides=(2, 2), padding='same', name='conv1')  # 加上padding也可以
+    print('the stage1.1 conv2d shape is:', x.get_shape())
     x = tf.layers.batch_normalization(x, axis=3, training=training, name='bn_conv1')
     x = tf.nn.relu(x)
     x = tf.layers.max_pooling2d(x, pool_size=(3, 3), strides=(2, 2), padding='same')
+    print('the stage1.2 pool shape is:', x.get_shape())
 
     # stage 2: 1个convBlock + 2个identityBlock
     x = residual_block(x, kernel_size=3, filters=[64, 64, 256], stage=2, block='a', TRAINING=training, stride=1)
+    print('the stage2.1 residual shape is:', x.get_shape())
     x = identity_block(x, 3, [64, 64, 256], stage=2, block='b', TRAINING=training)
     x = identity_block(x, 3, [64, 64, 256], stage=2, block='c', TRAINING=training)
+    print('the stage2.2 identity shape is:', x.get_shape())
 
     # stage 3: 1个convBlock + 3个identityBlock
     x = residual_block(x, kernel_size=3, filters=[128, 128, 512], stage=3, block='a', TRAINING=training, stride=2)
     x = identity_block(x, 3, [128, 128, 512], stage=3, block='b', TRAINING=training)
     x = identity_block(x, 3, [128, 128, 512], stage=3, block='c', TRAINING=training)
     x = identity_block(x, 3, [128, 128, 512], stage=3, block='d', TRAINING=training)
+    print('the stage3 identity shape is:', x.get_shape())
 
     # stage 4: 1个convBlock + 5个identityBlock
     x = residual_block(x, kernel_size=3, filters=[256, 256, 1024], stage=4, block='a', TRAINING=training, stride=2)
@@ -193,24 +199,30 @@ def ResNet50_reference(X, training, classes=2):
     x = identity_block(x, 3, [256, 256, 1024], stage=4, block='d', TRAINING=training)
     x = identity_block(x, 3, [256, 256, 1024], stage=4, block='e', TRAINING=training)
     x = identity_block(x, 3, [256, 256, 1024], stage=4, block='f', TRAINING=training)
+    print('the stage4 identity shape is:', x.get_shape())
 
     # stage 5: 1个convBlock + 2个identityBlock
     x = residual_block(x, kernel_size=3, filters=[512, 512, 2048], stage=5, block='a', TRAINING=training, stride=2)
     x = identity_block(x, 3, [512, 512, 2048], stage=5, block='b', TRAINING=training)
     x = identity_block(x, 3, [512, 512, 2048], stage=5, block='c', TRAINING=training)
+    print('the stage5 identity shape is:', x.get_shape())
 
     # 均值池化层
-    x = tf.layers.average_pooling2d(x, pool_size=(2, 2), strides=(1, 1))
+    x = tf.layers.average_pooling2d(x, pool_size=(7, 7), strides=(1, 1))
+    print('the stage pool shape is:', x.get_shape())
 
     # 全连接层
     flatten = tf.layers.flatten(x, name='flatten')
-    dense1 = tf.layers.dense(flatten, units=50, activation=tf.nn.relu)
-    logits = tf.layers.dense(dense1, units=classes, activation=tf.nn.softmax)
+    print('the flatten shape is:', flatten.get_shape())
+    # dense1 = tf.layers.dense(flatten, units=50, activation=tf.nn.relu)
+    # print('the dense1 shape is:', dense1.get_shape())
+    logits = tf.layers.dense(flatten, units=classes, activation=tf.nn.softmax)
+    print('the last shape is:', logits.get_shape())
+
     return logits
 
 
 def main():
-
     traindata = tf.data.TFRecordDataset("/raid/bruce/dog_cat/train_dog_cat_224.tfrecord"). \
         map(_parse_function). \
         shuffle(buffer_size=2000, reshuffle_each_iteration=True). \
@@ -248,11 +260,18 @@ def main():
     # loss_op = tf.reduce_mean(tf.losses.softmax_cross_entropy(onehot_labels=Y, logits=logits))
     loss_op = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(labels=Y, logits=logits))
 
-    # learning_rate = tf.Variable(0.1, trainable=False)
+    learning_rate = 0.1
+    decay_rate = 0.96
+    # global_step = num_steps
+    decay_step = 1000
+    learning_rate = tf.train.exponential_decay(learning_rate, global_step, decay_step, decay_rate, staircase=True)
+
     # optimizer = tf.train.MomentumOptimizer(learning_rate, 0.9, use_nesterov=True)
     optimizer = tf.train.AdadeltaOptimizer(learning_rate=learning_rate)
     # optimizer = tf.train.GradientDescentOptimizer(learning_rate=learning_rate)
     # optimizer = tf.train.MomentumOptimizer(learning_rate=learning_rate, momentum=0.9, use_nesterov=True)
+    # loss_op = tf.reduce_mean(tf.losses.softmax_cross_entropy(onehot_labels=Y, logits=logits))
+
     # these lines are needed to update the batchnorma moving averages
     update_ops = tf.get_collection(tf.GraphKeys.UPDATE_OPS)
     with tf.control_dependencies(update_ops):
@@ -266,8 +285,8 @@ def main():
         assert (X.shape == (X.shape[0], IMG_HEIGHT, IMG_WIDTH, 3))
 
         sess.run(traindata_init)
+        # saver bn moving_mean and moving_variance parameters
         var_list = tf.trainable_variables()
-
         g_list = tf.global_variables()
         bn_moving_vars = [g for g in g_list if 'moving_mean' in g.name]
         bn_moving_vars += [g for g in g_list if 'moving_variance' in g.name]
@@ -286,9 +305,10 @@ def main():
             sess.run(train_op, {training_id: True})
             if step % train_display == 0 or step == 1:
                 # Run optimization and calculate batch loss and accuracy
-                acc, loss = sess.run([accuracy, loss_op], {training_id: False})
-                print("Step " + str(step) + ", Minibatch Loss= " + "{:.4f}".format(loss) +
-                      ", train acc = " + "{:.2f}".format(acc))
+                lr, loss, acc = sess.run([learning_rate, loss_op, accuracy], {training_id: False, global_step: step})
+                print("Step " + str(step) + ", Minibatch Loss= " + "{:.4f}".format(
+                    loss) + ", train acc = " + "{:.2f}".format(acc) + ", lr = " + "{:.4f}".format(lr))
+
                 if step % val_display == 0 and step is not 0:
                     acc = check_accuracy(sess, correct_prediction, training_id, valdata_init, val_display)
                     loss = sess.run(loss_op, {training_id: False})
@@ -298,9 +318,8 @@ def main():
 
             if step % save_check == 0:
                 path_name = "./model_resnet/model" + str(step) + ".ckpt"
-                print(path_name)
                 saver.save(sess, path_name)
-                print("model has been saved")
+                print("model has been saved in %s" % path_name)
 
         print("Optimization Finished!")
 

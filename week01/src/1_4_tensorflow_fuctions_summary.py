@@ -384,9 +384,25 @@ https://www.cnblogs.com/marsggbo/p/9603789.html
 """
 import tensorflow as tf
 
-x = tf.Variable(tf.random_normal([10, 28, 27, 3]))  # [batch_szie,height,weight,channel]
+x = tf.Variable(tf.random_normal([10, 7, 7, 3]))  # [batch_szie,height,weight,channel]
 
-max_pool = tf.layers.max_pooling2d(x, pool_size=[2, 2], strides=[2, 2], padding='same')
+max_pool = tf.layers.max_pooling2d(x, pool_size=[2, 2], strides=[1, 1], padding='same')
 print(max_pool)
-max_pool = tf.layers.max_pooling2d(x, pool_size=[2, 2], strides=[2, 2], padding='valid')
+max_pool = tf.layers.max_pooling2d(x, pool_size=[2, 2], strides=[1, 1], padding='valid')
 print(max_pool)
+"""
+1.10.6 使用tf.layers.conv2d
+"""
+# import tensorflow as tf
+#
+# x = tf.Variable(tf.random_normal([10, 224, 224, 3]))  # [batch_szie,height,weight,channel]
+# conv1 = tf.layers.conv2d(x, 64, kernel_size=7, strides=2, padding='same')
+# conv2 = tf.layers.conv2d(x, 64, 7, 2)
+#
+# max_pool = tf.layers.max_pooling2d(x, pool_size=[2, 2], strides=[2, 2], padding='SAME')
+# print(max_pool)
+# max_pool = tf.layers.max_pooling2d(x, pool_size=[2, 2], strides=[2, 2], padding='SAME')
+# print(max_pool)
+#
+# print(conv1)
+# print(conv2)

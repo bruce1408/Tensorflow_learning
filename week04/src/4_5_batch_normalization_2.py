@@ -10,7 +10,7 @@ import tqdm
 import matplotlib.pyplot as plt
 from tensorflow.examples.tutorials.mnist import input_data
 mnist = input_data.read_data_sets("../../MNIST_data", one_hot=True)
-os.environ['CUDA_VISIBLE_DEVICES'] = '1'
+os.environ['CUDA_VISIBLE_DEVICES'] = '2'
 
 
 class NeuralNetWork():
@@ -108,9 +108,14 @@ class NeuralNetWork():
                 self.training_accuracies.append(val_accuracy)
         print("{}: The final accuracy on validation data is {}".format(self.name, val_accuracy))
 
-        # 存储模型
+        # 存储模型部分
         if save_model:
-            tf.train.Saver().save(sess, save_model)
+            var_list = tf.trainable_variables()
+            g_list = tf.global_variables()
+            bn_moving_vars = [g for g in g_list if 'moving_mean' in g.name]
+            bn_moving_vars += [g for g in g_list if 'moving_variance' in g.name]
+            var_list += bn_moving_vars
+            tf.train.Saver(var_list=var_list, max_to_keep=3).save(sess, save_model)
 
     def test(self, sess, test_training_accuracy=False, restore=None):
         # 定义label
@@ -122,7 +127,12 @@ class NeuralNetWork():
 
         # 是否加载模型
         if restore:
-            tf.train.Saver().restore(sess, restore)
+            var_list = tf.trainable_variables()
+            g_list = tf.global_variables()
+            bn_moving_vars = [g for g in g_list if 'moving_mean' in g.name]
+            bn_moving_vars += [g for g in g_list if 'moving_variance' in g.name]
+            var_list += bn_moving_vars
+            tf.train.Saver(var_list=var_list).restore(sess, restore)
 
         test_accuracy = sess.run(accuracy, feed_dict={self.input_layer: mnist.test.images,
                                                       labels: mnist.test.labels,
