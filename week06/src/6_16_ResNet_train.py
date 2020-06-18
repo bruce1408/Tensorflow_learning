@@ -2,7 +2,7 @@ import tensorflow as tf
 # from resnets_utils import *
 import numpy as np
 import os
-os.environ['CUDA_VISIBLE_DEVICES'] = '2'
+os.environ['CUDA_VISIBLE_DEVICES'] = '1'
 """
 resnet 有 5个stage,第一个stage是卷积,其他都是block building块,每一个building 有3层
 """
@@ -266,7 +266,14 @@ def main():
         assert (X.shape == (X.shape[0], IMG_HEIGHT, IMG_WIDTH, 3))
 
         sess.run(traindata_init)
-        saver = tf.train.Saver(var_list=tf.global_variables(), max_to_keep=3)
+        var_list = tf.trainable_variables()
+
+        g_list = tf.global_variables()
+        bn_moving_vars = [g for g in g_list if 'moving_mean' in g.name]
+        bn_moving_vars += [g for g in g_list if 'moving_variance' in g.name]
+        var_list += bn_moving_vars
+        saver = tf.train.Saver(var_list=var_list, max_to_keep=3)
+
         ckpt = tf.train.get_checkpoint_state('./model_resnet')
         if ckpt is None:
             print("Model not found, please train your model first...")
