@@ -11,11 +11,11 @@ IMG_HEIGHT = 224
 IMG_WIDTH = 224
 BATCHSIZE = 64
 num_steps = 30000
-train_display = 100
+train_display = 10
 val_display = 1000
-learning_rate = 0.01
+learning_rate = 0.001
 # training_id = tf.placeholder(tf.bool)
-training_id = tf.placeholder_with_default(False, shape=(), name='training')
+training_id = tf.placeholder_with_default(True, shape=(), name='training')
 
 
 def check_accuracy(sess, correct_prediction, training_id, dataset_init_op, batches_to_check):
@@ -260,7 +260,13 @@ def main():
         assert (Y.shape[1] == classes)
 
         sess.run(traindata_init)
-        saver = tf.train.Saver(max_to_keep=3)
+        var_list = tf.trainable_variables()
+        # print('trainable variables',tf.trainable_variables)
+        g_list = tf.global_variables()
+        bn_moving_vars = [g for g in g_list if 'moving_mean' in g.name]
+        bn_moving_vars += [g for g in g_list if 'moving_variance' in g.name]
+        var_list += bn_moving_vars
+        saver = tf.train.Saver(var_list=var_list, max_to_keep=3)
         ckpt = tf.train.get_checkpoint_state('./model_resnet')
         if ckpt is None:
             print("Model not found, please train your model first...")
