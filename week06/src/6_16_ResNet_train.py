@@ -2,6 +2,7 @@ import tensorflow as tf
 # from resnets_utils import *
 import numpy as np
 import os
+from utils.logWriter import Logger
 
 os.environ['CUDA_VISIBLE_DEVICES'] = '1'
 """
@@ -15,6 +16,10 @@ num_steps = 30000
 train_display = 10
 save_check = 2000
 val_display = 500
+learning_rate = 0.1
+decay_rate = 0.96
+decay_step = 1000
+log_path = './resnet_train'
 # learning_rate = 0.0001
 
 global_step = tf.Variable(tf.constant(0), name='global_step', trainable=False)
@@ -250,20 +255,21 @@ def main():
     X_test shape: (64, 224, 224, 3)
     Y_test shape: (64,)
     """
-
+    global learning_rate
     m, H_size, W_size, C_size = X.shape
     classes = 2
     assert ((H_size, W_size, C_size) == (IMG_HEIGHT, IMG_WIDTH, 3))
-
-    # Y = tf.one_hot(Y, 2)
+    # 添加日志文件
+    if not os.path.exists(log_path):
+        print("====== The log folder was not found and is being generated !======")
+        os.makedirs(log_path)
+    else:
+        print('======= The log path folder already exists ! ======')
+    log = Logger('./resnet_train/resnet_train.log', level='info')
     logits = ResNet50_reference(X, training_id, classes)
     # loss_op = tf.reduce_mean(tf.losses.softmax_cross_entropy(onehot_labels=Y, logits=logits))
     loss_op = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(labels=Y, logits=logits))
 
-    learning_rate = 0.1
-    decay_rate = 0.96
-    # global_step = num_steps
-    decay_step = 1000
     learning_rate = tf.train.exponential_decay(learning_rate, global_step, decay_step, decay_rate, staircase=True)
 
     # optimizer = tf.train.MomentumOptimizer(learning_rate, 0.9, use_nesterov=True)
@@ -306,14 +312,17 @@ def main():
             if step % train_display == 0 or step == 1:
                 # Run optimization and calculate batch loss and accuracy
                 lr, loss, acc = sess.run([learning_rate, loss_op, accuracy], {training_id: False, global_step: step})
-                print("Step " + str(step) + ", Minibatch Loss= " + "{:.4f}".format(
+                # print("Step " + str(step) + ", Minibatch Loss= " + "{:.4f}".format(
+                #     loss) + ", train acc = " + "{:.2f}".format(acc) + ", lr = " + "{:.4f}".format(lr))
+                log.logger.info("Step " + str(step) + ", Minibatch Loss= " + "{:.4f}".format(
                     loss) + ", train acc = " + "{:.2f}".format(acc) + ", lr = " + "{:.4f}".format(lr))
 
                 if step % val_display == 0 and step is not 0:
                     acc = check_accuracy(sess, correct_prediction, training_id, valdata_init, val_display)
                     loss = sess.run(loss_op, {training_id: False})
                     print("\033[1;36m=\033[0m" * 60)
-                    print("\033[1;36mStep %d, Minibatch Loss= %.4f, Test Accuracy= %.4f\033[0m" % (step, loss, acc))
+                    log.logger.info("Step %d, Minibatch Loss= %.4f, Test Accuracy= %.4f\033[0m" % (step, loss, acc))
+                    # print("\033[1;36mStep %d, Minibatch Loss= %.4f, Test Accuracy= %.4f\033[0m" % (step, loss, acc))
                     print("\033[1;36m=\033[0m" * 60)
 
             if step % save_check == 0:
