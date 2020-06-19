@@ -149,6 +149,7 @@ def GoogleNet(X, n_classes):
     # 辅助分类器1
     ass1 = tf.layers.average_pooling2d(incep4a, 5, strides=3, padding='VALID')
     ass1 = tf.layers.conv2d(ass1, filters=128, kernel_size=1, strides=1, padding='SAME', activation=tf.nn.relu)
+    ass1 = tf.contrib.layers.flatten(ass1)
     ass1 = tf.layers.dense(ass1, 1024)
     ass1 = tf.nn.relu(ass1)
     ass1 = tf.layers.dropout(ass1, 0.3, training=is_training)
@@ -158,6 +159,7 @@ def GoogleNet(X, n_classes):
     # 辅助分类器2
     ass2 = tf.layers.average_pooling2d(incep4d, 5, strides=3, padding='VALID')
     ass2 = tf.layers.conv2d(ass2, filters=128, kernel_size=1, strides=1, padding='SAME', activation=tf.nn.relu)
+    ass2 = tf.contrib.layers.flatten(ass2)
     ass2 = tf.layers.dense(ass2, 1024)
     ass2 = tf.nn.relu(ass2)
     ass2 = tf.layers.dropout(ass2, 0.3, training=is_training)
@@ -169,11 +171,10 @@ def GoogleNet(X, n_classes):
 
 out1, out2, out3 = GoogleNet(X, n_classes=2)
 
-cost_real = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=out1, labels=Y))
-cost_1 = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=out2, labels=Y))
-cost_2 = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=out3, labels=Y))
+cost_real = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(logits=out1, labels=Y))
+cost_1 = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(logits=out2, labels=Y))
+cost_2 = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(logits=out3, labels=Y))
 loss_op = cost_real + 0.3 * cost_1 + 0.3 * cost_2
-print(loss_op)
 optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate).minimize(loss_op)
 correct_pred = tf.equal(tf.argmax(out1, 1),  tf.cast(Y, tf.int64))
 accuracy = tf.reduce_mean(tf.cast(correct_pred, tf.float32))
