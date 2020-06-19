@@ -5,14 +5,12 @@ batch normalization (BN) 就是以batch为单位进行操作，
 减去 batch 内样本均值，除以 batch 内样本的标准差，(normalize)
 最后进行平移和缩放，其中缩放参数 r 和平移参数 beta 都是可学习的参数 (scale and shift)
 """
-import os
 import numpy as np
-import pandas as pd
 import tqdm
 import matplotlib.pyplot as plt
 from tensorflow.examples.tutorials.mnist import input_data
 mnist = input_data.read_data_sets("../../MNIST_data", one_hot=True)
-os.environ['CUDA_VISIBLE_DEVICES'] = '0'
+os.environ['CUDA_VISIBLE_DEVICES'] = '2'
 
 
 class NeuralNetWork():
@@ -102,9 +100,7 @@ class NeuralNetWork():
         # 显示进度条
         for i in tqdm.tqdm(range(training_batches)):
             batch_x, batch_y = mnist.train.next_batch(60)
-            sess.run(train_step, feed_dict={self.input_layer: batch_x,
-                                            labels: batch_y,
-                                            self.is_training: True})
+            sess.run(train_step, feed_dict={self.input_layer: batch_x, labels: batch_y, self.is_training: True})
             if i % batches_per_validate_data == 0:
                 val_accuracy = sess.run(accuracy, feed_dict={self.input_layer: mnist.validation.images,
                                                              labels: mnist.validation.labels,
@@ -112,9 +108,14 @@ class NeuralNetWork():
                 self.training_accuracies.append(val_accuracy)
         print("{}: The final accuracy on validation data is {}".format(self.name, val_accuracy))
 
-        # 存储模型
+        # 存储模型部分
         if save_model:
-            tf.train.Saver().save(sess, save_model)
+            var_list = tf.trainable_variables()
+            g_list = tf.global_variables()
+            bn_moving_vars = [g for g in g_list if 'moving_mean' in g.name]
+            bn_moving_vars += [g for g in g_list if 'moving_variance' in g.name]
+            var_list += bn_moving_vars
+            tf.train.Saver(var_list=var_list, max_to_keep=3).save(sess, save_model)
 
     def test(self, sess, test_training_accuracy=False, restore=None):
         # 定义label
@@ -126,7 +127,12 @@ class NeuralNetWork():
 
         # 是否加载模型
         if restore:
-            tf.train.Saver().restore(sess, restore)
+            var_list = tf.trainable_variables()
+            g_list = tf.global_variables()
+            bn_moving_vars = [g for g in g_list if 'moving_mean' in g.name]
+            bn_moving_vars += [g for g in g_list if 'moving_variance' in g.name]
+            var_list += bn_moving_vars
+            tf.train.Saver(var_list=var_list).restore(sess, restore)
 
         test_accuracy = sess.run(accuracy, feed_dict={self.input_layer: mnist.test.images,
                                                       labels: mnist.test.labels,
@@ -203,4 +209,5 @@ def train_and_test(use_larger_weights, learning_rate, activation_fn, training_ba
 
 # train_and_test(use_larger_weights=False, learning_rate=0.01, activation_fn=tf.nn.relu)
 
-train_and_test(use_larger_weights=False, learning_rate=0.01, activation_fn=tf.nn.relu, training_batches=3000, batches_per_validate_data=50)
+train_and_test(use_larger_weights=False, learning_rate=0.01, activation_fn=tf.nn.relu, training_batches=3000,
+               batches_per_validate_data=50)

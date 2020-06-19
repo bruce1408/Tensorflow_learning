@@ -382,11 +382,27 @@ https://www.cnblogs.com/marsggbo/p/9603789.html
 """
 1.10.5 使用tensorflow tf.layers.max_pooling2d这个函数padding='same'和'valid'来尝试
 """
-import tensorflow as tf
+# import tensorflow as tf
+#
+# x = tf.Variable(tf.random_normal([10, 7, 7, 3]))  # [batch_szie,height,weight,channel]
+#
+# max_pool = tf.layers.max_pooling2d(x, pool_size=[2, 2], strides=[1, 1], padding='same')
+# print(max_pool)
+# max_pool = tf.layers.max_pooling2d(x, pool_size=[2, 2], strides=[1, 1], padding='valid')
+# print(max_pool)
+"""
+1.10.6 使用tf.layers.conv2d
+"""
+# import tensorflow as tf
+#
+x = tf.Variable(tf.random_normal([10, 224, 224, 3]))  # [batch_szie,height,weight,channel]
+conv1 = tf.layers.conv2d(x, 64, kernel_size=7, strides=2, padding='same')  # 112x112
+conv2 = tf.layers.conv2d(x, 64, 7, 2)   # 109 x 109
 
-x = tf.Variable(tf.random_normal([10, 28, 27, 3]))  # [batch_szie,height,weight,channel]
-
-max_pool = tf.layers.max_pooling2d(x, pool_size=[2, 2], strides=[2, 2], padding='same')
+max_pool = tf.layers.max_pooling2d(x, pool_size=[2, 2], strides=[2, 2], padding='SAME')
 print(max_pool)
 max_pool = tf.layers.max_pooling2d(x, pool_size=[2, 2], strides=[2, 2], padding='valid')
 print(max_pool)
+
+print(conv1)
+print(conv2)
