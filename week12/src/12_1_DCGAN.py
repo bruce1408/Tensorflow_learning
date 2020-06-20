@@ -160,7 +160,7 @@ with tf.Session(config=config) as sess:
             a[j][i].imshow(img)
 
     f.show()
-    plt.savefig('./gan.jpg')
+    plt.savefig('gan.jpg')
     plt.draw()
     # plt.waitforbuttonpress()
 

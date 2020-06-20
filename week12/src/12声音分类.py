@@ -72,8 +72,6 @@ for attr, value in sorted(FLAGS.__flags.items()):
 print("")
 
 
-# In[3]:
-
 # 获得训练用的wav文件路径列表  
 def get_wav_files(parent_dir, sub_dirs):
     wav_files = []
@@ -107,8 +105,6 @@ def extract_features(wav_files):
     return inputs, np.array(labels, dtype=np.int)
 
 
-# In[4]:
-
 # 获得训练用的wav文件路径列表 
 wav_files = get_wav_files(FLAGS.parent_dir, FLAGS.tr_sub_dirs)
 # 获取文件mfcc特征和对应标签
@@ -119,10 +115,6 @@ np.save('tr_labels.npy', tr_labels)
 
 # tr_features=np.load('tr_features.npy')
 # tr_labels=np.load('tr_labels.npy')
-
-
-# In[5]:
-
 # (batch,step,input)
 # (50,173,40)
 
@@ -224,8 +216,6 @@ def batch_iter(data, batch_size, num_epochs, shuffle=True):
             yield shuffled_data[start_index:end_index]
 
 
-# In[9]:
-
 # Initializing the variables
 init = tf.global_variables_initializer()
 # 定义saver
@@ -256,4 +246,3 @@ with tf.Session() as sess:
             path = saver.save(sess, "sounds_models/model", global_step=i)
             print("Saved model checkpoint to {}\n".format(path))
 
-# In[ ]:

@@ -35,8 +35,8 @@ def sequence_loss_by_example(logits, targets, weights, average_across_timesteps=
     """
     # 此三者都是列表，长度都应该相同
     if len(targets) != len(logits) or len(weights) != len(logits):
-        raise ValueError("Lengths of logits, weights, and targets must be the same "
-                         "%d, %d, %d." % (len(logits), len(weights), len(targets)))
+        raise ValueError("Lengths of logits, weights, and targets must be the same %d, %d, %d."
+                         % (len(logits), len(weights), len(targets)))
     with tf.name_scope(name, "sequence_loss_by_example",
                        logits + targets + weights):  # 命名空间删掉也可以
         log_perp_list = []

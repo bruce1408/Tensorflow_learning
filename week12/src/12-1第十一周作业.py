@@ -1,9 +1,5 @@
-
 # coding: utf-8
-
-# In[1]:
-
-#! /usr/bin/env python
+# ! /usr/bin/env python
 
 import tensorflow as tf
 import numpy as np
@@ -16,9 +12,6 @@ from tensorflow.contrib import learn
 from six.moves import xrange
 import pickle
 
-
-# In[2]:
-
 # Parameters
 # ==================================================
 
@@ -26,9 +19,11 @@ import pickle
 # validation数据集占比
 tf.flags.DEFINE_float("dev_sample_percentage", .1, "Percentage of the training data to use for validation")
 # 正样本
-tf.flags.DEFINE_string("positive_data_file", "./data/rt-polaritydata/rt-polarity.pos", "Data source for the positive data.")
+tf.flags.DEFINE_string("positive_data_file", "./data/rt-polaritydata/rt-polarity.pos",
+                       "Data source for the positive data.")
 # 负样本
-tf.flags.DEFINE_string("negative_data_file", "./data/rt-polaritydata/rt-polarity.neg", "Data source for the negative data.")
+tf.flags.DEFINE_string("negative_data_file", "./data/rt-polaritydata/rt-polarity.neg",
+                       "Data source for the negative data.")
 
 # Model Hyperparameters
 # 词向量长度
@@ -69,7 +64,6 @@ for attr, value in sorted(FLAGS.__flags.items()):
     print("{}={}".format(attr.upper(), value))
 print("")
 
-
 # In[3]:
 
 # Load data
@@ -79,36 +73,30 @@ x_text, y = data_helpers.load_data_and_labels(FLAGS.positive_data_file, FLAGS.ne
 
 # 一行数据最多的词汇数
 max_document_length = max([len(x.split(" ")) for x in x_text])
-print("max_document_length:",max_document_length)
+print("max_document_length:", max_document_length)
 text = np.array([x.split(" ") for x in x_text])
-print("text:",text[:5])
-
-
-# In[4]:
+print("text:", text[:5])
 
 with open('w2v_dict.pickle', 'rb') as f:
-    w2v_dict = pickle.load(f)  
+    w2v_dict = pickle.load(f)
 
 x = []
 for line in text:
     line_len = len(line)
     text2num = []
     for i in xrange(max_document_length):
-        if(i < line_len):
+        if (i < line_len):
             try:
-                text2num.append(w2v_dict[line[i]]) # 把词转为数字
+                text2num.append(w2v_dict[line[i]])  # 把词转为数字
             except:
-                text2num.append(0) # 没有对应的词
+                text2num.append(0)  # 没有对应的词
         else:
-            text2num.append(0) # 填充0
+            text2num.append(0)  # 填充0
     x.append(text2num)
 x = np.array(x)
 
-
-# In[5]:
-
-print("x_shape:",x.shape)
-print("y_shape:",y.shape)
+print("x_shape:", x.shape)
+print("y_shape:", y.shape)
 
 # Randomly shuffle data
 np.random.seed(10)
@@ -124,22 +112,19 @@ x_train, x_dev = x_shuffled[:dev_sample_index], x_shuffled[dev_sample_index:]
 y_train, y_dev = y_shuffled[:dev_sample_index], y_shuffled[dev_sample_index:]
 print("Train/Dev split: {:d}/{:d}".format(len(y_train), len(y_dev)))
 
-print("x:",x_train[0:5])
-print("y:",y_train[0:5])
-
-
-# In[6]:
+print("x:", x_train[0:5])
+print("y:", y_train[0:5])
 
 # Training
 # ==================================================
 
 with tf.Graph().as_default():
     session_conf = tf.ConfigProto(
-      allow_soft_placement=FLAGS.allow_soft_placement,
-      log_device_placement=FLAGS.log_device_placement)
+        allow_soft_placement=FLAGS.allow_soft_placement,
+        log_device_placement=FLAGS.log_device_placement)
     sess = tf.Session(config=session_conf)
     with sess.as_default():
-        
+
         cnn = TextCNN(
             sequence_length=x_train.shape[1],
             num_classes=y_train.shape[1],
@@ -198,31 +183,33 @@ with tf.Graph().as_default():
         # Initialize all variables
         sess.run(tf.global_variables_initializer())
 
+
         def train_step(x_batch, y_batch):
             """
             A single training step
             """
             feed_dict = {
-              cnn.input_x: x_batch,
-              cnn.input_y: y_batch,
-              cnn.dropout_keep_prob: FLAGS.dropout_keep_prob
+                cnn.input_x: x_batch,
+                cnn.input_y: y_batch,
+                cnn.dropout_keep_prob: FLAGS.dropout_keep_prob
             }
             _, step, summaries, loss, accuracy = sess.run(
                 [train_op, global_step, train_summary_op, cnn.loss, cnn.accuracy],
                 feed_dict)
             time_str = datetime.datetime.now().isoformat()
-            if step%10==0:
+            if step % 10 == 0:
                 print("{}: step {}, loss {:g}, acc {:g}".format(time_str, step, loss, accuracy))
             train_summary_writer.add_summary(summaries, step)
+
 
         def dev_step(x_batch, y_batch, writer=None):
             """
             Evaluates model on a dev set
             """
             feed_dict = {
-              cnn.input_x: x_batch,
-              cnn.input_y: y_batch,
-              cnn.dropout_keep_prob: 1.0
+                cnn.input_x: x_batch,
+                cnn.input_y: y_batch,
+                cnn.dropout_keep_prob: 1.0
             }
             step, summaries, loss, accuracy = sess.run(
                 [global_step, dev_summary_op, cnn.loss, cnn.accuracy],
@@ -231,6 +218,7 @@ with tf.Graph().as_default():
             print("{}: step {}, loss {:g}, acc {:g}".format(time_str, step, loss, accuracy))
             if writer:
                 writer.add_summary(summaries, step)
+
 
         # Generate batches
         batches = data_helpers.batch_iter(
@@ -249,4 +237,3 @@ with tf.Graph().as_default():
             if current_step % FLAGS.checkpoint_every == 0:
                 path = saver.save(sess, checkpoint_prefix, global_step=current_step)
                 print("Saved model checkpoint to {}\n".format(path))
-

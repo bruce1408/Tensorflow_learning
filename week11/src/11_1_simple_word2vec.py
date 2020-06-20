@@ -1,19 +1,5 @@
+# encoding=utf8
 #!/usr/bin/env python
-# coding: utf-8
-
-# In[1]:
-
-
-import tensorflow as tf
-
-
-# In[2]:
-
-
-# encoding=utf8  
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
 
 import collections
 import math
@@ -25,9 +11,10 @@ import numpy as np
 from six.moves import urllib
 from six.moves import xrange  # pylint: disable=redefined-builtin
 import tensorflow as tf
-
+os.environ['CUDA_VISIBLE_DEVICES']='1'
 # Step 1: Download the data.
 url = 'http://mattmahoney.net/dc/'
+
 
 # 下载数据集
 def maybe_download(filename, expected_bytes):
@@ -45,7 +32,9 @@ def maybe_download(filename, expected_bytes):
             'Failed to verify ' + filename + '. Can you get to it with a browser?')
     return filename
 
+
 filename = maybe_download('text8.zip', 31344016)
+
 
 # Read the data into a list of strings.
 def read_data(filename):
@@ -63,6 +52,7 @@ print('Data size', len(words))
 # Step 2: Build the dictionary and replace rare words with UNK token.
 # 只留50000个单词，其他的词都归为UNK
 vocabulary_size = 50000
+
 
 def build_dataset(words, vocabulary_size):
     count = [['UNK', -1]]
@@ -96,6 +86,7 @@ def build_dataset(words, vocabulary_size):
     # 编号对应词的字典
     reverse_dictionary = dict(zip(dictionary.values(), dictionary.keys()))
     return data, count, dictionary, reverse_dictionary
+
 
 # data 数据集，编号形式
 # count 前50000个出现次数最多的词

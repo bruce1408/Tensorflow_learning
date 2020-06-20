@@ -19,6 +19,8 @@ import tensorflow as tf
 from tensorflow.contrib import rnn
 # Import MNIST data
 from tensorflow.examples.tutorials.mnist import input_data
+import os
+os.environ['CUDA_VISIBLE_DEVICES'] = '0'
 
 mnist = input_data.read_data_sets("../../MNIST_data", one_hot=True)
 
@@ -84,8 +86,7 @@ logits = BiRNN(X, weights, biases)
 prediction = tf.nn.softmax(logits)
 
 # Define loss and optimizer
-loss_op = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(
-    logits=logits, labels=Y))
+loss_op = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=logits, labels=Y))
 optimizer = tf.train.GradientDescentOptimizer(learning_rate=learning_rate)
 train_op = optimizer.minimize(loss_op)
 
