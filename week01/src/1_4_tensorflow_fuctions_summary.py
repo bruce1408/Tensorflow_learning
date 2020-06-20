@@ -329,7 +329,7 @@ https://www.cnblogs.com/marsggbo/p/9603789.html
 
 """
 1.10.3  tf.assign()函数,赋值的时候需要复制被完成才可以成功赋值, 也就是需要对齐进行sess.run()这个运算符才可以
-成功赋值;参考Tensorflow：tf.assign()函数的使用方法及易错点https://blog.csdn.net/Invokar/article/details/89041501
+成功赋值;参考Tensorflow: tf.assign()函数的使用方法及易错点https://blog.csdn.net/Invokar/article/details/89041501
 """
 # import tensorflow as tf
 # sess = tf.InteractiveSession()
