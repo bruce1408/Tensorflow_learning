@@ -17,6 +17,7 @@ input_embedding_size = 20
 encoder_hidden_units = 20
 decoder_hidden_units = encoder_hidden_units
 
+
 def get_data(batch_size):
     train_data = np.random.normal(-1, 1, size=[batch_size, 7, feature_size])
     target_data = np.random.normal(-0.1, 0.1, size=[batch_size, 7, feature_size])

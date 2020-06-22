@@ -1,5 +1,5 @@
 # encoding=utf8
-#!/usr/bin/env python
+# !/usr/bin/env python
 
 import collections
 import math
@@ -11,7 +11,8 @@ import numpy as np
 from six.moves import urllib
 from six.moves import xrange  # pylint: disable=redefined-builtin
 import tensorflow as tf
-os.environ['CUDA_VISIBLE_DEVICES']='1'
+
+os.environ['CUDA_VISIBLE_DEVICES'] = '1'
 # Step 1: Download the data.
 url = 'http://mattmahoney.net/dc/'
 
@@ -42,6 +43,7 @@ def read_data(filename):
     with zipfile.ZipFile(filename) as f:
         data = tf.compat.as_str(f.read(f.namelist()[0])).split()
     return data
+
 
 # 单词表
 words = read_data(filename)
@@ -99,23 +101,24 @@ print('Sample data', data[:10], [reverse_dictionary[i] for i in data[:10]])
 
 data_index = 0
 
+
 # Step 3: Function to generate a training batch for the skip-gram model.
 def generate_batch(batch_size, num_skips, skip_window):
     global data_index
     assert batch_size % num_skips == 0
     assert num_skips <= 2 * skip_window
-    
+
     batch = np.ndarray(shape=(batch_size), dtype=np.int32)
     labels = np.ndarray(shape=(batch_size, 1), dtype=np.int32)
-    
+
     span = 2 * skip_window + 1  # [ skip_window target skip_window ]
     buffer = collections.deque(maxlen=span)
     # [ skip_window target skip_window ]
-            # [ skip_window target skip_window ]
-                    # [ skip_window target skip_window ]
-            
-#     [0 1 2 3 4 5 6 7 8 9 ...]
-#            t     i  
+    # [ skip_window target skip_window ]
+    # [ skip_window target skip_window ]
+
+    #     [0 1 2 3 4 5 6 7 8 9 ...]
+    #            t     i
     # 循环3次
     for _ in range(span):
         buffer.append(data[data_index])
@@ -139,28 +142,29 @@ def generate_batch(batch_size, num_skips, skip_window):
     data_index = (data_index + len(data) - span) % len(data)
     return batch, labels
 
+
 # 打印sample data
 batch, labels = generate_batch(batch_size=8, num_skips=2, skip_window=1)
 for i in range(8):
     print(batch[i], reverse_dictionary[batch[i]],
-        '->', labels[i, 0], reverse_dictionary[labels[i, 0]])
+          '->', labels[i, 0], reverse_dictionary[labels[i, 0]])
 
 # Step 4: Build and train a skip-gram model.
 batch_size = 128
 # 词向量维度
 embedding_size = 128  # Dimension of the embedding vector.
-skip_window = 1       # How many words to consider left and right.
-num_skips = 2         # How many times to reuse an input to generate a label.
+skip_window = 1  # How many words to consider left and right.
+num_skips = 2  # How many times to reuse an input to generate a label.
 
 # We pick a random validation set to sample nearest neighbors. Here we limit the
 # validation samples to the words that have a low numeric ID, which by
 # construction are also the most frequent.
-valid_size = 16     # Random set of words to evaluate similarity on.
+valid_size = 16  # Random set of words to evaluate similarity on.
 valid_window = 100  # Only pick dev samples in the head of the distribution.
 # 从0-100抽取16个整数，无放回抽样
-valid_examples = np.random.choice(valid_window, valid_size, replace=False) 
+valid_examples = np.random.choice(valid_window, valid_size, replace=False)
 # 负采样样本数
-num_sampled = 64    # Number of negative examples to sample.
+num_sampled = 64  # Number of negative examples to sample.
 
 graph = tf.Graph()
 with graph.as_default():
@@ -170,9 +174,9 @@ with graph.as_default():
     valid_dataset = tf.constant(valid_examples, dtype=tf.int32)
 
     # Ops and variables pinned to the CPU because of missing GPU implementation
-#     with tf.device('/cpu:0'):
-        # 词向量
-        # Look up embeddings for inputs.
+    #     with tf.device('/cpu:0'):
+    # 词向量
+    # Look up embeddings for inputs.
     embeddings = tf.Variable(
         tf.random_uniform([vocabulary_size, embedding_size], -1.0, 1.0))
     # embedding_lookup(params,ids)其实就是按照ids顺序返回params中的第ids行
@@ -183,7 +187,7 @@ with graph.as_default():
     # Construct the variables for the noise-contrastive estimation(NCE) loss
     nce_weights = tf.Variable(
         tf.truncated_normal([vocabulary_size, embedding_size],
-                        stddev=1.0 / math.sqrt(embedding_size)))
+                            stddev=1.0 / math.sqrt(embedding_size)))
     nce_biases = tf.Variable(tf.zeros([vocabulary_size]))
 
     # Compute the average NCE loss for the batch.
@@ -194,7 +198,7 @@ with graph.as_default():
                        biases=nce_biases,
                        labels=train_labels,
                        inputs=embed,
-                       num_sampled=num_sampled,   
+                       num_sampled=num_sampled,
                        num_classes=vocabulary_size))
 
     # Construct the SGD optimizer using a learning rate of 1.0.
@@ -242,7 +246,7 @@ with tf.Session(graph=graph) as session:
             # The average loss is an estimate of the loss over the last 2000 batches.
             print("Average loss at step ", step, ": ", average_loss)
             average_loss = 0
-    
+
         # Note that this is expensive (~20% slowdown if computed every 500 steps)
         if step % 20000 == 0:
             sim = similarity.eval()
@@ -261,6 +265,7 @@ with tf.Session(graph=graph) as session:
     # 训练结束得到的词向量
     final_embeddings = normalized_embeddings.eval()
 
+
 # Step 6: Visualize the embeddings.
 
 def plot_with_labels(low_dim_embs, labels, filename='tsne.png'):
@@ -271,19 +276,20 @@ def plot_with_labels(low_dim_embs, labels, filename='tsne.png'):
         x, y = low_dim_embs[i, :]
         plt.scatter(x, y)
         plt.annotate(label,
-                 xy=(x, y),
-                 xytext=(5, 2),
-                 textcoords='offset points',
-                 ha='right',
-                 va='bottom')
+                     xy=(x, y),
+                     xytext=(5, 2),
+                     textcoords='offset points',
+                     ha='right',
+                     va='bottom')
 
     plt.savefig(filename)
+
 
 try:
     from sklearn.manifold import TSNE
     import matplotlib.pyplot as plt
 
-    tsne = TSNE(perplexity=30, n_components=2, init='pca', n_iter=5000, method='exact')# mac：method='exact'
+    tsne = TSNE(perplexity=30, n_components=2, init='pca', n_iter=5000, method='exact')  # mac：method='exact'
     # 画500个点
     plot_only = 500
     low_dim_embs = tsne.fit_transform(final_embeddings[:plot_only, :])
@@ -292,7 +298,6 @@ try:
 
 except ImportError:
     print("Please install sklearn, matplotlib, and scipy to visualize embeddings.")
-
 
 # In[11]:
 
@@ -315,7 +320,3 @@ except ImportError:
 
 
 # In[ ]:
-
-
-
-
