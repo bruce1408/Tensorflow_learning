@@ -177,8 +177,8 @@ def ResNet50_reference(X, training, classes=2):
 
     # assert (x.shape == (x.shape[0], 230, 230, 3))  # 把原来的 224 * 224 变成 230 * 230
 
-    # stage 1
-    x = tf.layers.conv2d(X, filters=64, kernel_size=(7, 7), strides=(2, 2), padding='same', name='conv1')  # 加上padding也可以
+    # stage 1 ,或者上面的注释取消，加上padding也可以
+    x = tf.layers.conv2d(X, filters=64, kernel_size=(7, 7), strides=(2, 2), padding='same', name='conv1')
     print('the stage1.1 conv2d shape is:', x.get_shape())
     x = tf.layers.batch_normalization(x, axis=3, training=training, name='bn_conv1')
     x = tf.nn.relu(x)
