@@ -16,13 +16,12 @@ Project: https://github.com/aymericdamien/TensorFlow-Examples/
 """
 
 from __future__ import division, print_function, absolute_import
-
+import os
 import matplotlib.pyplot as plt
 import numpy as np
 import tensorflow as tf
-
-# Import MNIST data
 from tensorflow.examples.tutorials.mnist import input_data
+os.environ['CUDA_VISIBLE_DEVICES'] = '1'
 mnist = input_data.read_data_sets("../../MNIST_data", one_hot=True)
 
 # Training Params
@@ -73,6 +72,7 @@ def discriminator(x, reuse=False):
         # Output 2 classes: Real and Fake images
         x = tf.layers.dense(x, 2)
     return x
+
 
 # Build Networks
 # Network Inputs
@@ -125,7 +125,6 @@ with tf.Session(config=config) as sess:
 
     # Run the initializer
     sess.run(init)
-
     for i in range(1, num_steps+1):
 
         # Prepare Input Data
@@ -161,6 +160,7 @@ with tf.Session(config=config) as sess:
             a[j][i].imshow(img)
 
     f.show()
+    plt.savefig('gan.jpg')
     plt.draw()
-    plt.waitforbuttonpress()
+    # plt.waitforbuttonpress()
 

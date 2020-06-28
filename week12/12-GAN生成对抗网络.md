@@ -1,8 +1,6 @@
+## 生成对抗网络
 
-
-## TensorFlow在NLP的使用（一）
-
-### 一、Word2vec
+### 一、VAE
 
 word2vec 是 Google 于 2013 年开源的一个用于获取词向量的工具包，作者是 Tomas Mikolov。
 
@@ -36,7 +34,7 @@ you : 987
 
 但是你从编号中看不到词与此之间什么相关性。
 
-### 二、Word2vec两种模型
+### 二、GAN
 
 1）连续词袋模型（CBOW）
 
@@ -62,23 +60,4 @@ Skip-Gram模型刚好和CBOW相反，它是通过目标词汇来预测上下文�
 了。计算这个函数时，只需要计算挑选出来的k个噪声单词，而不是整个语料库。所以训练速度会
 很快。
 
-### 三、Word2vec图形化
-
-![](http://p35l3ejfq.bkt.clouddn.com/20181012144910.png)
-
-### 四、CNN在自然语言处理的应用
-
-说到 CNN 我们首先可能会想到 CNN 在计算机视觉中的应用。近几年 CNN 也开始应用于自然语言处
-理，并取得了一些引人注目的成绩。
-
-CNN 应用于 NLP 的任务，处理的往往是以矩阵形式表达的句子或文本。矩阵中的每一行对应于一
-个分词元素，一般是一个单词，也可以是一个字符。也就是说每一行都是一个词或者字符的向量
-（比如前面说到的 word2vec）。假设我们一共有 10 个词，每个词都用 128 维的向量来表示，那么
-我们就可以得到一个 10×128 维的矩阵。这个矩阵就相当于是一副“图像”。
-
-![](http://p35l3ejfq.bkt.clouddn.com/20181012145126.png)
-
-GitHub 上的例子：[cnn-text-classification-tf](https://github.com/dennybritz/cnn-text-classification-tf)
-
-
-
+### 三、DCGAN

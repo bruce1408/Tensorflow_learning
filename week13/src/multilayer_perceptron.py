@@ -12,9 +12,7 @@ Project: https://github.com/aymericdamien/TensorFlow-Examples/
 """
 
 # ------------------------------------------------------------------
-#
 # THIS EXAMPLE HAS BEEN RENAMED 'neural_network.py', FOR SIMPLICITY.
-#
 # ------------------------------------------------------------------
 
 
@@ -48,6 +46,7 @@ weights = {
     'h2': tf.Variable(tf.random_normal([n_hidden_1, n_hidden_2])),
     'out': tf.Variable(tf.random_normal([n_hidden_2, n_classes]))
 }
+
 biases = {
     'b1': tf.Variable(tf.random_normal([n_hidden_1])),
     'b2': tf.Variable(tf.random_normal([n_hidden_2])),
@@ -77,7 +76,6 @@ init = tf.global_variables_initializer()
 
 with tf.Session() as sess:
     sess.run(init)
-
     # Training cycle
     for epoch in range(training_epochs):
         avg_cost = 0.

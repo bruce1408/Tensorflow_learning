@@ -267,7 +267,6 @@ def main():
         print('======= The log path folder already exists ! ======')
     log = Logger('./resnet_train/resnet_train.log', level='info')
     logits = ResNet50_reference(X, training_id, classes)
-    # loss_op = tf.reduce_mean(tf.losses.softmax_cross_entropy(onehot_labels=Y, logits=logits))
     loss_op = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(labels=Y, logits=logits))
 
     learning_rate = tf.train.exponential_decay(learning_rate, global_step, decay_step, decay_rate, staircase=True)
@@ -276,7 +275,6 @@ def main():
     optimizer = tf.train.AdadeltaOptimizer(learning_rate=learning_rate)
     # optimizer = tf.train.GradientDescentOptimizer(learning_rate=learning_rate)
     # optimizer = tf.train.MomentumOptimizer(learning_rate=learning_rate, momentum=0.9, use_nesterov=True)
-    # loss_op = tf.reduce_mean(tf.losses.softmax_cross_entropy(onehot_labels=Y, logits=logits))
 
     # these lines are needed to update the batchnorma moving averages
     update_ops = tf.get_collection(tf.GraphKeys.UPDATE_OPS)
@@ -291,7 +289,6 @@ def main():
         assert (X.shape == (X.shape[0], IMG_HEIGHT, IMG_WIDTH, 3))
 
         sess.run(traindata_init)
-        # print('trainable variables',tf.trainable_variables)
         # saver bn moving_mean and moving_variance parameters
         var_list = tf.trainable_variables()
         g_list = tf.global_variables()
@@ -313,11 +310,8 @@ def main():
             if step % train_display == 0 or step == 1:
                 # Run optimization and calculate batch loss and accuracy
                 lr, loss, acc = sess.run([learning_rate, loss_op, accuracy], {training_id: False, global_step: step})
-                # print("Step " + str(step) + ", Minibatch Loss= " + "{:.4f}".format(
-                #     loss) + ", train acc = " + "{:.2f}".format(acc) + ", lr = " + "{:.4f}".format(lr))
                 log.logger.info("Step " + str(step) + ", Minibatch Loss= " + "{:.4f}".format(
                     loss) + ", train acc = " + "{:.2f}".format(acc) + ", lr = " + "{:.4f}".format(lr))
-
                 if step % val_display == 0 and step is not 0:
                     acc = check_accuracy(sess, correct_prediction, training_id, valdata_init, val_display)
                     loss = sess.run(loss_op, {training_id: False})

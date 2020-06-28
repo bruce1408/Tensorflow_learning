@@ -1,9 +1,13 @@
 import os
 import tensorflow as tf
+from utils.logWriter import Logger
+
 os.environ['CUDA_VISIBLE_DEVICES'] = '2'
 
 """
 train the dataset from scratch
+https://www.zhihu.com/search?type=content&q=Momentum 
+https://blog.csdn.net/yzy_1996/article/details/84618536
 """
 # Image Parameters
 N_CLASSES = 2  # CHANGE HERE, total number of classes
@@ -11,13 +15,16 @@ IMG_HEIGHT = 224  # CHANGE HERE, the image height to be resized to
 IMG_WIDTH = 224  # CHANGE HERE, the image width to be resized to
 CHANNELS = 3  # The 3 color channels, change to 1 if grayscale
 n_classes = N_CLASSES  # MNIST total classes (0-9 digits)
-dropout = 0.15
-num_steps = 5000
-train_display = 100
+dropout = 0.45
+num_steps = 10000
+train_display = 10
 val_display = 1000
-learning_rate = 1e-5
 BATCHSIZE = 32
-save_check = 1000
+save_check = 3000
+learning_rate = 0.001
+decay_rate = 0.96
+decay_step =500
+log_path = './inception_train'
 
 
 def _parse_function(record):
@@ -54,6 +61,8 @@ valdata = tf.data.TFRecordDataset("/raid/bruce/dog_cat/test_dog_cat_224.tfrecord
 # Create an iterator over the dataset
 
 is_training = tf.placeholder(tf.bool)
+global_step = tf.Variable(tf.constant(0), name='global_step', trainable=False)
+
 iterator = tf.data.Iterator.from_structure(traindata.output_types, traindata.output_shapes)
 X, Y = iterator.get_next()
 
@@ -81,25 +90,29 @@ def check_accuracy(sess, correct_prediction, dataset_init_op, batches_to_check):
 def inception_block(X_input, filters, stage, block):
     """
     Implementation of the inception block
-    :param x:
+    :param x: input img = [224, 224, 3]
     :param kernel_size:
     :param filters:
     :param stage:
     :param block:
     :return:
     """
-    conv_name_base = 'inceptioin_' + str(stage)
+    conv_name_base = 'inceptioin_' + str(stage) + "_" + block
     relu_name_base = 'relu_' + str(stage)
     f1, f2, f3, f4, f5, f6 = filters
 
     with tf.name_scope('inception_block' + str(stage)):
-        conv1 = tf.layers.conv2d(X_input, f1, kernel_size=1, strides=1, padding='same', activation=tf.nn.relu)
+        conv1 = tf.layers.conv2d(X_input, f1, kernel_size=1, strides=1, padding='same', name=conv_name_base+'conv1',
+                                 activation=tf.nn.relu)
+        conv3_1 = tf.layers.conv2d(X_input, f2, kernel_size=1, strides=1, padding='same', name=conv_name_base+'conv3_1',
+                                   activation=tf.nn.relu)
+        conv3_2 = tf.layers.conv2d(conv3_1, f3, kernel_size=3, strides=1, padding='same', name=conv_name_base+'conv3_2',
+                                   activation=tf.nn.relu)
 
-        conv3_1 = tf.layers.conv2d(X_input, f2, kernel_size=1, strides=1, padding='same', activation=tf.nn.relu)
-        conv3_2 = tf.layers.conv2d(conv3_1, f3, kernel_size=3, strides=1, padding='same', activation=tf.nn.relu)
-
-        conv5_1 = tf.layers.conv2d(X_input, f4, kernel_size=1, strides=1, padding='same', activation=tf.nn.relu)
-        conv5_2 = tf.layers.conv2d(conv5_1, f5, kernel_size=5, strides=1, padding='same', activation=tf.nn.relu)
+        conv5_1 = tf.layers.conv2d(X_input, f4, kernel_size=1, strides=1, padding='same', name=conv_name_base+'conv5_1',
+                                   activation=tf.nn.relu)
+        conv5_2 = tf.layers.conv2d(conv5_1, f5, kernel_size=5, strides=1, padding='same', name=conv_name_base+'conv5_2',
+                                   activation=tf.nn.relu)
 
         pool1 = tf.layers.max_pooling2d(X_input, pool_size=3, strides=1, padding='same')
         pool2 = tf.layers.conv2d(pool1, f6, kernel_size=1, strides=1, padding='same', activation=tf.nn.relu)
@@ -149,18 +162,20 @@ def GoogleNet(X, n_classes):
     # 辅助分类器1
     ass1 = tf.layers.average_pooling2d(incep4a, 5, strides=3, padding='VALID')
     ass1 = tf.layers.conv2d(ass1, filters=128, kernel_size=1, strides=1, padding='SAME', activation=tf.nn.relu)
+    ass1 = tf.contrib.layers.flatten(ass1)
     ass1 = tf.layers.dense(ass1, 1024)
     ass1 = tf.nn.relu(ass1)
-    ass1 = tf.layers.dropout(ass1, 0.3, training=is_training)
+    ass1 = tf.layers.dropout(ass1, 0.2, training=is_training)
     ass1 = tf.layers.dense(ass1, n_classes)
     out_1 = tf.nn.softmax(ass1)
 
     # 辅助分类器2
     ass2 = tf.layers.average_pooling2d(incep4d, 5, strides=3, padding='VALID')
     ass2 = tf.layers.conv2d(ass2, filters=128, kernel_size=1, strides=1, padding='SAME', activation=tf.nn.relu)
+    ass2 = tf.contrib.layers.flatten(ass2)
     ass2 = tf.layers.dense(ass2, 1024)
     ass2 = tf.nn.relu(ass2)
-    ass2 = tf.layers.dropout(ass2, 0.3, training=is_training)
+    ass2 = tf.layers.dropout(ass2, 0.2, training=is_training)
     ass2 = tf.layers.dense(ass2, n_classes)
     out_2 = tf.nn.softmax(ass2)
 
@@ -169,18 +184,27 @@ def GoogleNet(X, n_classes):
 
 out1, out2, out3 = GoogleNet(X, n_classes=2)
 
-cost_real = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=out1, labels=Y))
-cost_1 = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=out2, labels=Y))
-cost_2 = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=out3, labels=Y))
+cost_real = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(logits=out1, labels=Y))
+cost_1 = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(logits=out2, labels=Y))
+cost_2 = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(logits=out3, labels=Y))
 loss_op = cost_real + 0.3 * cost_1 + 0.3 * cost_2
-print(loss_op)
-optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate).minimize(loss_op)
+
+learning_rate = tf.train.exponential_decay(learning_rate, global_step, decay_step, decay_rate, staircase=True)
+optimizer = tf.train.MomentumOptimizer(learning_rate=learning_rate, momentum=0.95).minimize(loss_op)
+# optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate).minimize(loss_op)
 correct_pred = tf.equal(tf.argmax(out1, 1),  tf.cast(Y, tf.int64))
 accuracy = tf.reduce_mean(tf.cast(correct_pred, tf.float32))
 
 
 init = tf.global_variables_initializer()
+# 添加日志文件
+if not os.path.exists(log_path):
+    print("====== The log folder was not found and is being generated !======")
+    os.makedirs(log_path)
+else:
+    print('======= The log path folder already exists ! ======')
 
+log = Logger('./inception_train/inception_train.log', level='info')
 # Start training
 # Initialize the iterator
 with tf.Session() as sess:
@@ -199,9 +223,10 @@ with tf.Session() as sess:
     for step in range(1, num_steps + 1):
         loss, acc, _ = sess.run([loss_op, accuracy, optimizer], {is_training: True})
         if step % train_display == 0 or step == 1:
-            # Run optimization and calculate batch loss and accuracy
-            print("Step " + str(step) + ", Minibatch Loss= " + "{:.4f}".format(loss) + ", Training Accuracy= " +
-                  "{:.3f}".format(acc))
+            lr = sess.run(learning_rate, {global_step: step})
+
+            log.logger.info("Step " + str(step) + ", Minibatch Loss= " + "{:.4f}".format(loss)
+                            + ", train acc = " + "{:.2f}".format(acc) + ", lr = " + "{:.6f}".format(lr))
 
         if step % val_display == 0 and step is not 0:
             sess.run(valdata_init)
@@ -209,14 +234,14 @@ with tf.Session() as sess:
             acc = check_accuracy(sess, correct_pred, valdata_init, val_display)
             loss = sess.run(loss_op, {is_training: False})
             print("\033[1;36m=\033[0m"*60)
-            print("\033[1;36mStep %d, Minibatch Loss= %.4f, Test Accuracy= %.4f\033[0m" % (step, loss, acc))
+            log.logger.info("Step %d, Minibatch Loss= %.4f, Test Accuracy= %.4f\033[0m" % (step, loss, acc))
+            # print("\033[1;36mStep %d, Minibatch Loss= %.4f, Test Accuracy= %.4f\033[0m" % (step, loss, acc))
             print("\033[1;36m=\033[0m"*60)
 
-        if step % 1000 == 0:
+        if step % save_check == 0:
             path_name = "./model_GoogleNet/model" + str(step) + ".ckpt"
-            print(path_name)
             saver.save(sess, path_name)
-            print("model has been saved")
+            print("model has been saved in %s" % path_name)
 
     print("Optimization Finished!")
 

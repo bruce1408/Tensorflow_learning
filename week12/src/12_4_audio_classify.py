@@ -1,4 +1,3 @@
-
 # coding: utf-8
 
 # 数据集：https://serv.cusp.nyu.edu/projects/urbansounddataset/  
@@ -17,19 +16,15 @@
 # 8 = siren  
 # 9 = street_music  
 
-# In[1]:
 
 import os
 import matplotlib.pyplot as plt
 import tensorflow as tf
 import numpy as np
 import time
-import librosa # pip install librosa
-from tqdm import tqdm # pip install tqdm
+import librosa  # pip install librosa
+from tqdm import tqdm  # pip install tqdm
 import random
-
-
-# In[2]:
 
 # Parameters
 # ==================================================
@@ -40,7 +35,7 @@ tf.flags.DEFINE_float("dev_sample_percentage", .2, "Percentage of the training d
 # 父目录
 tf.flags.DEFINE_string("parent_dir", "audio/", "Data source for the data.")
 # 子目录
-tf.flags.DEFINE_string("tr_sub_dirs", ['fold1/','fold2/','fold3/'], "Data source for the data.")
+tf.flags.DEFINE_string("tr_sub_dirs", ['fold1/', 'fold2/', 'fold3/'], "Data source for the data.")
 
 # Model Hyperparameters
 # 第一层输入，MFCC信号
@@ -77,72 +72,64 @@ for attr, value in sorted(FLAGS.__flags.items()):
 print("")
 
 
-# In[3]:
-
 # 获得训练用的wav文件路径列表  
-def get_wav_files(parent_dir,sub_dirs): 
-    wav_files = []  
+def get_wav_files(parent_dir, sub_dirs):
+    wav_files = []
     for l, sub_dir in enumerate(sub_dirs):
         wav_path = os.path.join(parent_dir, sub_dir)
-        for (dirpath, dirnames, filenames) in os.walk(wav_path):  
-            for filename in filenames:  
-                if filename.endswith('.wav') or filename.endswith('.WAV'):  
-                    filename_path = os.sep.join([dirpath, filename])  
-                    wav_files.append(filename_path)  
-    return wav_files  
+        for (dirpath, dirnames, filenames) in os.walk(wav_path):
+            for filename in filenames:
+                if filename.endswith('.wav') or filename.endswith('.WAV'):
+                    filename_path = os.sep.join([dirpath, filename])
+                    wav_files.append(filename_path)
+    return wav_files
+
 
 # 获取文件mfcc特征和对应标签
 def extract_features(wav_files):
     inputs = []
     labels = []
-    
+
     for wav_file in tqdm(wav_files):
         # 读入音频文件
-        audio,fs = librosa.load(wav_file)
+        audio, fs = librosa.load(wav_file)
 
         # 获取音频mfcc特征
         # [n_steps, n_inputs]
-        mfccs = np.transpose(librosa.feature.mfcc(y=audio, sr=fs, n_mfcc=FLAGS.n_inputs), [1,0]) 
-        inputs.append(mfccs.tolist()) 
-    #获取label
+        mfccs = np.transpose(librosa.feature.mfcc(y=audio, sr=fs, n_mfcc=FLAGS.n_inputs), [1, 0])
+        inputs.append(mfccs.tolist())
+        # 获取label
     for wav_file in wav_files:
         label = wav_file.split('/')[-1].split('-')[1]
-        labels.append(label) 
+        labels.append(label)
     return inputs, np.array(labels, dtype=np.int)
 
 
-# In[4]:
-
 # 获得训练用的wav文件路径列表 
-wav_files = get_wav_files(FLAGS.parent_dir,FLAGS.tr_sub_dirs)
+wav_files = get_wav_files(FLAGS.parent_dir, FLAGS.tr_sub_dirs)
 # 获取文件mfcc特征和对应标签
-tr_features,tr_labels = extract_features(wav_files)
+tr_features, tr_labels = extract_features(wav_files)
 
-np.save('tr_features.npy',tr_features)
-np.save('tr_labels.npy',tr_labels)
+np.save('tr_features.npy', tr_features)
+np.save('tr_labels.npy', tr_labels)
 
 # tr_features=np.load('tr_features.npy')
 # tr_labels=np.load('tr_labels.npy')
-
-
-# In[5]:
-
-#(batch,step,input)
-#(50,173,40)
+# (batch,step,input)
+# (50,173,40)
 
 # 计算最长的step
 wav_max_len = max([len(feature) for feature in tr_features])
-print("max_len:",wav_max_len)
+print("max_len:", wav_max_len)
 
 # 填充0
 tr_data = []
-for mfccs in tr_features:  
-    while len(mfccs) < wav_max_len: #只要小于wav_max_len就补n_inputs个0
-        mfccs.append([0] * FLAGS.n_inputs) 
+for mfccs in tr_features:
+    while len(mfccs) < wav_max_len:  # 只要小于wav_max_len就补n_inputs个0
+        mfccs.append([0] * FLAGS.n_inputs)
     tr_data.append(mfccs)
 
 tr_data = np.array(tr_data)
-
 
 # In[6]:
 
@@ -158,7 +145,6 @@ y_shuffled = tr_labels[shuffle_indices]
 dev_sample_index = -1 * int(FLAGS.dev_sample_percentage * float(len(y_shuffled)))
 train_x, test_x = x_shuffled[:dev_sample_index], x_shuffled[dev_sample_index:]
 train_y, test_y = y_shuffled[:dev_sample_index], y_shuffled[dev_sample_index:]
-
 
 # In[7]:
 
@@ -176,30 +162,33 @@ biases = tf.Variable(tf.constant(0.1, shape=[FLAGS.n_classes]))
 
 # 多层网络
 num_layers = 3
+
+
 def grucell():
     cell = tf.contrib.rnn.GRUCell(FLAGS.n_hidden)
-#     cell = tf.contrib.rnn.LSTMCell(FLAGS.n_hidden)
+    #     cell = tf.contrib.rnn.LSTMCell(FLAGS.n_hidden)
     cell = tf.contrib.rnn.DropoutWrapper(cell, output_keep_prob=dropout)
     return cell
+
+
 cell = tf.contrib.rnn.MultiRNNCell([grucell() for _ in range(num_layers)])
 
-
-outputs,final_state = tf.nn.dynamic_rnn(cell,x,dtype=tf.float32)
+outputs, final_state = tf.nn.dynamic_rnn(cell, x, dtype=tf.float32)
 
 # 预测值
-prediction = tf.nn.softmax(tf.matmul(final_state[0],weights) + biases)
+prediction = tf.nn.softmax(tf.matmul(final_state[0], weights) + biases)
 
 # labels转one_hot格式
 one_hot_labels = tf.one_hot(indices=tf.cast(y, tf.int32), depth=FLAGS.n_classes)
 
 # loss
-cross_entropy = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=prediction,labels=one_hot_labels))
+cross_entropy = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=prediction, labels=one_hot_labels))
 
 # optimizer
 optimizer = tf.train.AdamOptimizer(learning_rate=lr).minimize(cross_entropy)
 
 # Evaluate model
-correct_pred = tf.equal(tf.argmax(prediction,1), tf.argmax(one_hot_labels,1))
+correct_pred = tf.equal(tf.argmax(prediction, 1), tf.argmax(one_hot_labels, 1))
 accuracy = tf.reduce_mean(tf.cast(correct_pred, tf.float32))
 
 
@@ -213,7 +202,7 @@ def batch_iter(data, batch_size, num_epochs, shuffle=True):
     data_size = len(data)
     # 每个epoch的num_batch
     num_batches_per_epoch = int((len(data) - 1) / batch_size) + 1
-    print("num_batches_per_epoch:",num_batches_per_epoch)
+    print("num_batches_per_epoch:", num_batches_per_epoch)
     for epoch in range(num_epochs):
         # Shuffle the data at each epoch
         if shuffle:
@@ -227,39 +216,33 @@ def batch_iter(data, batch_size, num_epochs, shuffle=True):
             yield shuffled_data[start_index:end_index]
 
 
-# In[9]:
-
 # Initializing the variables
 init = tf.global_variables_initializer()
 # 定义saver
 saver = tf.train.Saver()
 
 with tf.Session() as sess:
-    sess.run(init) 
+    sess.run(init)
 
     # Generate batches
     batches = batch_iter(list(zip(train_x, train_y)), FLAGS.batch_size, FLAGS.num_epochs)
 
-    for i,batch in enumerate(batches):
+    for i, batch in enumerate(batches):
         i = i + 1
         x_batch, y_batch = zip(*batch)
         sess.run([optimizer], feed_dict={x: x_batch, y: y_batch, dropout: FLAGS.dropout_keep_prob})
-        
+
         # 测试
         if i % FLAGS.evaluate_every == 0:
             sess.run(tf.assign(lr, FLAGS.lr * (0.99 ** (i // FLAGS.evaluate_every))))
             learning_rate = sess.run(lr)
             tr_acc, _loss = sess.run([accuracy, cross_entropy], feed_dict={x: train_x, y: train_y, dropout: 1.0})
             ts_acc = sess.run(accuracy, feed_dict={x: test_x, y: test_y, dropout: 1.0})
-            print("Iter {}, loss {:.5f}, tr_acc {:.5f}, ts_acc {:.5f}, lr {:.5f}".format(i, _loss, tr_acc, ts_acc, learning_rate))
+            print("Iter {}, loss {:.5f}, tr_acc {:.5f}, ts_acc {:.5f}, lr {:.5f}".format(i, _loss, tr_acc, ts_acc,
+                                                                                         learning_rate))
 
         # 保存模型
         if i % FLAGS.checkpoint_every == 0:
             path = saver.save(sess, "sounds_models/model", global_step=i)
             print("Saved model checkpoint to {}\n".format(path))
-
-
-# In[ ]:
-
-
 

@@ -6,7 +6,7 @@ tf.logging.set_verbosity(tf.logging.ERROR)
 tf.set_random_seed(1)
 from tensorflow.contrib import rnn
 from tensorflow.examples.tutorials.mnist import input_data
-mnist = input_data.read_data_sets("/Users/bruce/programme/Python/datasets/MNIST_data", one_hot=True)
+mnist = input_data.read_data_sets("/raid/bruce/datasets/MNIST_data", one_hot=True)
 
 # Training Parameters
 learning_rate = 0.001
