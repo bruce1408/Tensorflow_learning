@@ -26,8 +26,8 @@ dropout = 0.75  # Dropout, probability to keep units
 
 sess = tf.Session()
 
-print(mnist.train.images.shape)
-print(mnist.train.labels.shape)
+# print(mnist.train.images.shape)
+# print(mnist.train.labels.shape)
 print(mnist.train.images[0])
 print(mnist.train.labels[0])
 # Create a dataset tensor from the images and the labels
