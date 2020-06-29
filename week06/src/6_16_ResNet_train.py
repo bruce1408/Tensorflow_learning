@@ -129,7 +129,6 @@ def residual_block(X_input, kernel_size, filters, stage, block, TRAINING, stride
     with tf.name_scope("conv_block_stage" + str(stage)):
         # Retrieve Filters
         # filter1, filter2, filter3 = filters
-
         # Save the input value
         X_shortcut = X_input
 
@@ -147,13 +146,16 @@ def residual_block(X_input, kernel_size, filters, stage, block, TRAINING, stride
         # Third component of main path
         x = tf.layers.conv2d(x, filters[2], (1, 1), padding='same', name=conv_name_base + '2c')
         x = tf.layers.batch_normalization(x, axis=3, name=bn_name_base + '2c', training=TRAINING)
-
+        # print('before x', x.shape)
+        # print('before x_shortcut shape', X_shortcut.shape)
         # SHORTCUT PATH
         X_shortcut = tf.layers.conv2d(X_shortcut, filters[2], (1, 1), strides=(stride, stride), padding='same',
                                       name=conv_name_base + '1')
         X_shortcut = tf.layers.batch_normalization(X_shortcut, axis=3, name=bn_name_base + '1', training=TRAINING)
 
         # Final step: Add shortcut value to main path, and pass it through a RELU activation
+        # print('the x_shortcut shape is: ', X_shortcut.shape)
+        # print('the x shape is: ', x.shape)
         X_add_shortcut = tf.add(X_shortcut, x)
         add_result = tf.nn.relu(X_add_shortcut)
 
@@ -175,8 +177,8 @@ def ResNet50_reference(X, training, classes=2):
 
     # assert (x.shape == (x.shape[0], 230, 230, 3))  # 把原来的 224 * 224 变成 230 * 230
 
-    # stage 1
-    x = tf.layers.conv2d(X, filters=64, kernel_size=(7, 7), strides=(2, 2), padding='same', name='conv1')  # 加上padding也可以
+    # stage 1 ,或者上面的注释取消，加上padding也可以
+    x = tf.layers.conv2d(X, filters=64, kernel_size=(7, 7), strides=(2, 2), padding='same', name='conv1')
     print('the stage1.1 conv2d shape is:', x.get_shape())
     x = tf.layers.batch_normalization(x, axis=3, training=training, name='bn_conv1')
     x = tf.nn.relu(x)
