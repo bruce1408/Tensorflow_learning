@@ -45,7 +45,7 @@ def _parse_function(record):
     image = tf.decode_raw(parsed['img_raw'], tf.uint8)
     image = tf.reshape(image, [IMG_HEIGHT, IMG_WIDTH, 3])
     image = tf.cast(image, tf.float32)
-    image = image/225.0
+    image = image / 225.0
     image = image - 0.5
     image = image * 2.0
     label = tf.cast(parsed['label'], tf.int32)
@@ -54,18 +54,18 @@ def _parse_function(record):
 
 # train data pipline
 # repeat -> shuffle 和 shuffle -> repeat不一样
-traindata = tf.data.TFRecordDataset("/raid/bruce/dog_cat/train_dog_cat_224.tfrecord").\
-    map(_parse_function).\
-    shuffle(buffer_size=2000, reshuffle_each_iteration=True).\
-    batch(BATCHSIZE).\
-    repeat().\
+traindata = tf.data.TFRecordDataset("/raid/bruce/dog_cat/train_dog_cat_224.tfrecord"). \
+    map(_parse_function). \
+    shuffle(buffer_size=2000, reshuffle_each_iteration=True). \
+    batch(BATCHSIZE). \
+    repeat(). \
     prefetch(BATCHSIZE)
 
 # val data pipline
-valdata = tf.data.TFRecordDataset("/raid/bruce/dog_cat/test_dog_cat_224.tfrecord").\
-    map(_parse_function).\
-    batch(BATCHSIZE).\
-    repeat().\
+valdata = tf.data.TFRecordDataset("/raid/bruce/dog_cat/test_dog_cat_224.tfrecord"). \
+    map(_parse_function). \
+    batch(BATCHSIZE). \
+    repeat(). \
     prefetch(BATCHSIZE)
 # Create an iterator over the dataset
 
@@ -111,22 +111,29 @@ def inception_block(X_input, filters, stage, block):
     f1, f2, f3, f4, f5, f6 = filters
 
     with tf.name_scope('inception_block' + str(stage)):
-        conv1 = tf.layers.conv2d(X_input, f1, kernel_size=1, strides=1, padding='same', name=conv_name_base+'conv1',
-                                 activation=tf.nn.relu)
-        conv3_1 = tf.layers.conv2d(X_input, f2, kernel_size=1, strides=1, padding='same', name=conv_name_base+'conv3_1',
+
+        conv1 = tf.layers.conv2d(X_input, f1, kernel_size=1, strides=1, padding='same',
+                                 name=conv_name_base + 'conv1', activation=tf.nn.relu)
+        conv3_1 = tf.layers.conv2d(X_input, f2, kernel_size=1, strides=1, padding='same',
+                                   name=conv_name_base + 'conv3_1',
                                    activation=tf.nn.relu)
-        conv3_2 = tf.layers.conv2d(conv3_1, f3, kernel_size=3, strides=1, padding='same', name=conv_name_base+'conv3_2',
+        conv3_2 = tf.layers.conv2d(conv3_1, f3, kernel_size=3, strides=1, padding='same',
+                                   name=conv_name_base + 'conv3_2',
                                    activation=tf.nn.relu)
 
-        conv5_1 = tf.layers.conv2d(X_input, f4, kernel_size=1, strides=1, padding='same', name=conv_name_base+'conv5_1',
+        conv5_1 = tf.layers.conv2d(X_input, f4, kernel_size=1, strides=1, padding='same',
+                                   name=conv_name_base + 'conv5_1',
                                    activation=tf.nn.relu)
-        conv5_2 = tf.layers.conv2d(conv5_1, f5, kernel_size=5, strides=1, padding='same', name=conv_name_base+'conv5_2',
+        conv5_2 = tf.layers.conv2d(conv5_1, f5, kernel_size=5, strides=1, padding='same',
+                                   name=conv_name_base + 'conv5_2',
                                    activation=tf.nn.relu)
 
         pool1 = tf.layers.max_pooling2d(X_input, pool_size=3, strides=1, padding='same')
         pool2 = tf.layers.conv2d(pool1, f6, kernel_size=1, strides=1, padding='same', activation=tf.nn.relu)
 
+        # print(conv1.shape, conv3_2.shape, conv5_2.shape, pool2.shape)
         out = tf.concat([conv1, conv3_2, conv5_2, pool2], axis=3)
+        print('outshape', out.shape)
 
     return out
 
@@ -134,15 +141,16 @@ def inception_block(X_input, filters, stage, block):
 def GoogleNet(X, n_classes):
     conv1 = tf.layers.conv2d(X, filters=64, kernel_size=7, strides=2, padding='same', activation=tf.nn.relu)
     pool1 = tf.layers.max_pooling2d(conv1, pool_size=3, strides=2, padding='same')
+
     conv2 = tf.layers.conv2d(pool1, filters=192, kernel_size=1, strides=1, padding='valid', activation=tf.nn.relu)
     conv2 = tf.layers.conv2d(conv2, filters=192, kernel_size=3, strides=1, padding='same', activation=tf.nn.relu)
     pool2 = tf.layers.max_pooling2d(conv2, pool_size=3, strides=2, padding='same')
-
+    print('layer1: ', pool2.shape)
     # inception 3
     incep3a = inception_block(pool2, [64, 96, 128, 16, 32, 32], '3a', block='a')
     incep3a = inception_block(incep3a, [128, 128, 192, 32, 96, 64], '3a', block='b')
-
     pool3 = tf.layers.max_pooling2d(incep3a, pool_size=3, strides=2, padding='same')
+    print('pool3: ', pool3.shape)
 
     # inception 4
     incep4a = inception_block(pool3, [192, 96, 208, 16, 48, 64], '4a', block='a')
@@ -150,20 +158,14 @@ def GoogleNet(X, n_classes):
     incep4c = inception_block(incep4b, [128, 128, 256, 24, 64, 64], '4a', block='c')
     incep4d = inception_block(incep4c, [112, 144, 288, 32, 64, 64], '4a', block='d')
     incep4e = inception_block(incep4d, [256, 160, 320, 32, 128, 128], '4a', block='e')
-
     pool4 = tf.layers.max_pooling2d(incep4e, pool_size=3, strides=2, padding='same')
-
+    print('pool4 ', pool4.shape)
     # inceptioin 5a
     incep5a = inception_block(pool4, [256, 160, 320, 32, 128, 128], '5a', block='a')
     incep5a = inception_block(incep5a, [384, 192, 384, 48, 128, 128], '5a', block='b')
-
-    # aveg pool
     pool5 = tf.layers.average_pooling2d(incep5a, pool_size=7, strides=1, padding='valid')
-
-    # dropout
+    print('pool5 ', pool5.shape)
     droplayer = tf.layers.dropout(pool5, rate=dropout, training=is_training)
-
-    # flatten
     fc1 = tf.contrib.layers.flatten(droplayer)
     out = tf.layers.dense(fc1, n_classes)
     out = tf.nn.softmax(out)
@@ -201,9 +203,8 @@ loss_op = cost_real + 0.3 * cost_1 + 0.3 * cost_2
 learning_rate = tf.train.exponential_decay(learning_rate, global_step, decay_step, decay_rate, staircase=True)
 optimizer = tf.train.MomentumOptimizer(learning_rate=learning_rate, momentum=0.95).minimize(loss_op)
 # optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate).minimize(loss_op)
-correct_pred = tf.equal(tf.argmax(out1, 1),  tf.cast(Y, tf.int64))
+correct_pred = tf.equal(tf.argmax(out1, 1), tf.cast(Y, tf.int64))
 accuracy = tf.reduce_mean(tf.cast(correct_pred, tf.float32))
-
 
 init = tf.global_variables_initializer()
 # 添加日志文件
@@ -242,10 +243,10 @@ with tf.Session() as sess:
             avg_acc = 0
             acc = check_accuracy(sess, correct_pred, valdata_init, val_display)
             loss = sess.run(loss_op, {is_training: False})
-            print("\033[1;36m=\033[0m"*60)
+            print("\033[1;36m=\033[0m" * 60)
             log.logger.info("Step %d, Minibatch Loss= %.4f, Test Accuracy= %.4f\033[0m" % (step, loss, acc))
             # print("\033[1;36mStep %d, Minibatch Loss= %.4f, Test Accuracy= %.4f\033[0m" % (step, loss, acc))
-            print("\033[1;36m=\033[0m"*60)
+            print("\033[1;36m=\033[0m" * 60)
 
         if step % save_check == 0:
             path_name = "./model_GoogleNet/model" + str(step) + ".ckpt"
@@ -253,4 +254,3 @@ with tf.Session() as sess:
             print("model has been saved in %s" % path_name)
 
     print("Optimization Finished!")
-

@@ -382,14 +382,14 @@ https://www.cnblogs.com/marsggbo/p/9603789.html
 """
 1.10.5 使用tensorflow tf.layers.max_pooling2d这个函数padding='same'和'valid'来尝试
 """
-# import tensorflow as tf
-#
-# x = tf.Variable(tf.random_normal([10, 7, 7, 3]))  # [batch_szie,height,weight,channel]
-#
-# max_pool = tf.layers.max_pooling2d(x, pool_size=[2, 2], strides=[1, 1], padding='same')
-# print(max_pool)
-# max_pool = tf.layers.max_pooling2d(x, pool_size=[2, 2], strides=[1, 1], padding='valid')
-# print(max_pool)
+import tensorflow as tf
+
+x = tf.Variable(tf.random_normal([10, 7, 7, 3]))  # [batch_szie,height,weight,channel]
+
+max_pool = tf.layers.max_pooling2d(x, pool_size=[2, 2], strides=[1, 1], padding='same')
+print(max_pool)
+max_pool = tf.layers.max_pooling2d(x, pool_size=[2, 2], strides=[1, 1], padding='valid')
+print(max_pool)
 """
 1.10.6 使用tf.layers.conv2d
 """
