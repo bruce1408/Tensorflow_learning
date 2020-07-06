@@ -4,6 +4,7 @@
 2.去除函数中bias偏置属性和激活函数
 3.使用'tf.layers.batch_normalization'来标准化神经层的输出,注意，将“is_training”传递给该层，以确保网络适时更新数据集均值和方差统计信息。
 4.将经过Batch Normalization后的值传递到ReLU激活函数中
+参考文献: https://zhuanlan.zhihu.com/p/34879333
 """
 import os
 import tensorflow as tf
