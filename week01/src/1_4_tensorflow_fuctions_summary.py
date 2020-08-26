@@ -395,14 +395,33 @@ print(max_pool)
 """
 # import tensorflow as tf
 #
-x = tf.Variable(tf.random_normal([10, 224, 224, 3]))  # [batch_szie,height,weight,channel]
-conv1 = tf.layers.conv2d(x, 64, kernel_size=7, strides=2, padding='same')  # 112x112
-conv2 = tf.layers.conv2d(x, 64, 7, 2)   # 109 x 109
+# x = tf.Variable(tf.random_normal([10, 224, 224, 3]))  # [batch_szie,height,weight,channel]
+# conv1 = tf.layers.conv2d(x, 64, kernel_size=7, strides=2, padding='same')  # 112x112
+# conv2 = tf.layers.conv2d(x, 64, 7, 2)   # 109 x 109
+#
+# max_pool = tf.layers.max_pooling2d(x, pool_size=[2, 2], strides=[2, 2], padding='SAME')
+# print(max_pool)
+# max_pool = tf.layers.max_pooling2d(x, pool_size=[2, 2], strides=[2, 2], padding='valid')
+# print(max_pool)
+#
+# print(conv1)
+# print(conv2)
 
-max_pool = tf.layers.max_pooling2d(x, pool_size=[2, 2], strides=[2, 2], padding='SAME')
-print(max_pool)
-max_pool = tf.layers.max_pooling2d(x, pool_size=[2, 2], strides=[2, 2], padding='valid')
-print(max_pool)
+import tensorflow as tf
 
-print(conv1)
-print(conv2)
+a_2d = tf.constant([1] * 6, shape=[2, 3])
+b_2d = tf.constant([2] * 12, shape=[3, 4])
+c_2d = tf.matmul(a_2d, b_2d)
+a_3d = tf.constant([1] * 12, shape=[2, 2, 3])
+b_3d = tf.constant([2] * 24, shape=[2, 3, 4])
+c_3d = tf.matmul(a_3d, b_3d)
+a_4d = tf.constant([1] * 24, shape=[2, 2, 2, 3])
+b_4d = tf.constant([2] * 48, shape=[2, 2, 3, 4])
+c_4d = tf.matmul(a_4d, b_4d)
+
+with tf.Session() as sess:
+    tf.global_variables_initializer().run()
+    print("# {}*{}={} \n{}".format(a_2d.eval().shape, b_2d.eval().shape, c_2d.eval().shape, c_2d.eval()))
+    print("# {}*{}={} \n{}".format(a_3d.eval().shape, b_3d.eval().shape, c_3d.eval().shape, c_3d.eval()))
+    print("# {}*{}={} \n{}".format(a_4d.eval().shape, b_4d.eval().shape, c_4d.eval().shape, c_4d.eval()))
+

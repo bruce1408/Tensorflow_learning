@@ -62,7 +62,7 @@ def _parse_function(record):
 def identity_block(X_input, kernel_size, filters, stage, block, TRAINING):
     """
     Implementation of the identity block as defined in Figure 3
-    shortcut路径不包含卷积单元
+    shortcut 路径不包含卷积单元
     Arguments:
     X -- input tensor of shape (m, n_H_prev, n_W_prev, n_C_prev)
     kernel_size -- integer, specifying the shape of the middle CONV's window for the main path
@@ -110,7 +110,7 @@ def residual_block(X_input, kernel_size, filters, stage, block, TRAINING, stride
     """
     Implementation of the convolutional block as defined in Figure 4
 
-    Arguments:
+    Arguments: 这里的shortcut 是有一条卷积的线路
     X -- input tensor of shape (m, n_H_prev, n_W_prev, n_C_prev)
     kernel_size -- integer, specifying the shape of the middle CONV's window for the main path
     filters -- python list of integers, defining the number of filters in the CONV layers of the main path
@@ -148,7 +148,8 @@ def residual_block(X_input, kernel_size, filters, stage, block, TRAINING, stride
         x = tf.layers.batch_normalization(x, axis=3, name=bn_name_base + '2c', training=TRAINING)
         # print('before x', x.shape)
         # print('before x_shortcut shape', X_shortcut.shape)
-        # SHORTCUT PATH
+
+        # Short path
         X_shortcut = tf.layers.conv2d(X_shortcut, filters[2], (1, 1), strides=(stride, stride), padding='same',
                                       name=conv_name_base + '1')
         X_shortcut = tf.layers.batch_normalization(X_shortcut, axis=3, name=bn_name_base + '1', training=TRAINING)
@@ -199,7 +200,7 @@ def ResNet50_reference(X, training, classes=2):
     x = identity_block(x, 3, [128, 128, 512], stage=3, block='d', TRAINING=training)
     print('the stage3 identity shape is:', x.get_shape())
 
-    # stage 4: 1个convBlock + 5个identityBlock
+    # stage 4: 1个convBlock(shortcut 带卷积) + 5个identityBlock
     x = residual_block(x, kernel_size=3, filters=[256, 256, 1024], stage=4, block='a', TRAINING=training, stride=2)
     x = identity_block(x, 3, [256, 256, 1024], stage=4, block='b', TRAINING=training)
     x = identity_block(x, 3, [256, 256, 1024], stage=4, block='c', TRAINING=training)
