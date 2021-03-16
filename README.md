@@ -3,21 +3,21 @@
 
 视频目录：
 
-``` xml
-第 1周 Tensorflow简介，Anaconda安装，Tensorflow的CPU版本安装
-第 2周 Tensorflow的基础使用，包括对图(graphs),会话(session),张量(tensor),变量(Variable)的一些解释和操作
-第 3周 Tensorflow线性回归以及分类的简单使用
-第 4周 softmax，交叉熵(cross-entropy)，dropout以及Tensorflow中各种优化器的介绍
-第 5周 卷积神经网络CNN的讲解，以及用CNN解决MNIST分类问题
-第 6周 使用Tensorboard进行结构可视化，以及网络运算过程可视化
-第 7周 递归神经网络LSTM的讲解，以及LSTM网络的使用
-第 8周 保存和载入模型，使用Google的图像识别网络inception-v3进行图像识别
-第 9周 Tensorflow的GPU版本安装。设计自己的网络模型，并训练自己的网络模型进行图像识别
-第10周 使用Tensorflow进行验证码识别
-第11周 Tensorflow在NLP中的使用(一)
-第12周 Tensorflow在NLP中的使用(二)
-第13周 TensorFlow 各种模型代码汇总
-第14周 TensorFlow 工具代码参考ipynb
+
+- 第 1周 Tensorflow简介，Anaconda安装，Tensorflow的CPU版本安装
+- 第 2周 Tensorflow的基础使用，包括对图(graphs),会话(session),张量(tensor),变量(Variable)的一些解释和操作
+- 第 3周 Tensorflow线性回归以及分类的简单使用
+- 第 4周 softmax，交叉熵(cross-entropy)，dropout以及Tensorflow中各种优化器的介绍
+- 第 5周 卷积神经网络CNN的讲解，以及用CNN解决MNIST分类问题
+- 第 6周 使用Tensorboard进行结构可视化，以及网络运算过程可视化
+- 第 7周 递归神经网络LSTM的讲解，以及LSTM网络的使用
+- 第 8周 保存和载入模型，使用Google的图像识别网络inception-v3进行图像识别
+- 第 9周 Tensorflow的GPU版本安装。设计自己的网络模型，并训练自己的网络模型进行图像识别
+- 第10周 使用Tensorflow进行验证码识别
+- 第11周 Tensorflow在NLP中的使用(一)
+- 第12周 Tensorflow在NLP中的使用(二)
+- 第13周 TensorFlow 各种模型代码汇总
+- 第14周 TensorFlow 工具代码参考ipynb
 ```
 - 上述代码data相关数据下载地址如下：
 链接:https://pan.baidu.com/s/1e-XfOV250uS40T1Q7v4oUA  密码:ruwm
