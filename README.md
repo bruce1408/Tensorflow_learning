@@ -1,9 +1,6 @@
 # Tensorflow_learning
 
 
-视频目录：
-
-
 - 第 1周 Tensorflow简介，Anaconda安装，Tensorflow的CPU版本安装
 - 第 2周 Tensorflow的基础使用，包括对图(graphs),会话(session),张量(tensor),变量(Variable)的一些解释和操作
 - 第 3周 Tensorflow线性回归以及分类的简单使用
@@ -18,6 +15,7 @@
 - 第12周 Tensorflow在NLP中的使用(二)
 - 第13周 TensorFlow 各种模型代码汇总
 - 第14周 TensorFlow 工具代码参考ipynb
+
 
 - 上述代码data相关数据下载地址如下：
 链接:https://pan.baidu.com/s/1e-XfOV250uS40T1Q7v4oUA  密码:ruwm
