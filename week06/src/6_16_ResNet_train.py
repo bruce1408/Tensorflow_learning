@@ -18,7 +18,7 @@ save_check = 2000
 val_display = 500
 learning_rate = 0.1
 decay_rate = 0.96
-decay_step = 1000
+decay_step = 200
 check_acc = 150
 log_path = './resnet_train'
 
@@ -269,6 +269,7 @@ def main():
         print('======= The log path folder already exists ! ======')
     log = Logger('./resnet_train/resnet_train.log', level='info')
     logits = ResNet50_reference(X, training_id, classes)
+    print("============ the layers shape above! ==============")
     loss_op = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(labels=Y, logits=logits))
 
     learning_rate = tf.train.exponential_decay(learning_rate, global_step, decay_step, decay_rate, staircase=True)

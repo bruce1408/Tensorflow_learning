@@ -1,6 +1,5 @@
-# TensorFlow学习
+# Tensorflow_learning
 
-主要来源和参考的资料为：炼数成金视频《深度学习框架TensorFlow学习与应用》
 
 视频目录：
 
