@@ -1,43 +1,36 @@
 # Tensorflow_learning
 
-
 [![](https://img.shields.io/badge/version-1.0.0-brightgreen.svg)](https://github.com/bruce1408/Pytorch_learning)
-![](https://img.shields.io/badge/platform-Tensorflow-brightgreen.svg)
+![](https://img.shields.io/badge/platform-TensorFlow-brightgreen.svg)
 ![](https://img.shields.io/badge/python-3.7-blue.svg)
 
 
 This repository provides tutorial code for deep learning researchers to learn [TensorFlow](https://www.tensorflow.org/)
 
-
-TensorFlow is a machine learning system that operates at large scale and in heterogeneous environments. 
-TensorFlow uses dataflow graphs to represent computation, shared state, and the operations that mutate that state. 
-It maps the nodes of a dataflow graph across many machines in a cluster, and within a machine across multiple 
-computational devices, including multicore CPUs, general-purpose GPUs, and custom-designed ASICs known as Tensor 
-Processing Units (TPUs). This architecture gives flexibility to the application developer: whereas in 
-previous “parameter server” designs the management of shared state is built into the system, TensorFlow enables 
-developers to experiment with novel optimizations and training algorithms. TensorFlow supports a variety of 
-applications, with a focus on training and inference on deep neural networks. Several Google services use TensorFlow 
-in production, we have released it as an open-source project, and it has become widely used for machine learning 
-research. In this paper, we describe the TensorFlow dataflow model and demonstrate the compelling performance that 
-TensorFlow achieves for several real-world applications.
+TensorFlow is a machine learning system that operates at large scale and in heterogeneous environments.
+TensorFlow uses dataflow graphs to represent computation, shared state, and the operations that mutate that state.
+It maps the nodes of a dataflow graph across many machines in a cluster, and within a machine across multiple
+computational devices, including multicore CPUs, general-purpose GPUs, and custom-designed ASICs known as Tensor
+Processing Units (TPUs). This architecture gives flexibility to the application developer: whereas in previous “parameter server” designs the management of shared state is built into the system, TensorFlow enables
+developers to experiment with novel optimizations and training algorithms. TensorFlow supports a variety of applications, with a focus on training and inference on deep neural networks. Several Google services use TensorFlow in production, we have released it as an open-source project, and it has become widely used for machine learning research. In this paper, we describe the TensorFlow dataflow model and demonstrate the compelling performance that TensorFlow achieves for several real-world applications.
 
 This repository contains:
 
-- week01 Tensorflow Anaconda intro，Tensorflow install in CPU.
-- week02 Tensorflow Basic knowledge，include graphs, session, tensor, Variable.
-- week03 Tensorflow Basic Algorithm Linear Regreesion.
-- week04 Loss Function like softmax, cross-entropy and  Tricks Dropout intro.
-- week05 Use Tensorboard to inspect and understand Tensorflow runs and graphs.
-- week06 Implementing a One-Layer/Multilayer Neural Network.
-- week07 Demonstrating how to use RNN and LSTM
-- week08 Save and Restore Model
-- week09 Design your own Network and train them on IMG classify.
-- week10 Usage of trained Tensorflow model to detect verification code.
-- week11 Tensorflow in NLP I
-- week12 Tensorflow in NLP II
-- week13 TensorFlow in GAN.
-- week14 Taking TensorFlow to production
-- week15 Fine-tune the Network with trained model
+- **week01 Tensorflow Anaconda intro，Tensorflow install in CPU.**
+- **week02 Tensorflow Basic knowledge，include graphs, session, tensor, Variable.**
+- **week03 Tensorflow Basic Algorithm Linear Regreesion.**
+- **week04 Loss Function like softmax, cross-entropy and  Tricks Dropout intro.**
+- **week05 Use Tensorboard to inspect and understand Tensorflow runs and graphs.**
+- **week06 Implementing a One-Layer/Multilayer Neural Network.**
+- **week07 Demonstrating how to use RNN and LSTM**
+- **week08 Save and Restore Model**
+- **week09 Design your own Network and train them on IMG classify.**
+- **week10 Usage of trained Tensorflow model to detect verification code.**
+- **week11 Tensorflow in NLP I**
+- **week12 Tensorflow in NLP II**
+- **week13 TensorFlow in GAN.**
+- **week14 Taking TensorFlow to production**
+- **week15 Fine-tune the Network with trained model**
 
 ## Table of Contents
 
@@ -48,8 +41,7 @@ This repository contains:
 
 ## Install
 
-This project uses [TensorfFow](https://tensorflow.org/). Go check them out if you don't have them locally installed and 
-thirt-party dependencies.
+This project uses [TensorfFow](https://tensorflow.org/). Go check them out if you don't have them locally installed and thirt-party dependencies.
 
 ```sh
 CUDA 10.0+
@@ -60,33 +52,34 @@ $ pip install -r requirements.txt
 ## Usage
 
 All data for this project can be found as follow
-- data: https://pan.baidu.com/s/1e-XfOV250uS40T1Q7v4oUA  pasd: ruwm
 
-- inception-2015-12-05.tgz: https://pan.baidu.com/s/1o_BCsopsbgKMPqlNzMwTYw  pasd: zt3t
-- classify_image_graph_def.pd: https://pan.baidu.com/s/1yMoF8ol4HemE4SnqCIDa0A  pasd: 7a6k
-- captcha/images: https://pan.baidu.com/s/1p_ZYQyv7quiYdLydFw8SmA  密码:m1y4
+- data: <https://pan.baidu.com/s/1e-XfOV250uS40T1Q7v4oUA>  pasd: ruwm
+
+- inception-2015-12-05.tgz: <https://pan.baidu.com/s/1o_BCsopsbgKMPqlNzMwTYw>  pasd: zt3t
+- classify_image_graph_def.pd: <https://pan.baidu.com/s/1yMoF8ol4HemE4SnqCIDa0A>  pasd: 7a6k
+- captcha/images: <https://pan.baidu.com/s/1p_ZYQyv7quiYdLydFw8SmA>  密码:m1y4
 
 ## Contributors
 
-This project exists thanks to all the people who contribute. 
-Everyone is welcome to submit code contributions
+This project exists thanks to all the people who contribute.
+Everyone is welcome to submit code.
 
 ## Reference
 
-### Online Video：
+### Online Video
 
 - YouTube：[tensorflow教程（十课）](https://www.youtube.com/watch?v=eAtGqz8ytOI&list=PLjSwXXbVlK6IHzhLOMpwHHLjYmINRstrk&index=2&t=0s)
 - B 站：[《深度学习框架TensorFlow学习与应用》](https://www.bilibili.com/video/av20542427/)
 
 -《深度学习框架Tensorflow学习与应用》（含视频+代码+课件，视频总时长：13小时31分钟）
 
-> 链接: https://pan.baidu.com/s/16OINOrFiRXbqmqOFjCFzLQ 密码: 1a8j
+> 链接: <https://pan.baidu.com/s/16OINOrFiRXbqmqOFjCFzLQ> 密码: 1a8j
 
 -《深度学习框架Tensorflow学习与应用[只有videos-720p]》（该份资料只有视频文件）
 
-> 链接: https://pan.baidu.com/s/1oQLgWFEBsVrcKJN4swEdzg 密码: i3e2
+> 链接: <https://pan.baidu.com/s/1oQLgWFEBsVrcKJN4swEdzg> 密码: i3e2
 
-- 油管视频：[TF Girls 修炼指南](https://www.youtube.com/watch?v=TrWqRMJZU8A&list=PLwY2GJhAPWRcZxxVFpNhhfivuW0kX15yG&index=2) 、或 B 站观看： [TF Girls 修炼指南](https://space.bilibili.com/16696495/#/channel/detail?cid=1588) 
+- 油管视频：[TF Girls 修炼指南](https://www.youtube.com/watch?v=TrWqRMJZU8A&list=PLwY2GJhAPWRcZxxVFpNhhfivuW0kX15yG&index=2) 、或 B 站观看： [TF Girls 修炼指南](https://space.bilibili.com/16696495/#/channel/detail?cid=1588)
 
 
 ### Books & Pdf
@@ -96,10 +89,11 @@ Everyone is welcome to submit code contributions
 
 - [Learning TensorFlow](https://www.amazon.com/Learning-TensorFlow-Guide-Building-Systems/dp/1491978511) Tom Hope
 
-- [TensorFlow Maching Learning Cookbook](https://www.amazon.com/TensorFlow-Machine-Learning-Cookbook-intelligent/dp/1789131685) Nick McClure: 
+- [TensorFlow Maching Learning Cookbook](https://www.amazon.com/TensorFlow-Machine-Learning-Cookbook-intelligent/dp/1789131685) Nick McClure:
 - [《Tensorflow：实战Google深度学习框架》](https://book.douban.com/subject/26976457/) 出版时间 2017-2-10 郑泽宇/顾思宇：
 GitHub 有人写了笔记：[TensorFlow_learning_notes](https://github.com/cookeem/TensorFlow_learning_notes)
 - [《TensorFlow实战》](https://book.douban.com/subject/26974266/) 黄文坚/唐源
+
 ### Slides
 
 - [01-Tensorflow简介，Anaconda安装，Tensorflow的CPU版本安装](/week01/01-Tensorflow简介，Anaconda安装，Tensorflow的CPU版本安装.md)
@@ -118,9 +112,7 @@ GitHub 有人写了笔记：[TensorFlow_learning_notes](https://github.com/cooke
 - [14-Tensorflow代码参考学习](/week14/README.md)
 - [15-Tensorflow模型微调和迁移学习](/week15)
 
-
-
 ### Contributors
 
-This project exists thanks to all the people who contribute. 
+This project exists thanks to all the people who contribute.
 Everyone is welcome to submit code contributions
