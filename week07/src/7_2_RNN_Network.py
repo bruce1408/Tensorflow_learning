@@ -1,11 +1,12 @@
 # coding: utf-8
+import os
 import tensorflow as tf
 from tensorflow.examples.tutorials.mnist import input_data
 old_v = tf.logging.get_verbosity()
 tf.logging.set_verbosity(tf.logging.ERROR)
 
 # 载入数据集
-mnist = input_data.read_data_sets("../../MNIST_data", one_hot=True)
+mnist = input_data.read_data_sets("/home/chenxi/Tensorflow_learning/MNIST_data", one_hot=True)
 
 # 输入图片是28*28
 n_inputs = 28  # 输入一行，一行有28个数据

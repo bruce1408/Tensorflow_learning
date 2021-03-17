@@ -1,13 +1,10 @@
-#  coding: utf-8
-"""
 
-"""
+import os
 import tensorflow as tf
 from tensorflow.examples.tutorials.mnist import input_data
-import os
-os.environ['CUDA_VISIBLE_DEVICES'] = '0'
+os.environ['CUDA_VISIBLE_DEVICES'] = '0, 1, 2, 3'
 # 载入数据集
-mnist = input_data.read_data_sets("/raid/bruce/MNIST_data", one_hot=True)
+mnist = input_data.read_data_sets("/home/chenxi/Tensorflow_learning/MNIST_data", one_hot=True)
 # 每个批次100张照片
 batch_size = 100
 n_batch = mnist.train.num_examples // batch_size

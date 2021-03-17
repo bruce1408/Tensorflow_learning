@@ -4,6 +4,7 @@ import os
 import tarfile
 import requests
 os.environ['CUDA_VISIBLE_DEVICES'] = '0'
+
 # inception模型下载地址
 inception_pretrain_model_url = 'http://download.tensorflow.org/models/image/imagenet/inception-2015-12-05.tgz'
 

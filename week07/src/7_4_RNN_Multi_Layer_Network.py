@@ -81,7 +81,7 @@ from tensorflow.examples.tutorials.mnist import input_data
 # n_inputs = 28
 # n_neurons = 150
 # n_outputs = 10
-mnist = input_data.read_data_sets("../../fashion_mnist")
+mnist = input_data.read_data_sets("/home/chenxi/Tensorflow_learning/fashion_mnist")
 # X_test = mnist.test.images.reshape((-1, n_steps, n_inputs))
 # y_test = mnist.test.labels
 #
@@ -168,5 +168,4 @@ with tf.Session() as sess:
         acc_train = accuracy.eval(feed_dict={X: X_batch, y: y_batch})
         acc_test = accuracy.eval(feed_dict={X: X_test, y: y_test})
         print(epoch, "Train accuracy:", acc_train, "Test accuracy:", acc_test)
-        print(logits.shape)
-        print(outputs.shape)
+

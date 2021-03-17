@@ -3,9 +3,10 @@ import tensorflow as tf
 import os
 import numpy as np
 from tensorflow.examples.tutorials.mnist import input_data
-os.environ['CUDA_VISIBLE_DEVICES']='0'
+os.environ['CUDA_VISIBLE_DEVICES'] = '0'
 # 载入数据集
-mnist = input_data.read_data_sets("/raid/bruce/MNIST_data", one_hot=True)
+mnist = input_data.read_data_sets(
+    "/home/chenxi/Tensorflow_learning/MNIST_data", one_hot=True)
 
 """
 模型加载方法 1，使用saver.restore(sess, MODELNAME.ckpt)重新构建网络结构来加载模型
@@ -82,5 +83,3 @@ with tf.Session() as sess:
     result = tf.argmax(add_op, 1)
     _, result_ = sess.run([add_op, result], feed_dict=feed_dict)
     print(result_)
-
-

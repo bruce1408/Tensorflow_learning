@@ -1,9 +1,10 @@
+import os
 import tensorflow as tf
 import numpy as np
 old_v = tf.logging.get_verbosity()
 tf.logging.set_verbosity(tf.logging.ERROR)
 from tensorflow.examples.tutorials.mnist import input_data
-mnist = input_data.read_data_sets('../../fashion_mnist', one_hot=True)
+mnist = input_data.read_data_sets('/home/chenxi/Tensorflow_learning/fashion_mnist', one_hot=True)
 
 # set params
 n_inputs = 28
