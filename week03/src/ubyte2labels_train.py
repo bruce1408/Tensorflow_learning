@@ -1,10 +1,5 @@
-# coding=utf-8
-#!/usr/bin/env python
-__author__ = 'Bruce Cui'
-
 from PIL import Image
 import struct
-
 
 def read_image(filename):
     f = open(filename, 'rb')

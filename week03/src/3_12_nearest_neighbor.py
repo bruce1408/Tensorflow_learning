@@ -1,18 +1,3 @@
-'''
-Author: your name
-Date: 2021-03-17 23:20:14
-LastEditTime: 2021-03-17 23:20:15
-LastEditors: your name
-Description: In User Settings Edit
-FilePath: /Tensorflow_learning/week02/src/2_8_nearest_neighbor.py
-'''
-'''
-A nearest neighbor learning algorithm example using TensorFlow library.
-This example is using the MNIST database of handwritten digits
-(http://yann.lecun.com/exdb/mnist/)
-
-'''
-
 from __future__ import print_function
 import os
 import numpy as np
@@ -21,7 +6,7 @@ import tensorflow as tf
 # Import MNIST data
 from tensorflow.examples.tutorials.mnist import input_data
 
-mnist = input_data.read_data_sets("../../MNIST_data", one_hot=True)
+mnist = input_data.read_data_sets("/home/chenxi/Tensorflow_learning/MNIST_data", one_hot=True)
 
 # In this example, we limit mnist data
 Xtr, Ytr = mnist.train.next_batch(5000)  # 5000 for training (nn candidates)

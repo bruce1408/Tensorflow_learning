@@ -1,20 +1,5 @@
-'''
-Author: your name
-Date: 2021-03-17 23:20:24
-LastEditTime: 2021-03-17 23:20:25
-LastEditors: your name
-Description: In User Settings Edit
-FilePath: /Tensorflow_learning/week02/src/2_9_random_forest.py
-'''
-""" Random Forest.
-
-Implement Random Forest algorithm with TensorFlow, and apply it to classify 
-handwritten digit images. This example is using the MNIST database of 
-handwritten digits as training samples (http://yann.lecun.com/exdb/mnist/).
-
-"""
-
 from __future__ import print_function
+from tensorflow.examples.tutorials.mnist import input_data
 
 import tensorflow as tf
 from tensorflow.contrib.tensor_forest.python import tensor_forest
@@ -25,8 +10,8 @@ import os
 os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 
 # Import MNIST data
-from tensorflow.examples.tutorials.mnist import input_data
-mnist = input_data.read_data_sets("../../MNIST_data", one_hot=False)
+mnist = input_data.read_data_sets(
+    "/home/chenxi/Tensorflow_learning/MNIST_data", one_hot=False)
 
 # Parameters
 num_steps = 500  # Total steps to train
@@ -60,7 +45,7 @@ accuracy_op = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
 
 # Initialize the variables (i.e. assign their default value) and forest resources
 init_vars = tf.group(tf.global_variables_initializer(),
-    resources.initialize_resources(resources.shared_resources()))
+                     resources.initialize_resources(resources.shared_resources()))
 
 # Start TensorFlow session
 sess = tf.Session()
@@ -80,4 +65,5 @@ for i in range(1, num_steps + 1):
 
 # Test Model
 test_x, test_y = mnist.test.images, mnist.test.labels
-print("Test Accuracy:", sess.run(accuracy_op, feed_dict={X: test_x, Y: test_y}))
+print("Test Accuracy:", sess.run(
+    accuracy_op, feed_dict={X: test_x, Y: test_y}))

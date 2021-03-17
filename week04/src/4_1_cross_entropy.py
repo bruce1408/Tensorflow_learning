@@ -6,7 +6,8 @@ os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"
 old_v = tf.logging.get_verbosity()
 tf.logging.set_verbosity(tf.logging.ERROR)
 # 载入数据集
-mnist = input_data.read_data_sets("../../MNIST_data", one_hot=True)
+mnist = input_data.read_data_sets(
+    "/home/chenxi/Tensorflow_learning/MNIST_data", one_hot=True)
 
 # 每个批次的大小
 batch_size = 1000
@@ -23,7 +24,8 @@ prediction = tf.nn.softmax(tf.matmul(x, W) + b)
 
 # 二次代价函数
 # loss = tf.reduce_mean(tf.square(y-prediction))
-loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(labels=y, logits=prediction))
+loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(
+    labels=y, logits=prediction))
 # 使用梯度下降法
 train_step = tf.train.GradientDescentOptimizer(0.2).minimize(loss)
 
@@ -40,7 +42,9 @@ with tf.Session() as sess:
     for epoch in range(51):
         for batch in range(n_batch):
             batch_xs, batch_ys = mnist.train.next_batch(batch_size)
-            _, y_ = sess.run([train_step, y], feed_dict={x: batch_xs, y: batch_ys})
+            _, y_ = sess.run([train_step, y], feed_dict={
+                             x: batch_xs, y: batch_ys})
 
-        acc = sess.run(accuracy, feed_dict={x: mnist.test.images, y: mnist.test.labels})
+        acc = sess.run(accuracy, feed_dict={
+                       x: mnist.test.images, y: mnist.test.labels})
         print("Iter " + str(epoch) + ", Testing Accuracy " + str(acc))

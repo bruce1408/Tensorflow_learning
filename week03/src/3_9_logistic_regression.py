@@ -1,11 +1,3 @@
-'''
-Author: your name
-Date: 2021-03-17 23:44:34
-LastEditTime: 2021-03-17 23:44:44
-LastEditors: Please set LastEditors
-Description: In User Settings Edit
-FilePath: /Tensorflow_learning/week03/src/3_9_logistic_regression.py
-'''
 """
 A logistic regression learning algorithm example using TensorFlow library.
 This example is using the MNIST database of handwritten digits

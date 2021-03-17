@@ -8,20 +8,17 @@ Note: This example requires TensorFlow v1.1.0 or over.
 """
 
 from __future__ import print_function
-
+import os
 import numpy as np
 import tensorflow as tf
 from tensorflow.contrib.factorization import KMeans
-
-# Ignore all GPUs, tf k-means does not benefit from it.
-import os
 
 os.environ["CUDA_VISIBLE_DEVICES"] = "2"
 
 # Import MNIST data
 from tensorflow.examples.tutorials.mnist import input_data
 
-mnist = input_data.read_data_sets("../../Mnist_data", one_hot=True)
+mnist = input_data.read_data_sets("/home/chenxi/Tensorflow_learning/Mnist_data", one_hot=True)
 full_data_x = mnist.train.images
 
 # Parameters
@@ -33,6 +30,7 @@ num_features = 784  # Each image is 28x28 pixels
 
 # Input images
 X = tf.placeholder(tf.float32, shape=[None, num_features])
+
 # Labels (for assigning a label to a centroid and testing)
 Y = tf.placeholder(tf.float32, shape=[None, num_classes])
 
@@ -64,8 +62,7 @@ sess.run(init_op, feed_dict={X: full_data_x})
 
 # Training
 for i in range(1, num_steps + 1):
-    _, d, idx = sess.run([train_op, avg_distance, cluster_idx],
-                         feed_dict={X: full_data_x})
+    _, d, idx = sess.run([train_op, avg_distance, cluster_idx], feed_dict={X: full_data_x})
     if i % 10 == 0 or i == 1:
         print("Step %i, Avg Distance: %f" % (i, d))
 
