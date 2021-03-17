@@ -1,3 +1,4 @@
+import numpy as np
 import tensorflow as tf
 
 
@@ -19,7 +20,6 @@ with tf.Session() as sess:
 
 
 # 变量
-
 state = tf.Variable(0, name='counter')
 # print(state.name)
 one = tf.constant(1)
@@ -36,9 +36,7 @@ with tf.Session() as sess:
         print(sess.run(state))
 
 
-# 举证乘法
-
-
+# 矩阵乘法
 input1 = tf.placeholder(tf.float32)
 input2 = tf.placeholder(tf.float32)
 ouput = tf.multiply(input1, input2)
@@ -63,8 +61,6 @@ def add_layer(inputs, in_size, out_size, activation_function=None):
 """
 Please note, this code is only for python 3+. If you are using python 2+, please modify the code accordingly.
 """
-import tensorflow as tf
-import numpy as np
 
 """Save to file part"""
 # remember to define the same dtype and shape when restore
@@ -90,7 +86,7 @@ b = tf.Variable(np.arange(3).reshape((1, 3)), dtype=tf.float32, name="biases")
 
 saver = tf.train.Saver()
 with tf.Session() as sess:
-    saver.restore(sess, "./my_net/save_net.ckpt")
+    saver.restore(
+        sess, "/raid/bruce/Tensorflow_learning/week02/src/my_net/save_net.ckpt")
     print("weights:\n", sess.run(W))
     print("biases:\n", sess.run(b))
-

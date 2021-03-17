@@ -12,7 +12,7 @@ N_CLASSES = 2  # CHANGE HERE, total number of classes
 IMG_HEIGHT = 64  # CHANGE HERE, the image height to be resized to
 IMG_WIDTH = 64  # CHANGE HERE, the image width to be resized to
 CHANNELS = 3  # The 3 color channels, change to 1 if grayscale
-os.environ['CUDA_VISIBLE_DEVICES'] = '2'
+os.environ['CUDA_VISIBLE_DEVICES'] = '0,1,2,3'
 
 
 # Reading the dataset

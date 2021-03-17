@@ -14,14 +14,14 @@ from tensorflow.contrib.boosted_trees.proto import learner_pb2 as gbdt_learner
 # Ignore all GPUs (current TF GBDT does not support GPU).
 import os
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "2"
+os.environ["CUDA_VISIBLE_DEVICES"] = "0, 1, 2"
 
 # Import MNIST data
 # Set verbosity to display errors only (Remove this line for showing warnings)
 tf.logging.set_verbosity(tf.logging.ERROR)
 from tensorflow.examples.tutorials.mnist import input_data
 
-mnist = input_data.read_data_sets("../../MNIST_data/", one_hot=False, source_url='http://yann.lecun.com/exdb/mnist/')
+mnist = input_data.read_data_sets("../../datasets/MNIST_data/", one_hot=False, source_url='http://yann.lecun.com/exdb/mnist/')
 
 # Parameters
 batch_size = 4096  # The number of samples per batch
