@@ -5,14 +5,14 @@ import numpy as np
 from sklearn.model_selection import train_test_split
 MODE = 'folder'  # or 'file', if you choose a plain text file (see above).
 # the dataset file or root folder path.
-DATASET_PATH = '/raid/bruce/dog_cat/train/'
+DATASET_PATH = '/home/chenxi/dataset/dog_cat/train/'
 
 # Image Parameters
 N_CLASSES = 2  # CHANGE HERE, total number of classes
 IMG_HEIGHT = 128  # CHANGE HERE, the image height to be resized to
 IMG_WIDTH = 128  # CHANGE HERE, the image width to be resized to
 CHANNELS = 3  # The 3 color channels, change to 1 if grayscale
-os.environ['CUDA_VISIBLE_DEVICES'] = '0, 1,2, 3'
+os.environ['CUDA_VISIBLE_DEVICES'] = '0, 1, 2, 3'
 
 # Parameters
 learning_rate = 0.0001

@@ -1,10 +1,9 @@
-import tensorflow as tf
-from PIL import Image
-import numpy as np
 import os
+import numpy as np
+from PIL import Image
 from sklearn.model_selection import train_test_split
 MODE = 'folder'  # or 'file', if you choose a plain text file (see above).
-DATASET_PATH = '/raid/bruce/dog_cat/train/'  # the dataset file or root folder path.
+DATASET_PATH = '/home/chenxi/dataset/dog_cat/train/'  # the dataset file or root folder path.
 config = tf.ConfigProto()
 config.gpu_options.allow_growth = True
 # Image Parameters
@@ -12,7 +11,7 @@ N_CLASSES = 2  # CHANGE HERE, total number of classes
 IMG_HEIGHT = 64  # CHANGE HERE, the image height to be resized to
 IMG_WIDTH = 64  # CHANGE HERE, the image width to be resized to
 CHANNELS = 3  # The 3 color channels, change to 1 if grayscale
-os.environ['CUDA_VISIBLE_DEVICES'] = '0,1,2,3'
+os.environ['CUDA_VISIBLE_DEVICES'] = '0, 1, 2, 3'
 
 
 # Reading the dataset
@@ -39,7 +38,6 @@ def get_files_path(file_dir):
     np.random.shuffle(temp)
     image_list = list(temp[:, 0])
     label_list = list(temp[:, 1])
-    print(label_list)
     label_list = [int(i) for i in label_list]
     return image_list, label_list
 
@@ -75,8 +73,6 @@ def read_images(dataset_path):
                     labels.append(label)
         label += 1
 
-    print('the imagePaths is:', imagePaths)
-    print("the labels is: ", labels)
     # Convert to Tensor,保存的是图片的路径 和 labels
     return imagePaths, labels
 
@@ -103,7 +99,7 @@ def _parse_function(imagepaths, labels):
 learning_rate = 0.0001
 num_steps = 1000
 batch_size = 256
-display_step = 100
+display_step = 10
 
 # Network Parameters
 dropout = 0.25  # Dropout, probability to keep units
