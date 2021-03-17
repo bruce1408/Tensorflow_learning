@@ -35,7 +35,9 @@ This repository contains:
 ## Table of Contents
 
 - [Install](#install)
-- [Datasets](#usage)
+- [Usage](#usage)
+- [Datasets](#dataset)
+- [Related impacts](#relatedimpacts)
 - [Contributors](#Contributors)
 - [Reference](#Reference)
 
@@ -49,7 +51,7 @@ Tensorflow 1.14.0
 $ pip install -r requirements.txt
 ```
 
-## Usage
+## Usage & Dataset
 
 All data for this project can be found as follow
 
@@ -59,10 +61,7 @@ All data for this project can be found as follow
 - classify_image_graph_def.pd: <https://pan.baidu.com/s/1yMoF8ol4HemE4SnqCIDa0A>  pasd: 7a6k
 - captcha/images: <https://pan.baidu.com/s/1p_ZYQyv7quiYdLydFw8SmA>  密码:m1y4
 
-## Contributors
-
-This project exists thanks to all the people who contribute.
-Everyone is welcome to submit code.
+## Related Impacts
 
 - [Aymeric Damien](https://github.com/aymericdamien)
 - [Hvass-Labs](https://github.com/Hvass-Labs)
@@ -117,7 +116,7 @@ GitHub 有人写了笔记：[TensorFlow_learning_notes](https://github.com/cooke
 - [14-Tensorflow代码参考学习](/week14/README.md)
 - [15-Tensorflow模型微调和迁移学习](/week15)
 
-### Contributors
+## Contributors
 
 This project exists thanks to all the people who contribute.
 Everyone is welcome to submit code contributions
