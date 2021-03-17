@@ -218,37 +218,11 @@ This repository contains:
 - week15
 ## Table of Contents
 
-- [Project](#Project)
 - [Install](#install)
 - [Usage](#usage)
 - [Related Efforts](#Related-Efforts)
 - [Contributors](#Contributors)
 
-## Project
-
-#### Computer Vision 
-
-- Image Classification 
-
-    - AlexNet
-    - VGGNet
-    - ResNet
-    - Inception-v1
-    - Transfer-learning
-    
-- Generative Adversarial Network
-
-- Open-Set domain adaption
-
-#### Natural language processing
-
-- Basic Knowledge
-- Bi-LSTM
-- Bi-LSTM Attention
-- Seq2Seq
-- Seq2Seq Attention
-- Transformer
-- Bert
 
 ## Install
 
