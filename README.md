@@ -35,9 +35,9 @@ This repository contains:
 ## Table of Contents
 
 - [Install](#install)
-- [Usage](#usage)
-- [Datasets](#dataset)
-- [Related impacts](#relatedimpacts)
+- [Usage](#usage&dataset)
+- [Dataset](#usage&dataset)
+- [Related impacts](#Relatedimpacts)
 - [Contributors](#Contributors)
 - [Reference](#Reference)
 
@@ -119,4 +119,4 @@ GitHub 有人写了笔记：[TensorFlow_learning_notes](https://github.com/cooke
 ## Contributors
 
 This project exists thanks to all the people who contribute.
-Everyone is welcome to submit code contributions
+Everyone is welcome to submit code.
