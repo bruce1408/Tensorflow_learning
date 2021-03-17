@@ -201,12 +201,12 @@ TensorFlow achieves for several real-world applications.
 
 This repository contains:
 
-- week01 Tensorflow Anaconda intro，Tensorflow install in CPU
+- week01 Tensorflow Anaconda intro，Tensorflow install in CPU.
 - week02 Tensorflow Basic knowledge，include graphs, session, tensor, Variable.
-- week03 Tensorflow Basic Algorithm Linear Regreesion
+- week03 Tensorflow Basic Algorithm Linear Regreesion.
 - week04 Loss Function like softmax, cross-entropy and  Tricks Dropout intro.
-- week05 Implementing a One-Layer/Multilayer Neural Network
-- week06 使用Tensorboard进行结构可视化，以及网络运算过程可视化
+- week05 Use Tensorboard to inspect and understand Tensorflow runs and graphs.
+- week06 Implementing a One-Layer/Multilayer Neural Network.
 - week07 递归神经网络LSTM的讲解，以及LSTM网络的使用
 - week08 保存和载入模型，使用Google的图像识别网络inception-v3进行图像识别
 - week09 Tensorflow的GPU版本安装。设计自己的网络模型，并训练自己的网络模型进行图像识别

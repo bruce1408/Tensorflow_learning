@@ -2,7 +2,7 @@ import os
 import tensorflow as tf
 from utils.logWriter import Logger
 
-os.environ['CUDA_VISIBLE_DEVICES'] = '2'
+os.environ['CUDA_VISIBLE_DEVICES'] = '0, 1, 2'
 
 """
 train the dataset from scratch

@@ -1,6 +1,5 @@
-#!/usr/bin/python
-# coding = utf-8
 import tensorflow as tf
+
 input = tf.Variable(tf.random_normal([1, 3, 3, 5]))
 filter1 = tf.Variable(tf.random_normal([1, 1, 5, 1]))
 op1 = tf.nn.conv2d(input, filter1, strides=[1, 1, 1, 1], padding='SAME')
@@ -13,34 +12,31 @@ op2 = tf.nn.conv2d(input, filter, strides=[1, 1, 1, 1], padding='SAME')
 input = tf.Variable(tf.random_normal([1, 3, 3, 5]))
 filter = tf.Variable(tf.random_normal([1, 1, 5, 1]))
 op3 = tf.nn.conv2d(input, filter, strides=[1, 1, 1, 1], padding='VALID')
+
 # case 4
 input = tf.Variable(tf.random_normal([1, 5, 5, 5]))
 filter = tf.Variable(tf.random_normal([3, 3, 5, 1]))
 op4 = tf.nn.conv2d(input, filter, strides=[1, 1, 1, 1], padding='VALID')
-# case 5
 
+# case 5
 input = tf.Variable(tf.random_normal([1, 5, 5, 5]))
 filter = tf.Variable(tf.random_normal([3, 3, 5, 1]))
 op5 = tf.nn.conv2d(input, filter, strides=[1, 1, 1, 1], padding='SAME')
 
 # case 6
-
 input = tf.Variable(tf.random_normal([1, 5, 5, 5]))
 filter = tf.Variable(tf.random_normal([3, 3, 5, 7]))
 op6 = tf.nn.conv2d(input, filter, strides=[1, 1, 1, 1], padding='SAME')
 
 # case 7
-
 input = tf.Variable(tf.random_normal([1, 5, 5, 5]))
 filter = tf.Variable(tf.random_normal([3, 3, 5, 7]))
 op7 = tf.nn.conv2d(input, filter, strides=[1, 2, 2, 1], padding='SAME')
 
 # case 8
-
 input = tf.Variable(tf.random_normal([10, 5, 5, 5]))
 filter = tf.Variable(tf.random_normal([3, 3, 5, 7]))
 op8 = tf.nn.conv2d(input, filter, strides=[1, 2, 2, 1], padding='SAME')
-
 init = tf.global_variables_initializer()
 with tf.Session() as sess:
     sess.run(init)

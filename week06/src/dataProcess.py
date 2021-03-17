@@ -1,17 +1,20 @@
-import tensorflow as tf
 import os
+import tensorflow as tf
 from tensorflow.examples.tutorials.mnist import input_data
 os.environ['CUDA_VISIBLE_DEVICES'] = '2'
 tf.logging.set_verbosity(tf.logging.INFO)
 
-mnist = input_data.read_data_sets('../../MNIST_data', one_hot=True)
+mnist = input_data.read_data_sets('/home/chenxi/Tensorflow_learning/MNIST_data', one_hot=True)
+
 x = tf.placeholder(tf.float32, [None, 784])
 y_ = tf.placeholder(tf.float32, [None, 10])
 image = tf.reshape(x, [-1, 28, 28, 1])
+
 conv1 = tf.layers.conv2d(image, filters=32, kernel_size=[3, 3], strides=[1, 1], padding='same',
                          activation=tf.nn.relu,
                          kernel_initializer=tf.truncated_normal_initializer(stddev=0.1),
                          name='conv1')
+
 bn1 = tf.layers.batch_normalization(conv1, training=True, name='bn1')
 pool1 = tf.layers.max_pooling2d(bn1, pool_size=[2, 2], strides=[2, 2], padding='same', name='pool1')
 conv2 = tf.layers.conv2d(pool1, filters=64, kernel_size=[3, 3], strides=[1, 1], padding='same',

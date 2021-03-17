@@ -4,7 +4,7 @@ import numpy as np
 import os
 from utils.logWriter import Logger
 
-os.environ['CUDA_VISIBLE_DEVICES'] = '1'
+os.environ['CUDA_VISIBLE_DEVICES'] = '0, 1, 2'
 """
 ResNet 有 5个stage,第一个stage是卷积,其他都是block building块,每一个building 有3层
 reference: https://blog.csdn.net/Cheungleilei/article/details/103610799

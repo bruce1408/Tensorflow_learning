@@ -1,0 +1,9 @@
+embeddings {
+  tensor_name: "embedding:0"
+  metadata_path: "./logsprojector/projector/metadata.tsv"
+  sprite {
+    image_path: "./logsprojector/data/mnist_10k_sprite.png"
+    single_image_dim: 28
+    single_image_dim: 28
+  }
+}

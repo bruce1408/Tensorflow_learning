@@ -205,7 +205,7 @@
 import os
 import tensorflow as tf
 import numpy as np
-os.environ['CUDA_VISIBLE_DEVICES'] = '1'
+os.environ['CUDA_VISIBLE_DEVICES'] = '0, 1, 2'
 
 """
 train the dataset from scratch

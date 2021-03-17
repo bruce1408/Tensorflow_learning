@@ -5,7 +5,7 @@ import tensorflow as tf
 from tensorflow.examples.tutorials.mnist import input_data
 old_v = tf.logging.get_verbosity()
 tf.logging.set_verbosity(tf.logging.ERROR)
-os.environ["CUDA_VISIBLE_DEVICES"] = '1'
+os.environ["CUDA_VISIBLE_DEVICES"] = '0, 1'
 
 
 # 载入数据集
@@ -14,6 +14,7 @@ mnist = input_data.read_data_sets(
 
 # 每个批次的大小
 batch_size = 100
+
 # 计算一共有多少个批次
 n_batch = mnist.train.num_examples // batch_size
 
@@ -55,6 +56,7 @@ init = tf.global_variables_initializer()
 # 结果存放在一个布尔型列表中
 correct_prediction = tf.equal(tf.argmax(y, 1), tf.argmax(
     prediction, 1))  # argmax返回一维张量中最大的值所在的位置
+    
 # 求准确率
 accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
 
@@ -75,8 +77,7 @@ with tf.Session() as sess:
 
 
 # example 2
-
-mnist = tf_input.read_data_sets('../../MNIST_data/', one_hot=True)
+mnist = tf_input.read_data_sets('/home/chenxi/Tensorflow_learning/MNIST_data', one_hot=True)
 sess = tf.InteractiveSession()
 in_units = 784
 h1_units = 300
@@ -91,8 +92,7 @@ hidden1_drop = tf.nn.dropout(hidden1, keep_prob)
 y = tf.nn.softmax(tf.matmul(hidden1_drop, W2)+b2)
 
 y_ = tf.placeholder(tf.float32,  [None, 10])
-cross_entropy = tf.reduce_mean(-tf.reduce_sum(y_ *
-                               tf.log(y), reduction_indices=[1]))
+cross_entropy = tf.reduce_mean(-tf.reduce_sum(y_ * tf.log(y), reduction_indices=[1]))
 train_step = tf.train.AdamOptimizer(0.01).minimize(cross_entropy)
 
 tf.global_variables_initializer().run()

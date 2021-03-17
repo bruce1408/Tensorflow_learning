@@ -1,16 +1,18 @@
 # coding: utf-8
-
+import os
 import tensorflow as tf
 from tensorflow.examples.tutorials.mnist import input_data
+os.environ['CUDA_VISIBLE_DEVICES'] = '0, 1, 2, 3'
 
 
-mnist = input_data.read_data_sets("../../fashion_mnist", one_hot=True)
+mnist = input_data.read_data_sets(
+    "/home/chenxi/Tensorflow_learning/fashion_mnist", one_hot=True)
 
 # 每个批次的大小
 batch_size = 100
+
 # 计算一共有多少个批次
 n_batch = mnist.train.num_examples // batch_size
-
 
 # 参数概要
 def variable_summaries(var):
@@ -64,7 +66,8 @@ with tf.name_scope('input'):
 with tf.name_scope('Conv1'):
     # 初始化第一个卷积层的权值和偏置
     with tf.name_scope('W_conv1'):
-        W_conv1 = weight_variable([5, 5, 1, 32], name='W_conv1')  # 5*5的采样窗口，32个卷积核从1个平面抽取特征
+        # 5*5的采样窗口，32个卷积核从1个平面抽取特征
+        W_conv1 = weight_variable([5, 5, 1, 32], name='W_conv1')
     with tf.name_scope('b_conv1'):
         b_conv1 = bias_variable([32], name='b_conv1')  # 每一个卷积核一个偏置值
 
@@ -79,7 +82,8 @@ with tf.name_scope('Conv1'):
 with tf.name_scope('Conv2'):
     # 初始化第二个卷积层的权值和偏置
     with tf.name_scope('W_conv2'):
-        W_conv2 = weight_variable([5, 5, 32, 64], name='W_conv2')  # 5*5的采样窗口，64个卷积核从32个平面抽取特征
+        # 5*5的采样窗口，64个卷积核从32个平面抽取特征
+        W_conv2 = weight_variable([5, 5, 32, 64], name='W_conv2')
     with tf.name_scope('b_conv2'):
         b_conv2 = bias_variable([64], name='b_conv2')  # 每一个卷积核一个偏置值
 
@@ -98,13 +102,15 @@ with tf.name_scope('Conv2'):
 with tf.name_scope('fc1'):
     # 初始化第一个全连接层的权值
     with tf.name_scope('W_fc1'):
-        W_fc1 = weight_variable([7 * 7 * 64, 1024], name='W_fc1')  # 上一场有7*7*64个神经元，全连接层有1024个神经元
+        # 上一场有7*7*64个神经元，全连接层有1024个神经元
+        W_fc1 = weight_variable([7 * 7 * 64, 1024], name='W_fc1')
     with tf.name_scope('b_fc1'):
         b_fc1 = bias_variable([1024], name='b_fc1')  # 1024个节点
 
     # 把池化层2的输出扁平化为1维
     with tf.name_scope('h_pool2_flat'):
-        h_pool2_flat = tf.reshape(h_pool2, [-1, 7 * 7 * 64], name='h_pool2_flat')
+        h_pool2_flat = tf.reshape(
+            h_pool2, [-1, 7 * 7 * 64], name='h_pool2_flat')
     # 求第一个全连接层的输出
     with tf.name_scope('wx_plus_b1'):
         wx_plus_b1 = tf.matmul(h_pool2_flat, W_fc1) + b_fc1
@@ -143,7 +149,8 @@ with tf.name_scope('train'):
 with tf.name_scope('accuracy'):
     with tf.name_scope('correct_prediction'):
         # 结果存放在一个布尔列表中
-        correct_prediction = tf.equal(tf.argmax(prediction, 1), tf.argmax(y, 1))  # argmax返回一维张量中最大的值所在的位置
+        correct_prediction = tf.equal(
+            tf.argmax(prediction, 1), tf.argmax(y, 1))  # argmax返回一维张量中最大的值所在的位置
     with tf.name_scope('accuracy'):
         # 求准确率
         accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
@@ -159,17 +166,22 @@ with tf.Session() as sess:
     for i in range(1001):
         # 训练模型
         batch_xs, batch_ys = mnist.train.next_batch(batch_size)
-        sess.run(train_step, feed_dict={x: batch_xs, y: batch_ys, keep_prob: 0.5})
+        sess.run(train_step, feed_dict={
+                 x: batch_xs, y: batch_ys, keep_prob: 0.5})
         # 记录训练集计算的参数
-        summary = sess.run(merged, feed_dict={x: batch_xs, y: batch_ys, keep_prob: 1.0})
+        summary = sess.run(merged, feed_dict={
+                           x: batch_xs, y: batch_ys, keep_prob: 1.0})
         train_writer.add_summary(summary, i)
         # 记录测试集计算的参数
         batch_xs, batch_ys = mnist.test.next_batch(batch_size)
-        summary = sess.run(merged, feed_dict={x: batch_xs, y: batch_ys, keep_prob: 1.0})
+        summary = sess.run(merged, feed_dict={
+                           x: batch_xs, y: batch_ys, keep_prob: 1.0})
         test_writer.add_summary(summary, i)
 
         if i % 100 == 0:
-            test_acc = sess.run(accuracy, feed_dict={x: mnist.test.images, y: mnist.test.labels, keep_prob: 1.0})
+            test_acc = sess.run(accuracy, feed_dict={
+                                x: mnist.test.images, y: mnist.test.labels, keep_prob: 1.0})
             train_acc = sess.run(accuracy, feed_dict={x: mnist.train.images[:10000], y: mnist.train.labels[:10000],
                                                       keep_prob: 1.0})
-            print("Iter " + str(i) + ", Testing Accuracy= " + str(test_acc) + ",  Training Accuracy= " + str(train_acc))
+            print("Iter " + str(i) + ", Testing Accuracy= " +
+                  str(test_acc) + ",  Training Accuracy= " + str(train_acc))
