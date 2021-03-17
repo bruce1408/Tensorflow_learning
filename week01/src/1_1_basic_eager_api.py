@@ -1,3 +1,11 @@
+'''
+Author: your name
+Date: 2021-03-17 22:16:13
+LastEditTime: 2021-03-17 22:17:04
+LastEditors: Please set LastEditors
+Description: In User Settings Edit
+FilePath: /Tensorflow_learning/week01/src/1_1_basic_eager_api.py
+'''
 """
 Basic introduction to TensorFlow's Eager API.
 
@@ -15,13 +23,13 @@ for deployment in production without changing code. " - Rajat Monga
 """
 # from __future__ import absolute_import, division, print_function
 
+
+# os.environ["CUDA_VISIBLE_DEVICES"] = '1'
 import os
 import numpy as np
 import tensorflow as tf
 import tensorflow.contrib.eager as tfe
 import tensorflow.python.framework.dtypes
-
-# os.environ["CUDA_VISIBLE_DEVICES"] = '1'
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
 # Set Eager API
