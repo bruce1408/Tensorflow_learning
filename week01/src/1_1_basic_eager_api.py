@@ -1,9 +1,6 @@
 """
 Basic introduction to TensorFlow's Eager API.
 
-Author: Aymeric Damien
-Project: https://github.com/aymericdamien/TensorFlow-Examples/
-
 What is Eager API?
 " Eager execution is an imperative, define-by-run interface where operations are
 executed immediately as they are called from Python. This makes it easier to
