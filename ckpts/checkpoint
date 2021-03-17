@@ -1,6 +1,0 @@
-model_checkpoint_path: "mnist-model.ckpt-10000"
-all_model_checkpoint_paths: "mnist-model.ckpt-6000"
-all_model_checkpoint_paths: "mnist-model.ckpt-7000"
-all_model_checkpoint_paths: "mnist-model.ckpt-8000"
-all_model_checkpoint_paths: "mnist-model.ckpt-9000"
-all_model_checkpoint_paths: "mnist-model.ckpt-10000"
