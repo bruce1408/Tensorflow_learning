@@ -1,5 +1,11 @@
-# coding=utf-8
-# !/usr/bin/env python
+'''
+Author: your name
+Date: 2021-03-17 23:40:34
+LastEditTime: 2021-03-17 23:40:35
+LastEditors: your name
+Description: In User Settings Edit
+FilePath: /Tensorflow_learning/week03/src/3_0_basic_linerRegress.py
+'''
 # __author__ = 'Bruce Cui'
 """
 线性回归代码, 展示回归的曲线
@@ -15,9 +21,6 @@ np.random.seed(1)  # 随机采样一个随机值
 # create data
 x_data = np.random.rand(100).astype(np.float32)  # 0~1之间的随机的100个数
 y_data = x_data * 0.1 + 0.3 + np.random.normal(0.0, 0.03)
-# print (x_data)
-# print (y_data)
-
 
 # create tensorflow structure start ###
 Weights = tf.Variable(tf.random_uniform([1], -1.0, 1.0))  # -1 到 1 之间的均匀分布

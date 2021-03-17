@@ -13,7 +13,7 @@ old_v = tf.logging.get_verbosity()
 tf.logging.set_verbosity(tf.logging.ERROR)
 
 # 载入数据集
-mnist = input_data.read_data_sets("../../fashion_mnist", one_hot=True)
+mnist = input_data.read_data_sets("/home/chenxi/Tensorflow_learning/fashion_mnist", one_hot=True)
 # 每个批次的大小
 batch_size = 100
 # 计算一共有多少个批次

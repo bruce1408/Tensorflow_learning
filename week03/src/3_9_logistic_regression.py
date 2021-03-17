@@ -1,3 +1,11 @@
+'''
+Author: your name
+Date: 2021-03-17 23:44:34
+LastEditTime: 2021-03-17 23:44:44
+LastEditors: Please set LastEditors
+Description: In User Settings Edit
+FilePath: /Tensorflow_learning/week03/src/3_9_logistic_regression.py
+'''
 """
 A logistic regression learning algorithm example using TensorFlow library.
 This example is using the MNIST database of handwritten digits
@@ -10,7 +18,7 @@ import tensorflow as tf
 
 # Import MNIST data
 from tensorflow.examples.tutorials.mnist import input_data
-mnist = input_data.read_data_sets("../../MNIST_data/", one_hot=True)
+mnist = input_data.read_data_sets("/home/chenxi/Tensorflow_learning/MNIST_data/", one_hot=True)
 
 # Parameters
 learning_rate = 0.01

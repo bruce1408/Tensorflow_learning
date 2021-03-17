@@ -1,8 +1,7 @@
 import tensorflow as tf
 from tensorflow.examples.tutorials.mnist import input_data
 # number 1 to 10 data
-mnist = input_data.read_data_sets('../../MNIST_data', one_hot=True)
-
+mnist = input_data.read_data_sets('/home/chenxi/Tensorflow_learning/MNIST_data', one_hot=True)
 
 def add_layer(inputs, in_size, out_size, activation_function=None,):
     # add one more layer and return the output of this layer
@@ -45,6 +44,5 @@ for i in range(1000):
     batch_xs, batch_ys = mnist.train.next_batch(100)
     sess.run(train_step, feed_dict={xs: batch_xs, ys: batch_ys})
     if i % 50 == 0:
-        print(compute_accuracy(
-            mnist.test.images, mnist.test.labels))
+        print("acc: ", compute_accuracy(mnist.test.images, mnist.test.labels))
 
