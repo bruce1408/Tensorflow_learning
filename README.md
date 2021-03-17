@@ -64,6 +64,11 @@ All data for this project can be found as follow
 This project exists thanks to all the people who contribute.
 Everyone is welcome to submit code.
 
+- [Aymeric Damien](https://github.com/aymericdamien)
+- [Hvass-Labs](https://github.com/Hvass-Labs)
+
+
+
 ## Reference
 
 ### Online Video
