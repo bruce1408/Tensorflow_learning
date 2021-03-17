@@ -35,9 +35,9 @@ This repository contains:
 ## Table of Contents
 
 - [Install](#install)
-- [Usage](#usage&dataset)
-- [Dataset](#usage&dataset)
-- [Related impacts](#Relatedimpacts)
+- [Usage](#usage-&-dataset)
+- [Dataset](#usage-&-dataset)
+- [Related impacts](#Related-impacts)
 - [Contributors](#Contributors)
 - [Reference](#Reference)
 
