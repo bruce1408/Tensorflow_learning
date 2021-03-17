@@ -59,7 +59,7 @@ All data for this project can be found as follow
 
 - inception-2015-12-05.tgz: <https://pan.baidu.com/s/1o_BCsopsbgKMPqlNzMwTYw>  pasd: zt3t
 - classify_image_graph_def.pd: <https://pan.baidu.com/s/1yMoF8ol4HemE4SnqCIDa0A>  pasd: 7a6k
-- captcha/images: <https://pan.baidu.com/s/1p_ZYQyv7quiYdLydFw8SmA>  密码:m1y4
+- captcha/images: <https://pan.baidu.com/s/1p_ZYQyv7quiYdLydFw8SmA>  pasd:m1y4
 
 ## Related Impacts
 
@@ -95,7 +95,6 @@ All data for this project can be found as follow
 
 - [TensorFlow Maching Learning Cookbook](https://www.amazon.com/TensorFlow-Machine-Learning-Cookbook-intelligent/dp/1789131685) Nick McClure:
 - [《Tensorflow：实战Google深度学习框架》](https://book.douban.com/subject/26976457/) 出版时间 2017-2-10 郑泽宇/顾思宇：
-GitHub 有人写了笔记：[TensorFlow_learning_notes](https://github.com/cookeem/TensorFlow_learning_notes)
 - [《TensorFlow实战》](https://book.douban.com/subject/26974266/) 黄文坚/唐源
 
 ### Slides
