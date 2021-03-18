@@ -35,8 +35,7 @@ This repository contains:
 ## Table of Contents
 
 - [Install](#install)
-- [Usage](#usage-&-dataset)
-- [Dataset](#usage-&-dataset)
+- [Dataset](#Dataset)
 - [Related impacts](#Related-impacts)
 - [Contributors](#Contributors)
 - [Reference](#Reference)
@@ -51,12 +50,11 @@ Tensorflow 1.14.0
 $ pip install -r requirements.txt
 ```
 
-## Usage & Dataset
+## Dataset
 
 All data for this project can be found as follow
 
-- data: <https://pan.baidu.com/s/1e-XfOV250uS40T1Q7v4oUA>  pasd: ruwm
-
+- data <https://pan.baidu.com/s/1sxojcCXFKqFRVnOWD3vouw>  pasd: ljpf
 - inception-2015-12-05.tgz: <https://pan.baidu.com/s/1o_BCsopsbgKMPqlNzMwTYw>  pasd: zt3t
 - classify_image_graph_def.pd: <https://pan.baidu.com/s/1yMoF8ol4HemE4SnqCIDa0A>  pasd: 7a6k
 - captcha/images: <https://pan.baidu.com/s/1p_ZYQyv7quiYdLydFw8SmA>  pasd:m1y4
@@ -89,12 +87,12 @@ All data for this project can be found as follow
 ### Books & Pdf
 
 - [TensorFlow 官方文档中文版](http://www.tensorfly.cn/tfdoc/get_started/introduction.html)
-- [Building Machine Learning Projects with TensorFlow](https://www.amazon.com/Building-Machine-Learning-Projects-TensorFlow/dp/1786466589) Rodolfo Bonnin:
+- [《Building Machine Learning Projects with TensorFlow》](https://www.amazon.com/Building-Machine-Learning-Projects-TensorFlow/dp/1786466589) Rodolfo Bonnin:
 
-- [Learning TensorFlow](https://www.amazon.com/Learning-TensorFlow-Guide-Building-Systems/dp/1491978511) Tom Hope
+- [《Learning TensorFlow》](https://www.amazon.com/Learning-TensorFlow-Guide-Building-Systems/dp/1491978511) Tom Hope
 
-- [TensorFlow Maching Learning Cookbook](https://www.amazon.com/TensorFlow-Machine-Learning-Cookbook-intelligent/dp/1789131685) Nick McClure:
-- [《Tensorflow：实战Google深度学习框架》](https://book.douban.com/subject/26976457/) 出版时间 2017-2-10 郑泽宇/顾思宇：
+- [《TensorFlow Maching Learning Cookbook》](https://www.amazon.com/TensorFlow-Machine-Learning-Cookbook-intelligent/dp/1789131685) Nick McClure:
+- [《Tensorflow：实战Google深度学习框架》](https://book.douban.com/subject/26976457/) 郑泽宇/顾思宇：
 - [《TensorFlow实战》](https://book.douban.com/subject/26974266/) 黄文坚/唐源
 
 ### Slides
