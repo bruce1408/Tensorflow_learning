@@ -64,8 +64,6 @@ All data for this project can be found as follow
 - [Aymeric Damien](https://github.com/aymericdamien)
 - [Hvass-Labs](https://github.com/Hvass-Labs)
 
-
-
 ## Reference
 
 ### Online Video
