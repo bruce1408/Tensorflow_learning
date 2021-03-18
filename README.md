@@ -71,13 +71,9 @@ All data for this project can be found as follow
 - YouTube：[tensorflow教程（十课）](https://www.youtube.com/watch?v=eAtGqz8ytOI&list=PLjSwXXbVlK6IHzhLOMpwHHLjYmINRstrk&index=2&t=0s)
 - B 站：[《深度学习框架TensorFlow学习与应用》](https://www.bilibili.com/video/av20542427/)
 
--《深度学习框架Tensorflow学习与应用》（含视频+代码+课件，视频总时长：13小时31分钟）
+- [《深度学习框架Tensorflow学习与应用》（含视频+代码+课件，视频总时长：13小时31分钟）](https://pan.baidu.com/s/16OINOrFiRXbqmqOFjCFzLQ) pasd: 1a8j
 
-> 链接: <https://pan.baidu.com/s/16OINOrFiRXbqmqOFjCFzLQ> 密码: 1a8j
-
--《深度学习框架Tensorflow学习与应用[只有videos-720p]》（该份资料只有视频文件）
-
-> 链接: <https://pan.baidu.com/s/1oQLgWFEBsVrcKJN4swEdzg> 密码: i3e2
+- [《深度学习框架Tensorflow学习与应用[只有videos-720p]》（该份资料只有视频文件）](https://pan.baidu.com/s/1oQLgWFEBsVrcKJN4swEdzg) pasd: i3e2
 
 - 油管视频：[TF Girls 修炼指南](https://www.youtube.com/watch?v=TrWqRMJZU8A&list=PLwY2GJhAPWRcZxxVFpNhhfivuW0kX15yG&index=2) 、或 B 站观看： [TF Girls 修炼指南](https://space.bilibili.com/16696495/#/channel/detail?cid=1588)
 
