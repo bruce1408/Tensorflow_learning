@@ -45,12 +45,9 @@ def matpow(M, n):
     else:
         return tf.matmul(M, matpow(M, n - 1))
 
-
 '''
 Single GPU computing
 '''
-
-
 def singleCPU():
     os.environ['CUDA_VISIBLE_DEVICES'] = '0'
     with tf.device('/gpu:0'):
@@ -74,8 +71,6 @@ def singleCPU():
 '''
 Multi GPU computing
 '''
-
-
 def multiGPU():
     os.environ['CUDA_VISIBLE_DEVICES'] = '0,1'
 

@@ -9,7 +9,7 @@ import numpy as np
 import tqdm
 import matplotlib.pyplot as plt
 from tensorflow.examples.tutorials.mnist import input_data
-mnist = input_data.read_data_sets("/home/chenxi/Tensorflow_learning/MNIST_data", one_hot=True)
+mnist = input_data.read_data_sets("../datasets/MNIST_data", one_hot=True)
 os.environ['CUDA_VISIBLE_DEVICES'] = '0, 1, 2'
 
 

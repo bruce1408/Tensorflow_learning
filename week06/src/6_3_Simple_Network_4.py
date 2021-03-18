@@ -1,9 +1,5 @@
-# coding=utf-8
-# !/usr/bin/env python
-__author__ = 'Bruce Cui'
 import os, sys, math
 
-# sys.path.append('/home/bruce/bigVolumn/Datasets/cifar10')
 import numpy as np
 import cifar10 as cf
 import cifar10_input as cf_input
@@ -16,7 +12,7 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
 max_step = 5000  # 最大的迭代次数
 batch_size = 128
-data_dir = '/home/bruce/bigVolumn/Datasets/cifar10_data/cifar-10-batches-bin'
+data_dir = '../datasets/cifar-10-batches-bin'
 
 
 # ----------------------------------------------define layers-----------------------------------------------

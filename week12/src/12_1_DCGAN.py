@@ -10,9 +10,6 @@ References:
 Links:
     - [DCGAN Paper](https://arxiv.org/abs/1511.06434).
     - [MNIST Dataset](http://yann.lecun.com/exdb/mnist/).
-
-Author: Aymeric Damien
-Project: https://github.com/aymericdamien/TensorFlow-Examples/
 """
 
 from __future__ import division, print_function, absolute_import
@@ -22,7 +19,7 @@ import numpy as np
 import tensorflow as tf
 from tensorflow.examples.tutorials.mnist import input_data
 os.environ['CUDA_VISIBLE_DEVICES'] = '1'
-mnist = input_data.read_data_sets("../../MNIST_data", one_hot=True)
+mnist = input_data.read_data_sets("../datasets/MNIST_data", one_hot=True)
 
 # Training Params
 num_steps = 20000

@@ -20,7 +20,7 @@ val data info:
 2th is: 6393
 """
 os.environ['CUDA_VISIBLE_DEVICES'] = '1'
-trainImg = "/raid/bruce/datasets/svhn/mchar_train"
+trainImg = "../datasets/svhn/mchar_train"
 trainLabel = "http://tianchi-competition.oss-cn-hangzhou.aliyuncs.com/531795/mchar_train.json"
 valImg = "/raid/bruce/datasets/svhn/mchar_val"
 valLabel = "http://tianchi-competition.oss-cn-hangzhou.aliyuncs.com/531795/mchar_val.json"

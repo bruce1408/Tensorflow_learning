@@ -13,7 +13,7 @@ import tensorflow.contrib.slim as slim
 import tensorflow.contrib.slim.nets as nets
 import csv as csv
 os.environ['CUDA_VISIBLE_DEVICES'] = '1'
-imgPath = "/raid/bruce/dog_cat/test1"
+imgPath = "../datasets/dog_cat/test1"
 CHECK_POINT_PATH = 'check_point/train_model.ckpt'
 NUM_KAGGLE_TEST = 12500
 

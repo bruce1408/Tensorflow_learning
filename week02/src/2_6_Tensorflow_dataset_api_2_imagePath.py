@@ -3,7 +3,7 @@ import numpy as np
 from PIL import Image
 from sklearn.model_selection import train_test_split
 MODE = 'folder'  # or 'file', if you choose a plain text file (see above).
-DATASET_PATH = '/home/chenxi/dataset/dog_cat/train/'  # the dataset file or root folder path.
+DATASET_PATH = '../datasets/dog_cat/train/'  # the dataset file or root folder path.
 config = tf.ConfigProto()
 config.gpu_options.allow_growth = True
 # Image Parameters

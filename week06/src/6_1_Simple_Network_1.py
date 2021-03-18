@@ -14,7 +14,7 @@ old_v = tf.logging.get_verbosity()
 np.set_printoptions(threshold=100000)
 tf.logging.set_verbosity(tf.logging.ERROR)
 mnist = input_data.read_data_sets(
-    '/home/chenxi/Tensorflow_learning/fashion_mnist', one_hot=True)
+    '../datasets/fashion_mnist', one_hot=True)
 
 
 def _read32(bytestream):

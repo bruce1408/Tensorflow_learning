@@ -17,7 +17,7 @@ IMAGE_WIDTH = 160
 # 批次
 BATCH_SIZE = 1
 # tfrecord文件存放路径
-TFRECORD_FILE = "D:/Tensorflow/captcha/test.tfrecords"
+TFRECORD_FILE = "../datasets/captcha/test.tfrecords"
 
 # placeholder
 x = tf.placeholder(tf.float32, [None, 224, 224])

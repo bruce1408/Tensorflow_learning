@@ -13,7 +13,7 @@ import time
 
 os.environ['CUDA_VISIBLE_DEVICES'] = '0'
 TRAIN_CHECK_POINT = 'check_point/train_model.ckpt'
-VGG_19_MODEL_DIR = '/raid/bruce/dog_cat/vgg_19.ckpt'
+VGG_19_MODEL_DIR = '../datasets/dog_cat/vgg_19.ckpt'
 BATCHSIZE = 32
 EPOCH = 30
 IMG_HEIGHT = 224

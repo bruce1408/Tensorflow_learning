@@ -11,9 +11,7 @@ from natsort import natsorted
 BATCH_SIZE = 1
 os.environ['CUDA_VISIBLE_DEVICES'] = '1'
 MODEL_SAVE_PATH = "model_svhn9/"
-# imgPath = "/raid/bruce/tmp/tmp/tensorflow_learning_remote/pred/"
-# imgPath = "../../week03/src/images/dogs"
-imgPath = "/raid/bruce/datasets/svhn/mchar_test_a"
+imgPath = "../datasets/svhn/mchar_test_a"
 
 
 x = tf.placeholder(tf.float32, [None, 224, 224])

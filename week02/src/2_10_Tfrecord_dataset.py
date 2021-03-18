@@ -34,7 +34,7 @@ tf.train.BytesList、tf.train.Int64List、tf.train.FloatList写入tf.train.Featu
 """
 np.random.seed(0)
 os.environ['CUDA_VISIBLE_DEVICES'] = '1'
-pathDir = "/raid/bruce/datasets/101_ObjectCategories"
+pathDir = "../datasets/101_ObjectCategories"
 BATCH_SIZE = 20
 HIGHTSIZE = 128
 WIDTHSIZE = 128

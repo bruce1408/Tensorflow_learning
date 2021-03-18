@@ -5,7 +5,7 @@ tf.logging.set_verbosity(tf.logging.ERROR)
 # tf.logging.set_verbosity(tf.logging.INFO)
 tf.set_random_seed(1)
 #
-# mnist = input_data.read_data_sets('/Users/bruce/programme/Python/datasets/MNIST_data', one_hot=True)
+# mnist = input_data.read_data_sets('../datasets/MNIST_data', one_hot=True)
 #
 # # hyperparameters
 # lr = 0.001
@@ -81,7 +81,7 @@ from tensorflow.examples.tutorials.mnist import input_data
 # n_inputs = 28
 # n_neurons = 150
 # n_outputs = 10
-mnist = input_data.read_data_sets("/home/chenxi/Tensorflow_learning/fashion_mnist")
+mnist = input_data.read_data_sets("../datasets/fashion_mnist")
 # X_test = mnist.test.images.reshape((-1, n_steps, n_inputs))
 # y_test = mnist.test.labels
 #

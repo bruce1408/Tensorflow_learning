@@ -5,7 +5,7 @@ from tensorflow.examples.tutorials.mnist import input_data
 
 # 载入数据集
 mnist = input_data.read_data_sets(
-    "/home/chenxi/Tensorflow_learning/MNIST_data", one_hot=True)
+    "../datasets/MNIST_data", one_hot=True)
 
 # 每个批次的大小
 batch_size = 100

@@ -6,7 +6,7 @@ os.environ['CUDA_VISIBLE_DEVICES'] = '0, 1, 2, 3'
 
 
 mnist = input_data.read_data_sets(
-    "/home/chenxi/Tensorflow_learning/fashion_mnist", one_hot=True)
+    "../datasets/fashion_mnist", one_hot=True)
 
 # 每个批次的大小
 batch_size = 100

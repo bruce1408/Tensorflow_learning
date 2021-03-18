@@ -21,7 +21,7 @@ MODEL_NAME = "model1000.ckpt.data-00000-of-00001"
 # img = Image.open("../../pred/1.jpg")
 # img = img.resize(image_size, image_size, 3)
 
-imgPath = "/raid/bruce/tmp/tmp/tensorflow_learning_remote/pred/5.jpeg"
+imgPath = "../datasets/5.jpeg"
 
 image_data = tf.gfile.FastGFile(imgPath, 'rb').read()
 

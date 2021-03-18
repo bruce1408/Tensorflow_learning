@@ -4,7 +4,7 @@ from tensorflow.examples.tutorials.mnist import input_data
 os.environ['CUDA_VISIBLE_DEVICES'] = '2'
 tf.logging.set_verbosity(tf.logging.INFO)
 
-mnist = input_data.read_data_sets('/home/chenxi/Tensorflow_learning/MNIST_data', one_hot=True)
+mnist = input_data.read_data_sets('../datasets/MNIST_data', one_hot=True)
 
 x = tf.placeholder(tf.float32, [None, 784])
 y_ = tf.placeholder(tf.float32, [None, 10])

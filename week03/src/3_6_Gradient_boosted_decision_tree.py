@@ -21,7 +21,7 @@ os.environ["CUDA_VISIBLE_DEVICES"] = "0, 1, 2"
 tf.logging.set_verbosity(tf.logging.ERROR)
 from tensorflow.examples.tutorials.mnist import input_data
 
-mnist = input_data.read_data_sets("../../datasets/MNIST_data/", one_hot=False, source_url='http://yann.lecun.com/exdb/mnist/')
+mnist = input_data.read_data_sets("../datasets/MNIST_data/", one_hot=False, source_url='http://yann.lecun.com/exdb/mnist/')
 
 # Parameters
 batch_size = 4096  # The number of samples per batch

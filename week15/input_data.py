@@ -1,14 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Fri Jun  8 08:52:30 2018
-
-@author: zy
-"""
-
-'''
-导入flowers数据集
-'''
-
 # from datasets import download_and_convert_flowers
 # from preprocessing import vgg_preprocessing
 # from datasets import flowers

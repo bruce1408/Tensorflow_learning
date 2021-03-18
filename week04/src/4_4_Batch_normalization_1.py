@@ -11,7 +11,7 @@ import tensorflow as tf
 from tensorflow.examples.tutorials.mnist import input_data
 os.environ['CUDA_VISIBLE_DEVICES'] = '0, 1, 2'
 mnist = input_data.read_data_sets(
-    "/home/chenxi/Tensorflow_learning/MNIST_data/", one_hot=True, reshape=False)
+    "../datasets/MNIST_data/", one_hot=True, reshape=False)
 
 
 def fully_connected(prev_layer, num_units, is_training):

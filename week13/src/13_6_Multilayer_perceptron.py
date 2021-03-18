@@ -7,8 +7,6 @@ digits (http://yann.lecun.com/exdb/mnist/).
 Links:
     [MNIST Dataset](http://yann.lecun.com/exdb/mnist/).
 
-Author: Aymeric Damien
-Project: https://github.com/aymericdamien/TensorFlow-Examples/
 """
 
 # ------------------------------------------------------------------
@@ -20,7 +18,7 @@ from __future__ import print_function
 
 # Import MNIST data
 from tensorflow.examples.tutorials.mnist import input_data
-mnist = input_data.read_data_sets("../../MNIST_data", one_hot=True)
+mnist = input_data.read_data_sets("../datasets/MNIST_data", one_hot=True)
 
 import tensorflow as tf
 

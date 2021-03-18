@@ -2,7 +2,7 @@ import tensorflow as tf
 from tensorflow.examples.tutorials.mnist import input_data
 import os
 os.environ['CUDA_VISIBLE_DEVICES'] = '1'
-mnist = input_data.read_data_sets('/home/chenxi/Tensorflow_learning/MNIST_data', one_hot=True)
+mnist = input_data.read_data_sets('../datasets/MNIST_data', one_hot=True)
 
 
 def compute_accuracy(v_xs, v_ys):

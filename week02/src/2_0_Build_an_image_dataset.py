@@ -37,7 +37,7 @@ import os
 
 # Dataset Parameters - CHANGE HERE
 MODE = 'folder'  # or 'file', if you choose a plain text file (see above).
-DATASET_PATH = '/raid/bruce/datasets/101_ObjectCategories'  # the dataset file or root folder path.
+DATASET_PATH = '../datasets/101_ObjectCategories'  # the dataset file or root folder path.
 
 # Image Parameters
 N_CLASSES = 102  # CHANGE HERE, total number of classes

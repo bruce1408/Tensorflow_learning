@@ -11,7 +11,7 @@ from tensorflow.contrib.slim import nets
 os.environ['CUDA_VISIBLE_DEVICES'] = '0'
 MODEL_SAVE_PATH = "models15/"
 MODEL_NAME = "fine-tune_models-750.data-00000-of-00001"
-imgPath = "/raid/bruce/dog_cat/test1"
+imgPath = "../datasets/dog_cat/test1"
 from natsort import natsorted
 
 labels = {'0': 'cat', '1': 'dog'}

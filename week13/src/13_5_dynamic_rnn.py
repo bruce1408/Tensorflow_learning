@@ -7,9 +7,6 @@ variable length.
 
 Links:
     [Long Short Term Memory](http://deeplearning.cs.cmu.edu/pdfs/Hochreiter97_lstm.pdf)
-
-Author: Aymeric Damien
-Project: https://github.com/aymericdamien/TensorFlow-Examples/
 """
 
 from __future__ import print_function

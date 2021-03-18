@@ -54,11 +54,14 @@ $ pip install -r requirements.txt
 
 All data for this project can be found as follow
 
-- data <https://pan.baidu.com/s/1sxojcCXFKqFRVnOWD3vouw>  pasd: ljpf
+- data <https://pan.baidu.com/s/1mylwtZH9ydB4DBz5c833AA>  pasd: u871
 - inception-2015-12-05.tgz: <https://pan.baidu.com/s/1o_BCsopsbgKMPqlNzMwTYw>  pasd: zt3t
 - classify_image_graph_def.pd: <https://pan.baidu.com/s/1yMoF8ol4HemE4SnqCIDa0A>  pasd: 7a6k
 - captcha/images: <https://pan.baidu.com/s/1p_ZYQyv7quiYdLydFw8SmA>  pasd:m1y4
 
+```sh
+copy all data into Datasets directory
+```
 ## Related Impacts
 
 - [Aymeric Damien](https://github.com/aymericdamien)

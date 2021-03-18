@@ -5,7 +5,7 @@ from tensorflow.contrib.tensorboard.plugins import projector
 
 # 载入数据集
 mnist = input_data.read_data_sets(
-    "/home/chenxi/Tensorflow_learning/MNIST_data", one_hot=True)
+    "../datasets/MNIST_data", one_hot=True)
 # 运行次数
 max_steps = 1001
 # 图片数量

@@ -20,7 +20,7 @@
 # learning_rate = 0.001
 # BATCHSIZE = 64
 # save_check = 1000
-# DATASET_PATH = '/raid/bruce/dog_cat/train/'  # the dataset file or root folder path.
+# DATASET_PATH = '../datasets/dog_cat/train/'  # the dataset file or root folder path.
 #
 #
 # def get_files_path(file_dir):
@@ -282,7 +282,7 @@ def _parse_function(record):
 
 # train data pipline
 # repeat -> shuffle 和 shuffle -> repeat不一样
-traindata = tf.data.TFRecordDataset("/raid/bruce/dog_cat/train_dog_cat_224.tfrecord").\
+traindata = tf.data.TFRecordDataset("../datasets/dog_cat/train_dog_cat_224.tfrecord").\
     map(_parse_function).\
     shuffle(buffer_size=2000, reshuffle_each_iteration=True).\
     batch(BATCHSIZE).\
@@ -290,7 +290,7 @@ traindata = tf.data.TFRecordDataset("/raid/bruce/dog_cat/train_dog_cat_224.tfrec
     prefetch(BATCHSIZE)
 
 # val data pipline
-valdata = tf.data.TFRecordDataset("/raid/bruce/dog_cat/test_dog_cat_224.tfrecord").\
+valdata = tf.data.TFRecordDataset("../datasets/dog_cat/test_dog_cat_224.tfrecord").\
     map(_parse_function).\
     batch(BATCHSIZE).\
     repeat().\

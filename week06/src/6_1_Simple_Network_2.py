@@ -7,7 +7,7 @@ tf.logging.set_verbosity(tf.logging.ERROR)
 os.environ['CUDA_VISIBLE_DEVICES'] = '0, 1, 2'
 # input data
 mnist_data = input_data.read_data_sets(
-    '/home/chenxi/Tensorflow_learning/fashion_mnist', one_hot=True)
+    '../datasets/fashion_mnist', one_hot=True)
 batch_size = 100
 n_batch = mnist_data.train.num_examples // batch_size
 epoch = 21

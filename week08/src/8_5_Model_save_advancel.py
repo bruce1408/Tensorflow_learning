@@ -28,7 +28,7 @@ os.environ['CUDA_VISIBLE_DEVICES'] = '0'
     https://github.com/tensorflow/serving/blob/master/tensorflow_serving/g3doc/signature_defs.md
 
 """
-mnist = input_data.read_data_sets("/raid/bruce/MNIST_data", one_hot=True)
+mnist = input_data.read_data_sets("../datasets/MNIST_data", one_hot=True)
 
 sess = tf.InteractiveSession()
 x = tf.placeholder(tf.float32, [None, 784], name="Input")  # 为输入op添加命名"Input"

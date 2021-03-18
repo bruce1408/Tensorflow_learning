@@ -22,7 +22,7 @@ display_step = 100
 val_display = 300
 save_check = 1000
 mnist = input_data.read_data_sets(
-    "/home/chenxi/Tensorflow_learning/MNIST_data", one_hot=True)
+    "../datasets/MNIST_data", one_hot=True)
 batch_count = int(mnist.train.num_examples / batch_size)
 
 X = tf.placeholder(tf.float32, [None, 784], name="x-input")

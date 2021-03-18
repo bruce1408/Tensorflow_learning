@@ -1,6 +1,3 @@
-# encoding=utf8
-# !/usr/bin/env python
-
 import collections
 import math
 import os

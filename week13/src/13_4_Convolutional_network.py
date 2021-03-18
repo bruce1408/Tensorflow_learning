@@ -6,16 +6,13 @@ This example is using the MNIST database of handwritten digits
 
 This example is using TensorFlow layers API, see 'convolutional_network_raw' 
 example for a raw implementation with variables.
-
-Author: Aymeric Damien
-Project: https://github.com/aymericdamien/TensorFlow-Examples/
 """
 from __future__ import division, print_function, absolute_import
 
 # Import MNIST data
 from tensorflow.examples.tutorials.mnist import input_data
 
-mnist = input_data.read_data_sets("../../MNIST_data", one_hot=False)
+mnist = input_data.read_data_sets("../datasets/MNIST_data", one_hot=False)
 
 import tensorflow as tf
 

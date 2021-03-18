@@ -3,7 +3,6 @@ import operator
 import sys
 from datetime import datetime
 
-
 class RNN:
     def __init__(self, word_dim, hidden_dim=100, bptt_truncate=4):
         self.word_dim = word_dim

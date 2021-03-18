@@ -74,7 +74,7 @@ def _parse_function(record):
 
 
 dataset = tf.data.TFRecordDataset(
-    "/raid/bruce/tmp/tmp/tensorflow_learning_remote/week01/src/imageProcess/picRecog/01_cats_vs_dogs/train_dogs_cat.tfrecord")
+    "../datasets/train_dogs_cat.tfrecord")
 dataset = dataset.map(_parse_function)
 dataset = dataset.repeat()
 dataset = dataset.batch(batch_size=BATCHSIZE)

@@ -5,7 +5,7 @@ import numpy as np
 from sklearn.model_selection import train_test_split
 MODE = 'folder'  # or 'file', if you choose a plain text file (see above).
 # the dataset file or root folder path.
-DATASET_PATH = '/home/chenxi/dataset/dog_cat/train/'
+DATASET_PATH = '../datasets/dog_cat/train/'
 
 # Image Parameters
 N_CLASSES = 2  # CHANGE HERE, total number of classes

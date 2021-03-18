@@ -7,7 +7,7 @@ old_v = tf.logging.get_verbosity()
 tf.logging.set_verbosity(tf.logging.ERROR)
 # 载入数据集
 mnist = input_data.read_data_sets(
-    "/home/chenxi/Tensorflow_learning/MNIST_data", one_hot=True)
+    "../datasets/MNIST_data", one_hot=True)
 
 # 每个批次的大小
 batch_size = 1000

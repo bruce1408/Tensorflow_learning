@@ -11,9 +11,7 @@ import sys
 os.environ['CUDA_VISIBLE_DEVICES'] = '0'
 MODEL_SAVE_PATH = "model_svhn10/"
 MODEL_NAME = "model1000.ckpt.data-00000-of-00001"
-# imgPath = "/raid/bruce/tmp/tmp/tensorflow_learning_remote/pred/"
-# imgPath = "../../week03/src/images/dogs"
-imgPath = "/raid/bruce/datasets/svhn/mchar_test_a"
+imgPath = "../datasets/svhn/mchar_test_a"
 from natsort import natsorted
 
 

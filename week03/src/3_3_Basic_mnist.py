@@ -1,7 +1,7 @@
 import tensorflow as tf
 from tensorflow.examples.tutorials.mnist import input_data
 # number 1 to 10 data
-mnist = input_data.read_data_sets('/home/chenxi/Tensorflow_learning/MNIST_data', one_hot=True)
+mnist = input_data.read_data_sets('../datasets/MNIST_data', one_hot=True)
 
 def add_layer(inputs, in_size, out_size, activation_function=None,):
     # add one more layer and return the output of this layer

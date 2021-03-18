@@ -11,7 +11,7 @@ MODEL_SAVE_PATH = "model_svhn5/"
 MODEL_NAME = "model10000.ckpt.data-00000-of-00001"
 # imgPath = "/raid/bruce/tmp/tmp/tensorflow_learning_remote/pred/"
 # imgPath = "../../week03/src/images/dogs"
-imgPath = "/raid/bruce/datasets/svhn/mchar_test_a"
+imgPath = "../datasets/svhn/mchar_test_a"
 from natsort import natsorted
 
 
@@ -115,7 +115,7 @@ with tf.Session() as sess:
         sys.stdout.flush()
         result = pd.DataFrame.from_dict(data, orient='index', columns=['label'])
         result = result.reset_index().rename(columns={'index': 'id'})
-        result.to_csv('/raid/bruce/datasets/svhn/test_a_result.csv', index=False)
+        result.to_csv('../datasets/svhn/test_a_result.csv', index=False)
         print("predict is done!")
 
         # plot_images(imageList, labelList, cnt)
