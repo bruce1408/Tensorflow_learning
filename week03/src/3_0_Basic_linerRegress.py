@@ -10,7 +10,7 @@ FilePath: /Tensorflow_learning/week03/src/3_0_basic_linerRegress.py
 """
 线性回归代码, 展示回归的曲线
 """
-from __future__ import print_function
+# from __future__ import print_function
 import tensorflow as tf
 import numpy as np
 import matplotlib.pyplot as plt

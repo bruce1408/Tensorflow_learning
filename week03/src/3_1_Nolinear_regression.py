@@ -78,7 +78,7 @@ with tf.Session() as sess:
 x_data = np.random.rand(100).astype(np.float32)
 y_data = x_data * 0.1 + 0.3
 
-W = tf.Variable(tf.random_uniform([1], -1.0, 1.0))
+W = tf.Variable(tf.random.uniform([1], -1.0, 1.0))
 b = tf.Variable(tf.zeros([1]))
 
 y = W * x_data + b
@@ -125,7 +125,7 @@ prediction = add_layer(l1, 10, 1, activation_function=None)
 loss = tf.reduce_mean(tf.reduce_sum(tf.square(ys - prediction), reduction_indices=[1]))
 train_step = tf.train.GradientDescentOptimizer(0.1).minimize(loss)
 # important step
-init = tf.initialize_all_variables()
+init = tf.global_variables_initializer()
 sess = tf.Session()
 sess.run(init)
 
@@ -145,7 +145,6 @@ Please note, this code is only for python 3+. If you are using python 2+, please
 import tensorflow as tf
 import numpy as np
 import matplotlib.pyplot as plt
-
 
 def add_layer(inputs, in_size, out_size, activation_function=None):
     Weights = tf.Variable(tf.random_normal([in_size, out_size]))
@@ -175,7 +174,7 @@ prediction = add_layer(l1, 10, 1, activation_function=None)
 loss = tf.reduce_mean(tf.reduce_sum(tf.square(ys - prediction), reduction_indices=[1]))
 train_step = tf.train.GradientDescentOptimizer(0.1).minimize(loss)
 # important step
-init = tf.initialize_all_variables()
+init = tf.global_variables_initializer()
 sess = tf.Session()
 sess.run(init)
 
@@ -241,7 +240,7 @@ with tf.name_scope('train'):
 sess = tf.Session()
 # writer = tf.train.SummaryWriter("logs/", sess.graph)
 # important step
-sess.run(tf.initialize_all_variables())
+sess.run(tf.global_variables_initializer())
 
 
 # example 6
@@ -254,17 +253,17 @@ def add_layer(inputs, in_size, out_size, n_layer, activation_function=None):
     with tf.name_scope(layer_name):
         with tf.name_scope('weights'):
             Weights = tf.Variable(tf.random_normal([in_size, out_size]), name='W')
-            tf.summary.histogram(layer_name + '/weights', Weights)
+            tf.compat.v1.summary.histogram(layer_name + '/weights', Weights)
         with tf.name_scope('biases'):
             biases = tf.Variable(tf.zeros([1, out_size]) + 0.1, name='b')
-            tf.summary.histogram(layer_name + '/biases', biases)
+            tf.compat.v1.summary.histogram(layer_name + '/biases', biases)
         with tf.name_scope('Wx_plus_b'):
             Wx_plus_b = tf.add(tf.matmul(inputs, Weights), biases)
         if activation_function is None:
             outputs = Wx_plus_b
         else:
             outputs = activation_function(Wx_plus_b, )
-        tf.summary.histogram(layer_name + '/outputs', outputs)
+        tf.compat.v1.summary.histogram(layer_name + '/outputs', outputs)
         return outputs
 
 
@@ -287,16 +286,16 @@ prediction = add_layer(l1, 10, 1, n_layer=2, activation_function=None)
 with tf.name_scope('loss'):
     loss = tf.reduce_mean(tf.reduce_sum(tf.square(ys - prediction),
                                         reduction_indices=[1]))
-    tf.summary.scalar('loss', loss)
+    tf.compat.v1.summary.scalar('loss', loss)
 
 with tf.name_scope('train'):
     train_step = tf.train.GradientDescentOptimizer(0.1).minimize(loss)
 
 sess = tf.Session()
-merged = tf.summary.merge_all()
-writer = tf.summary.FileWriter("logs/", sess.graph)
+merged = tf.compat.v1.summary.merge_all()
+writer = tf.compat.v1.summary.FileWriter("logs/", sess.graph)
 # important step
-sess.run(tf.initialize_all_variables())
+sess.run(tf.global_variables_initializer())
 
 for i in range(10000):
     sess.run(train_step, feed_dict={xs: x_data, ys: y_data})
