@@ -3,3 +3,6 @@
 *.exe
 .idea
 .vscode
+*.gz
+week16/distribute_model_ckpt/
+week03/src/logs/
