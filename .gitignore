@@ -5,4 +5,5 @@
 .vscode
 *.gz
 week16/distribute_model_ckpt/
+week02/src/logs/
 week03/src/logs/
