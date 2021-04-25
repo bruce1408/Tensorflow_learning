@@ -32,15 +32,14 @@ def main(unused_argv):
 
     init = tf.compat.v1.global_variables_initializer()
 
-    with tf.Session() as sess:
-        sess.run(init)
-        print("abc", sess.run(abc))
+    # with tf.Session() as sess:
+    #     sess.run(init)
+    #     print("abc", sess.run(abc))
 
-    # sv = tf.train.Supervisor(logdir=FLAGS.log_dirs, init_op=init)
-    # with sv.managed_session() as sess:
-    #     print("abc:", sess.run(abc))
-
-        # sv.saver.save(sess, "/home/yongcai/tmp/")
+    sv = tf.train.Supervisor(logdir=FLAGS.log_dirs, init_op=init)
+    with sv.managed_session() as sess:
+        print("abc:", sess.run(abc))
+        # sv.saver.save(sess, ".")
 
 
 # 使用这种方式保证了，如果此文件被其他文件 import的时候，不会执行main 函数

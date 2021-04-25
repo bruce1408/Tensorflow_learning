@@ -4,6 +4,7 @@ import time
 import tensorflow as tf
 from tensorflow.examples.tutorials.mnist import input_data  # 数据的获取不是本章重点，这里直接导入
 
+# 参数定义 (parameter_name, default_value, description)
 FLAGS = tf.app.flags.FLAGS
 tf.app.flags.DEFINE_string("job_name", "worker", "ps or worker")
 tf.app.flags.DEFINE_integer("task_id", 0, "Task ID of the worker/ps running the train")
@@ -40,9 +41,7 @@ def main(self):
 
     # 通过replica_device_setter函数来指定每一个运算的设备。
     # replica_device_setter会自动将所有参数分配到参数服务器上，将计算分配到当前的worker机上。
-    device_setter = tf.train.replica_device_setter(
-        worker_device="/job:worker/task:%d" % FLAGS.task_id,
-        cluster=cluster)
+    device_setter = tf.train.replica_device_setter(worker_device="/job:worker/task:%d" % FLAGS.task_id, cluster=cluster)
 
     # 这一台worker机器需要做的计算内容
     with tf.device(device_setter):
