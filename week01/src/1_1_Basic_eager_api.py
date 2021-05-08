@@ -1,11 +1,11 @@
-'''
+"""
 Author: your name
 Date: 2021-03-17 22:16:13
 LastEditTime: 2021-03-17 22:17:04
 LastEditors: Please set LastEditors
 Description: In User Settings Edit
 FilePath: /Tensorflow_learning/week01/src/1_1_basic_eager_api.py
-'''
+"""
 """
 Basic introduction to TensorFlow's Eager API.
 
