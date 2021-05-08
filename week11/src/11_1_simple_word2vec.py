@@ -264,7 +264,6 @@ with tf.Session(graph=graph) as session:
 
 
 # Step 6: Visualize the embeddings.
-
 def plot_with_labels(low_dim_embs, labels, filename='tsne.png'):
     assert low_dim_embs.shape[0] >= len(labels), "More labels than embeddings"
     # 设置图片大小
@@ -296,8 +295,6 @@ try:
 except ImportError:
     print("Please install sklearn, matplotlib, and scipy to visualize embeddings.")
 
-# In[11]:
-
 
 # with tf.Session() as session:
 #     valid_word = "one"
@@ -314,6 +311,3 @@ except ImportError:
 #         close_word = reverse_dictionary[nearest[k]]
 #         log_str = "%s %s," % (log_str, close_word)
 #     print(log_str)
-
-
-# In[ ]:
