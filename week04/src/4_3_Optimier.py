@@ -1,5 +1,8 @@
 # coding: utf-8
 import tensorflow as tf
+# tf.compat.v1.disable_v2_behavior()
+
+print(tf.__version__)
 from tensorflow.examples.tutorials.mnist import input_data
 
 # 载入数据集
