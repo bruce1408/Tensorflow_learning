@@ -205,7 +205,7 @@
 import os
 import tensorflow as tf
 import numpy as np
-os.environ['CUDA_VISIBLE_DEVICES'] = '0, 1, 2'
+# os.environ['CUDA_VISIBLE_DEVICES'] = '0, 1, 2'
 
 """
 train the dataset from scratch
@@ -221,7 +221,7 @@ num_steps = 20000
 train_display = 100
 val_display = 1000
 learning_rate = 0.0001
-BATCHSIZE = 64
+BATCHSIZE = 6
 save_check = 1000
 
 
