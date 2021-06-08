@@ -51,7 +51,7 @@ pandocfilters==1.4.2
 parso @ file:///home/conda/feedstock_root/build_artifacts/parso_1595548966091/work
 pexpect @ file:///home/conda/feedstock_root/build_artifacts/pexpect_1602535608087/work
 pickleshare @ file:///home/conda/feedstock_root/build_artifacts/pickleshare_1602536217715/work
-Pillow==8.1.2
+Pillow==8.2.0
 prometheus-client @ file:///home/conda/feedstock_root/build_artifacts/prometheus_client_1605543085815/work
 prompt-toolkit @ file:///home/conda/feedstock_root/build_artifacts/prompt-toolkit_1615486796966/work
 protobuf==3.15.6
